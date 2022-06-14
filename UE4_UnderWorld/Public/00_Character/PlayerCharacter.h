@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "00_Character/BaseCharacter.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
-class UE4_UNDERWORLD_API APlayerCharacter : public ACharacter
+class UE4_UNDERWORLD_API APlayerCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 
@@ -26,6 +26,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 protected:
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Mesh)
+		class USkeletalMeshComponent* WeaponSkeletalMesh;
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Camera)
 		class UCameraComponent* Camera;
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Camera)
