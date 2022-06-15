@@ -9,6 +9,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "NiagaraComponent.h"
+#include "Camera/PlayerCameraManager.h"
+#include "Camera/CameraShakeBase.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -50,9 +52,8 @@ APlayerCharacter::APlayerCharacter()
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
-}
 
+}
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
@@ -72,6 +73,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	PlayerInputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressAttack);
 	PlayerInputComponent->BindAction("Dash", EInputEvent::IE_Pressed, this, &APlayerCharacter::Dash);
+	//PlayerInputComponent->BindAction<FShakeDelegate>("Attack", EInputEvent::IE_Pressed, this, &APlayerCharacter::CameraShakeDemo, 1.0f);
+	PlayerInputComponent->BindAction<FShakeDelegate>("RightClick", EInputEvent::IE_Pressed, this, &APlayerCharacter::CameraShakeDemo, 0.1f);
+
 }
 
 void APlayerCharacter::MoveForward(float newAxisValue)
@@ -114,4 +118,9 @@ void APlayerCharacter::PressAttack()
 			GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
 		}
 	}
+}
+
+void APlayerCharacter::CameraShakeDemo(float scale)
+{
+	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake( CamSake, scale);
 }

@@ -6,6 +6,8 @@
 #include "00_Character/BaseCharacter.h"
 #include "PlayerCharacter.generated.h"
 
+DECLARE_DELEGATE_OneParam(FShakeDelegate, float);
+
 UCLASS()
 class UE4_UNDERWORLD_API APlayerCharacter : public ABaseCharacter
 {
@@ -60,4 +62,10 @@ private:
 
 	void PressAttack();
 	void ReleaseAttack();
+
+public:
+	void CameraShakeDemo(float Scale);
+private:
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class UCameraShakeBase> CamSake;
 };
