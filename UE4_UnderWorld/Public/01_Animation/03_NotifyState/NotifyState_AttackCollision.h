@@ -20,7 +20,7 @@ protected:
 protected:
 	UPROPERTY()
 		class ABaseCharacter* owner;	// owner
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 		TArray<class ABaseCharacter*> hitActors;	// 대미지를 준 타겟들
 
 	// 시작할 때 캐릭터의 초기 위치 및 회전값

@@ -54,20 +54,24 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 			hits,
 			true))
 		{
-			for (FHitResult hit : hits)
+			for (FHitResult& hit : hits)
 			{
 				ABaseCharacter* target = Cast<ABaseCharacter>(hit.GetActor());
 
 				if (target != nullptr)
 				{
-					if (hitActors.Emplace(target))
+					if (!hitActors.Contains(target))
 					{
-						APlayerCharacter* player = Cast<APlayerCharacter>(owner);
+						hitActors.Emplace(target);
 						
+						APlayerCharacter* player = Cast<APlayerCharacter>(owner);
+						target->BeginHitStop();
 						if (player != nullptr)
 						{
 							player->CameraShakeDemo(1.f);
+							player->BeginHitStop();
 						}
+
 						//FDamageEvent damageEvent;
 						//auto skillInfo = owner->GetSkillComponent()->GetSkillInfo(skill_Tag);
 						//if (skillInfo != nullptr)
@@ -92,6 +96,7 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 void UNotifyState_AttackCollision::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
 	Super::NotifyEnd(MeshComp, Animation);
+
 
 	if (owner != nullptr)
 		hitActors.Empty();

@@ -11,6 +11,7 @@
 #include "NiagaraComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Camera/CameraShakeBase.h"
+#include "GameFramework/GameModeBase.h"
 
 APlayerCharacter::APlayerCharacter()
 {

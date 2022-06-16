@@ -34,3 +34,15 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
+void ABaseCharacter::BeginHitStop()
+{
+	CustomTimeDilation = 0.001f;
+	//
+	float hitstopTime = hitstopModifier;
+	GetWorld()->GetTimerManager().SetTimer(hitstopTimerHandle, this, &ABaseCharacter::EndHitStop, hitstopTime, false);
+}
+void ABaseCharacter::EndHitStop()
+{
+	CustomTimeDilation = 1.f;
+
+}

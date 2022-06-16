@@ -63,7 +63,9 @@ private:
 	void PressAttack();
 	void ReleaseAttack();
 
+	
 public:
+
 	void CameraShakeDemo(float Scale);
 private:
 	UPROPERTY(EditAnywhere)
