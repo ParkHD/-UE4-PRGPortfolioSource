@@ -72,6 +72,7 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 							player->BeginHitStop();
 						}
 
+						target->TakeDamage(99, FDamageEvent(), owner->GetController(), owner);
 						//FDamageEvent damageEvent;
 						//auto skillInfo = owner->GetSkillComponent()->GetSkillInfo(skill_Tag);
 						//if (skillInfo != nullptr)
