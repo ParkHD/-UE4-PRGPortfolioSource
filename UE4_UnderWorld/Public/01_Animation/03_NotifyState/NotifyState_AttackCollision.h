@@ -30,6 +30,9 @@ protected:
 	//UPROPERTY(EditAnywhere)
 	//	FGameplayTag skill_Tag;	// 스킬 태그
 
+	UPROPERTY(EditAnywhere)
+		bool bChargingAttack = false;
+
 	// 범위 설정
 	UPROPERTY(EditAnywhere)
 		bool bRightStart = false; // 오른쪽으로 공격 or 왼쪽으로 공격

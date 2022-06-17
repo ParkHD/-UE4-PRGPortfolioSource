@@ -5,6 +5,7 @@
 #include "00_Character/BaseCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "00_Character/PlayerCharacter.h"
+#include "03_Component/00_Character/StatusComponent.h"
 
 void UNotifyState_AttackCollision::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
 {
@@ -34,7 +35,15 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 		tempRotator.Yaw = angle;
 		FRotator dirRotator = tempRotator + startRotator;	// 캐릭터기준으로 회전값 z축을 angle각도 회전시켰을 때 Rotator
 		FVector endLocation = dirRotator.Vector() * length + owner->GetActorLocation();
-
+		if (bChargingAttack)
+		{
+			APlayerCharacter* player = Cast<APlayerCharacter>(owner);
+			if (player != nullptr)
+			{
+				UE_LOG(LogTemp, Log, TEXT("%d"), player->GetChargingTime());
+				endLocation = dirRotator.Vector() * length * player->GetChargingTime() + owner->GetActorLocation();
+			}
+		}
 		// 현재 angle각도에 콜리전 생성
 		TArray<FHitResult> hits;
 		FCollisionQueryParams Params;
@@ -66,13 +75,16 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 						
 						APlayerCharacter* player = Cast<APlayerCharacter>(owner);
 						target->BeginHitStop();
+
+						float damageAmount = owner->GetStatusComponent()->GetStat().Damage;
 						if (player != nullptr)
 						{
+							damageAmount *= player->GetChargingTime();
 							player->CameraShakeDemo(1.f);
 							player->BeginHitStop();
 						}
 
-						target->TakeDamage(99, FDamageEvent(), owner->GetController(), owner);
+						target->TakeDamage(damageAmount, FDamageEvent(), owner->GetController(), owner);
 						//FDamageEvent damageEvent;
 						//auto skillInfo = owner->GetSkillComponent()->GetSkillInfo(skill_Tag);
 						//if (skillInfo != nullptr)

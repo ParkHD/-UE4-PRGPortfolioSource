@@ -2,12 +2,18 @@
 
 #include "00_Character/BaseCharacter.h"
 #include "Components/ChildActorComponent.h"
+#include "03_Component/00_Character/StatusComponent.h"
+#include "03_Component/00_Character/SkillComponent.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
+	StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
+	
+	SkillComponent = CreateDefaultSubobject<USkillComponent>(TEXT("SkillComponent"));
 
 	WeaponChildActorComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("Weapon"));
 	WeaponChildActorComponent->SetupAttachment(GetMesh(), FName("Weapon_Socket"));
@@ -33,7 +39,14 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
+float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+	StatusComponent->AddHP(-DamageAmount);
+
+	return DamageAmount;
+}
 void ABaseCharacter::BeginHitStop()
 {
 	CustomTimeDilation = 0.001f;

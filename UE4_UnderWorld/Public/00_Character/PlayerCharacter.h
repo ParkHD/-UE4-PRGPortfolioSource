@@ -42,6 +42,12 @@ protected:
 public:
 	// 공격버튼 입력이 되었는가
 	bool bInputComboAttack = false;
+
+	bool bPressChargingSkill = false;
+protected:
+	float chargingTime = 0.f;
+public:
+	const float GetChargingTime() { return chargingTime; }
 protected:
 	UPROPERTY(EditAnywhere)
 		float DashPlaySpeed = 1.f;
@@ -52,6 +58,10 @@ protected:
 		class UAnimMontage* AttackMontage;
 	UPROPERTY(EditAnywhere, Category = Montage)
 		class UAnimMontage* DashMontage;
+	UPROPERTY(EditAnywhere, Category = Montage)
+		class UAnimMontage* SkillMontage;
+	UPROPERTY(EditAnywhere, Category = Montage)
+		class UAnimMontage* SkillMontage2;
 private:
 	void MoveForward(float newAxisValue);
 	void MoveRight(float newAxisValue);
@@ -63,10 +73,11 @@ private:
 	void PressAttack();
 	void ReleaseAttack();
 
-	
+	void PressSkill();
+	void ReleaseSkill();
 public:
-
 	void CameraShakeDemo(float Scale);
+	void InitChargingSkill();
 private:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UCameraShakeBase> CamSake;

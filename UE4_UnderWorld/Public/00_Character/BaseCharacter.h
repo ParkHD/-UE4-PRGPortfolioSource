@@ -16,8 +16,14 @@ public:
 	ABaseCharacter();
 
 protected:
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+		class UStatusComponent* StatusComponent;
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+		class USkillComponent* SkillComponent;
 	UPROPERTY(VisibleAnywhere)
 		class UChildActorComponent* WeaponChildActorComponent;	// 메인무기 액터 컴포넌트
+public:
+	class UStatusComponent* GetStatusComponent() { return StatusComponent; }
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -28,6 +34,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 public:
 	void BeginHitStop();

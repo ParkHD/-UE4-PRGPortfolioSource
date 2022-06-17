@@ -12,6 +12,7 @@
 #include "Camera/PlayerCameraManager.h"
 #include "Camera/CameraShakeBase.h"
 #include "GameFramework/GameModeBase.h"
+#include "03_Component/00_Character/SkillComponent.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -60,6 +61,10 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bPressChargingSkill)
+	{
+		chargingTime += DeltaTime;
+	}
 }
 
 // Called to bind functionality to input
@@ -76,6 +81,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction("Dash", EInputEvent::IE_Pressed, this, &APlayerCharacter::Dash);
 	//PlayerInputComponent->BindAction<FShakeDelegate>("Attack", EInputEvent::IE_Pressed, this, &APlayerCharacter::CameraShakeDemo, 1.0f);
 	PlayerInputComponent->BindAction<FShakeDelegate>("RightClick", EInputEvent::IE_Pressed, this, &APlayerCharacter::CameraShakeDemo, 0.1f);
+	PlayerInputComponent->BindAction("Skill", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressSkill);
+	PlayerInputComponent->BindAction("Skill", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseSkill);
 
 }
 
@@ -120,8 +127,23 @@ void APlayerCharacter::PressAttack()
 		}
 	}
 }
-
+void APlayerCharacter::PressSkill()
+{
+	SkillComponent->UseSkill(0);
+	bPressChargingSkill = true;
+}
+void APlayerCharacter::ReleaseSkill()
+{
+	SkillComponent->UseChargingSkill(0);
+	InitChargingSkill();
+}
 void APlayerCharacter::CameraShakeDemo(float scale)
 {
 	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake( CamSake, scale);
+}
+void APlayerCharacter::InitChargingSkill()
+{
+	//chargingTime = 0.f;
+	bPressChargingSkill = false;
+	//GetMesh()->GetAnimInstance()->Montage_Stop(0.1f, SkillMontage);
 }
