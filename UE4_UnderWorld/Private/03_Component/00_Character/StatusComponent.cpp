@@ -133,3 +133,7 @@ bool UStatusComponent::CheckMP(float value)
 {
 	return currentMP >= value;
 }
+void UStatusComponent::AddDamage(float value)
+{
+	CharacterStat.Damage += value;
+}

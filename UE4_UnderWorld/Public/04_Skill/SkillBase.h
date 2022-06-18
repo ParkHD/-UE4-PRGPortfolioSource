@@ -18,16 +18,17 @@ protected:
 	UPROPERTY(EditAnywhere)
 		FGameplayTag skillTag;				// 스킬 종류를 구분할 Tag
 	UPROPERTY(EditAnywhere)
-		class UDataTable* skillDataTable;
+		class UDataTable* skillDataTable;	// 스킬 DT
 	UPROPERTY()
-		FSkillInformation skillInfo;
+		FSkillInformation skillInfo;		// 스킬 정보
 
 	UPROPERTY()
-		class ABaseCharacter* skillOwner;	// 스킬 주인
+		class ABaseCharacter* skillOwner;	// 스킬 시전한 캐릭터
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class USkillEffect> coolTimeEffect;	// 스킬의 쿨타임을 관리할 effect
-
+	UPROPERTY(EditAnywhere)
+		TSubclassOf<class USkillEffect> buffEffect;		// 스킬의 buff를 관리할 effect
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class USkillEffect> costEffect;		// 스킬의 Cost를 관리할 effect
 
@@ -38,7 +39,7 @@ protected:
 	virtual void ActivateSkill();	// 스킬 실행
 	virtual void EndSkill();		// 스킬 종료
 public:
-	const FSkillInformation* GetSkillInfo();
+	const FSkillInformation* GetSkillInfo();	// 스킬 정보 가져오기
 
 	virtual void UseSkill(class ABaseCharacter* caller); // 스킬 사용
 

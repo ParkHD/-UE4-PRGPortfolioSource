@@ -21,7 +21,7 @@ protected:
 	UPROPERTY()
 		class ABaseCharacter* owner;	// owner
 	UPROPERTY(VisibleAnywhere)
-		TArray<class ABaseCharacter*> hitActors;	// 대미지를 준 타겟들
+		TArray<class ABaseCharacter*> hitActors;	// 대미지를 준 타겟들->중복 대미지 방지
 
 	// 시작할 때 캐릭터의 초기 위치 및 회전값
 	FVector startLocation;
@@ -31,7 +31,7 @@ protected:
 	//	FGameplayTag skill_Tag;	// 스킬 태그
 
 	UPROPERTY(EditAnywhere)
-		bool bChargingAttack = false;
+		bool bChargingAttack = false;	// 차징 공격인지
 
 	// 범위 설정
 	UPROPERTY(EditAnywhere)

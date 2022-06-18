@@ -28,6 +28,8 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere)
+		class ABaseCharacter* owner;
+	UPROPERTY(EditAnywhere)
 		TArray<class USkillBase*> SkillList;		// 가지고 있는 스킬List
 
 	TMap<FGameplayTag, float> skillEffects;			// 현재 적용 되고 있는 스킬 or 효과
@@ -48,8 +50,9 @@ public:
 	void AddSkill(class USkillBase* skill);				// 스킬 추가
 	void RemoveAllSkill() { return SkillList.Empty(); }	// 스킬 삭제
 	void UseSkill(const FGameplayTag skillTag);			// 스킬태그를 이용 한 스킬 사용
+
 	void UseSkill(int32 index);							// 인덱스를 이용 한 스킬 사용
-	void UseChargingSkill(int32 index);
+	void UseChargingSkill(int32 index);					// 차징 스킬 사용
 
 	bool IsContainSkill(const FGameplayTag skillTag);	// 스킬을 보유하고 있는지 확인
 

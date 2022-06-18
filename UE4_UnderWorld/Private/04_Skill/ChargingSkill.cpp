@@ -9,7 +9,7 @@ void UChargingSkill::ActivateSkill()
 {
 	Super::ActivateSkill();
 
-	// 스킬사용 -> 애니메이션 실행
+	// 스킬사용 -> 스킬 차징 애니메이션 실행
 	if(skillOwner != nullptr)
 		float skillPlayTime = skillOwner->GetMesh()->GetAnimInstance()->Montage_Play(GetSkillInfo()->skill_ChargeMontage, 1.f, EMontagePlayReturnType::Duration);
 
@@ -25,7 +25,7 @@ void UChargingSkill::ActivateSkill()
 }
 void UChargingSkill::ChargingSkill()
 {
-	// 스킬 실행
+	// 차징을 풀면서 스킬 실행
 	skillOwner->GetMesh()->GetAnimInstance()->Montage_Play(GetSkillInfo()->skill_Montage, 1.f, EMontagePlayReturnType::Duration);
 
 	// 스킬 쿨타임 및 cost 적용

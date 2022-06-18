@@ -64,6 +64,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 	if (bPressChargingSkill)
 	{
 		chargingTime += DeltaTime;
+		chargingTime = FMath::Clamp(chargingTime, 1.f, 2.f);
 	}
 }
 
@@ -130,11 +131,11 @@ void APlayerCharacter::PressAttack()
 void APlayerCharacter::PressSkill()
 {
 	SkillComponent->UseSkill(0);
-	bPressChargingSkill = true;
 }
 void APlayerCharacter::ReleaseSkill()
 {
-	SkillComponent->UseChargingSkill(0);
+	if(bPressChargingSkill)
+		SkillComponent->UseChargingSkill(0);
 	InitChargingSkill();
 }
 void APlayerCharacter::CameraShakeDemo(float scale)

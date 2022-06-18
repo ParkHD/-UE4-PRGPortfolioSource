@@ -4,18 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "04_Skill/SkillBase.h"
-#include "ChargingSkill.generated.h"
+#include "InstanceSkill.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class UE4_UNDERWORLD_API UChargingSkill : public USkillBase
+class UE4_UNDERWORLD_API UInstanceSkill : public USkillBase
 {
 	GENERATED_BODY()
 public:
 	virtual void ActivateSkill() override;
-public:
-	virtual void ChargingSkill();
-	virtual void UseSkill(class ABaseCharacter* caller)override;
 };

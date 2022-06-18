@@ -16,6 +16,7 @@ void UNotifyState_AttackCollision::NotifyBegin(USkeletalMeshComponent* MeshComp,
 		owner = Cast<ABaseCharacter>(MeshComp->GetOwner());
 		if (owner != nullptr)
 		{
+			// 공격을 시작한 위치를 저장한다.
 			startLocation = owner->GetActorLocation();
 			startRotator = owner->GetActorRotation();
 
@@ -30,20 +31,22 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime);
 	if (owner != nullptr)
 	{
-		// collision의 EndLocation 구하기
+		// collision의 EndLocation 구하기(공격 범위)
 		FRotator tempRotator = startRotator;
 		tempRotator.Yaw = angle;
 		FRotator dirRotator = tempRotator + startRotator;	// 캐릭터기준으로 회전값 z축을 angle각도 회전시켰을 때 Rotator
 		FVector endLocation = dirRotator.Vector() * length + owner->GetActorLocation();
+
+		// 차징 공격일 경우에는 차징 시간에 따라 콜리전 크기가 증가한다.(사거리 증가)
 		if (bChargingAttack)
 		{
 			APlayerCharacter* player = Cast<APlayerCharacter>(owner);
 			if (player != nullptr)
 			{
-				UE_LOG(LogTemp, Log, TEXT("%d"), player->GetChargingTime());
 				endLocation = dirRotator.Vector() * length * player->GetChargingTime() + owner->GetActorLocation();
 			}
 		}
+
 		// 현재 angle각도에 콜리전 생성
 		TArray<FHitResult> hits;
 		FCollisionQueryParams Params;
@@ -69,18 +72,24 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 
 				if (target != nullptr)
 				{
+					// 이미 대미지를 준 대상인지 확인
 					if (!hitActors.Contains(target))
 					{
 						hitActors.Emplace(target);
-						
-						APlayerCharacter* player = Cast<APlayerCharacter>(owner);
+						// 피격대상 HitStop 실행
 						target->BeginHitStop();
 
+						// 공격 대미지
 						float damageAmount = owner->GetStatusComponent()->GetStat().Damage;
+						// 공격주체가 플레이어인지 확인
+						APlayerCharacter* player = Cast<APlayerCharacter>(owner);
 						if (player != nullptr)
 						{
+							// 차징시간에 따른 대미지 증가
 							damageAmount *= player->GetChargingTime();
+							// 카메라 쉐이크
 							player->CameraShakeDemo(1.f);
+							// 플레이어 hitStop
 							player->BeginHitStop();
 						}
 
@@ -110,7 +119,7 @@ void UNotifyState_AttackCollision::NotifyEnd(USkeletalMeshComponent* MeshComp, U
 {
 	Super::NotifyEnd(MeshComp, Animation);
 
-
+	// 공격한 대상 초기화
 	if (owner != nullptr)
 		hitActors.Empty();
 }

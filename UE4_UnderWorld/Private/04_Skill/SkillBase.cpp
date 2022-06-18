@@ -55,21 +55,26 @@ void USkillBase::UseSkill(class ABaseCharacter* caller)
 {
 	skillOwner = caller;
 
-	UE_LOG(LogTemp, Log, TEXT("1"));
-
 	// 스킬을 사용할 수 있는 상태인지 확인
 	if (CommitSkill())
 	{
-		// 스킬 쿨타임 및 cost 적용
+		// 스킬 쿨타임 적용
 		if (skillOwner != nullptr && coolTimeEffect != nullptr)
 		{
 			const auto coolEffect = coolTimeEffect.GetDefaultObject();
 			coolEffect->ApplyEffect(skillOwner);
 		}
+		// 스킬 Cost 적용
 		if (skillOwner != nullptr && costEffect != nullptr)
 		{
 			const auto costeffect = costEffect.GetDefaultObject();
 			costeffect->ApplyEffect(skillOwner);
+		}
+		// 스킬 버프 적용
+		if (skillOwner != nullptr && buffEffect != nullptr)
+		{
+			const auto buff = buffEffect.GetDefaultObject();
+			buff->ApplyEffect(skillOwner);
 		}
 		// 스킬 실행
 		ActivateSkill();
@@ -82,7 +87,7 @@ FGameplayTag USkillBase::GetCoolTimeTag()
 {
 	if (coolTimeEffect != nullptr)
 	{
-		return coolTimeEffect.GetDefaultObject()->GetEffectTag();
+ 		return coolTimeEffect.GetDefaultObject()->GetEffectTag();
 	}
 	return FGameplayTag::EmptyTag;
 }

@@ -5,6 +5,7 @@
 #include "04_Skill/SkillBase.h"
 #include "00_Character/BaseCharacter.h"
 #include "04_Skill/ChargingSkill.h"
+#include "00_Character/PlayerCharacter.h"
 
 // Sets default values for this component's properties
 USkillComponent::USkillComponent()
@@ -22,6 +23,7 @@ void USkillComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	owner = GetOwner<ABaseCharacter>();
 	for (auto skill : BP_SkillList)
 	{
 		AddSkill(skill.GetDefaultObject());
@@ -76,10 +78,19 @@ void USkillComponent::UseSkill(const FGameplayTag skillTag)
 void USkillComponent::UseSkill(int32 index)
 {
 	// 스킬리스트 중에 해당 해당 인덱스 스킬 사용
+	if (SkillList[index]->GetSkillInfo()->skill_Type == ESkillType::CHARGING)
+	{
+		// 차징스킬인지 확인
+		auto player = Cast<APlayerCharacter>(owner);
+		if (player != nullptr)
+			player->bPressChargingSkill = true;
+	}
+	// 스킬 실행
 	SkillList[index]->UseSkill(GetOwner<ABaseCharacter>());
 }
 void USkillComponent::UseChargingSkill(int32 index)
 {
+	// 차징스킬 실행
 	Cast<UChargingSkill>(SkillList[0])->ChargingSkill();
 }
 

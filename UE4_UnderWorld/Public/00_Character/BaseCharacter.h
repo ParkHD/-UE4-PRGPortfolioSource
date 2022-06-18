@@ -24,6 +24,8 @@ protected:
 		class UChildActorComponent* WeaponChildActorComponent;	// 메인무기 액터 컴포넌트
 public:
 	class UStatusComponent* GetStatusComponent() { return StatusComponent; }
+	class USkillComponent* GetSkillComponent() { return SkillComponent; }
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

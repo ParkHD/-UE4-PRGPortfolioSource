@@ -63,7 +63,8 @@ public:
 	void AddHP(float value);
 	void AddStamina(float value);
 	void AddMP(float value);
-
+	// 스텟 변동
+	void AddDamage(float value);
 	// 충분한 HP, Stamina, MP있는 지 확인
 	bool CheckHP(float value);
 	bool CheckStamina(float value);
