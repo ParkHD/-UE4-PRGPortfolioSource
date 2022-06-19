@@ -60,6 +60,10 @@ protected:
 	UPROPERTY()
 		TArray<class AActor*> hitActors;	// 대미지를 받은 ActorList
 
+	UPROPERTY(EditAnywhere)
+		class USoundBase* soundToPlay;
+	UPROPERTY(EditAnywhere)
+		float falloffDistance = 1000.f;
 	bool isExplored = false;
 public:
 	UFUNCTION()

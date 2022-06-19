@@ -84,7 +84,14 @@ void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* Overlap
 			{
 				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitParticle, SweepResult.Location, FRotator::ZeroRotator, true);
 				UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), hitParticle_Nia, SweepResult.Location);
-			
+				// 소리 범위 설정
+				USoundAttenuation* soundAtt = NewObject<USoundAttenuation>();
+				FSoundAttenuationSettings setting;
+				setting.FalloffDistance = falloffDistance;
+				soundAtt->Attenuation = setting;
+				// 사운드 재생
+				UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundToPlay, SweepResult.Location, FRotator::ZeroRotator,
+					1.f, 1.f, 0.f, soundAtt);
 				Cast<AMyGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->CameraShake(1.f);
 				isExplored = true;
 			}
