@@ -4,7 +4,7 @@
 #include "01_Animation/03_NotifyState/NotifyState_LaunchActor.h"
 #include "00_Character/BaseCharacter.h"
 #include "05_Actor/00_ProjectileActor/ProjectileActor.h"
-
+#include "03_Component/00_Character/StatusComponent.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -86,13 +86,21 @@ void UNotifyState_LaunchActor::NotifyTick(USkeletalMeshComponent* MeshComp, UAni
 	if (owner != nullptr)
 	{
 		time += FrameDeltaTime;
-		if (time >= 0.2f && index < spawnCount)
+		if (time >= intervalTime && index < spawnCount)
 		{
 			if (targetLocation.Num() > index)
 			{
 				UE_LOG(LogTemp, Log, TEXT("%d"), index);
 				auto Actor = owner->GetWorld()->SpawnActor<AProjectileActor>(ActorToSpawn);
+				Actor->SetOwner(owner);
 				Actor->SetActorLocation(targetLocation[index]);
+
+				float damage = owner->GetStatusComponent()->GetStat().Damage;
+				if (bSkillAttack)
+				{
+
+				}
+				Actor->SetDamage(damage);
 				Actor->GetProjectileComponent()->Velocity = -Actor->GetActorUpVector() * projectileSpeed;
 				index++;
 				time = 0.f;

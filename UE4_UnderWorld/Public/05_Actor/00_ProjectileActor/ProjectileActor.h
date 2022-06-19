@@ -41,6 +41,8 @@ public:
 protected:
 	UPROPERTY(EditAnywhere)
 		class UParticleSystem* hitParticle;		// overlap반응 시 터지는 효과
+	UPROPERTY(EditAnywhere)
+		class UNiagaraSystem* hitParticle_Nia;		// overlap반응 시 터지는 효과
 
 	UPROPERTY(EditAnywhere)
 		bool bHitSingle = true;				// 하나의 대상에만 대미지를 줄 것인가
@@ -50,17 +52,19 @@ protected:
 		float lifeSpanValue;				// 생명주기 값 설정
 
 	UPROPERTY(EditAnywhere)
-		float skillDamage;					// 대미지
+		float damage;					// 대미지
 	UPROPERTY(EditAnywhere)
 		bool isSkill = false;				// 스킬공격인가?(스킬 or 기본화살)
 	UPROPERTY(EditAnywhere)
 		bool bIgnoreMyTeam = false;			// 내 팀은 무시하고 지나갈 것인가
 	UPROPERTY()
 		TArray<class AActor*> hitActors;	// 대미지를 받은 ActorList
+
+	bool isExplored = false;
 public:
 	UFUNCTION()
 		virtual void OnComponentBeginOverlapEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 public:
 	void TurnOnCollision(bool bTurn);
-	void SetSkillDamage(float damage) { skillDamage = damage; }	// 대미지 설정
+	void SetDamage(float damageAmount) { damage = damageAmount; }	// 대미지 설정
 };

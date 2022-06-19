@@ -12,6 +12,8 @@
 #include "00_Character/BaseCharacter.h"
 #include "Components/AudioComponent.h"
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "99_GameMode/MyGameMode.h"
 
 // Sets default values
 AProjectileActor::AProjectileActor()
@@ -20,7 +22,7 @@ AProjectileActor::AProjectileActor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	sphereComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("SphereComponent"));
-	sphereComponent->SetCollisionProfileName("NoCollision");
+	//sphereComponent->SetCollisionProfileName("NoCollision");
 	RootComponent = sphereComponent;
 
 	skeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
@@ -65,14 +67,27 @@ void AProjectileActor::Tick(float DeltaTime)
 void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	auto myCharacter = Cast<ABaseCharacter>(GetOwner());
-	if (myCharacter != OtherActor)
+	
+	// 자신을 제외한 캐릭터에 대미지를 줄것이다.
+	// owner가 같다면 반응을 안한다.
+	if (OtherActor->GetOwner() != GetOwner() && myCharacter != OtherActor)
 	{
+		// 지형지물에 닿았다면 destroy
+		if (OtherComp->GetCollisionObjectType() == ECC_WorldStatic)
+			Destroy();
+		// 대미지 중복 방지
 		if (!hitActors.Contains(OtherActor))
 		{
 			hitActors.Emplace(OtherActor);
-			// overlap 효과 재생
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitParticle, SweepResult.Location, FRotator::ZeroRotator, true);
-
+			// overlap 효과 재생 한번만
+			if (!isExplored)
+			{
+				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitParticle, SweepResult.Location, FRotator::ZeroRotator, true);
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), hitParticle_Nia, SweepResult.Location);
+			
+				Cast<AMyGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->CameraShake(1.f);
+				isExplored = true;
+			}
 			// 멀티공격이 아니라면 콜리전을 꺼서 다중공격 방지
 			if (bHitSingle)
 			{
@@ -80,11 +95,12 @@ void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* Overlap
 				projectileComponent->Velocity = FVector::ZeroVector;
 				audioComponent->VolumeMultiplier = 0.f;
 			}
-
+			
+			// 캐릭터라면 대미지 주기
 			if (OtherActor->IsA<ABaseCharacter>())
 			{
-				// 캐릭터라면 대미지 주기
 				auto targetCharacter = Cast<ABaseCharacter>(OtherActor);
+				targetCharacter->TakeDamage(damage, FDamageEvent(), myCharacter->GetController(), myCharacter);
 				//if (targetCharacter != myCharacter && targetCharacter->GetGenericTeamId() != myCharacter->GetGenericTeamId())
 				//{
 				//	FDamageEvent damageEvent;

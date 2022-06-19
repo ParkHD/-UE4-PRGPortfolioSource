@@ -22,7 +22,8 @@ protected:
 protected:
 	UPROPERTY(EditAnywhere)
 		FGameplayTag skill_Tag;			// 어떤 스킬인지 스킬태그
-
+	UPROPERTY(EditAnywhere)
+		bool bSkillAttack = false;
 	class ABaseCharacter* owner;		// owner
 
 	// 스폰할 Actor 설정
@@ -45,9 +46,13 @@ protected:
 		float fowardDistance = 100.f;
 	UPROPERTY(EditAnywhere)
 		float radius = 100.f;
+	UPROPERTY(EditAnywhere)
+		float intervalTime = 0.1f;
 	TArray<float> spawnTime;
 		UPROPERTY(VisibleAnywhere)
 	TArray<FVector> targetLocation;
+
+
 	int index = 0;
 	float time = 0;
 public:
