@@ -27,6 +27,11 @@ protected:
 	FVector startLocation;
 	FRotator startRotator;
 
+	UPROPERTY(EditAnywhere)
+		FName startSocketName;
+	UPROPERTY(EditAnywhere)
+		FName endSocketName;
+
 	//UPROPERTY(EditAnywhere)
 	//	FGameplayTag skill_Tag;	// 스킬 태그
 

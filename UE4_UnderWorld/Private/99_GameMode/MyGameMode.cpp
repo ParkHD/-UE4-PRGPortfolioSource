@@ -5,5 +5,6 @@
 
 void AMyGameMode::CameraShake(float Scale)
 {
+	UE_LOG(LogTemp, Log, TEXT("00"));
 	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake(CamSake, Scale);
 }

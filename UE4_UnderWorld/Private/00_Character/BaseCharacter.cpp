@@ -4,6 +4,7 @@
 #include "Components/ChildActorComponent.h"
 #include "03_Component/00_Character/StatusComponent.h"
 #include "03_Component/00_Character/SkillComponent.h"
+#include "Components/AudioComponent.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -12,8 +13,15 @@ ABaseCharacter::ABaseCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
-	
 	SkillComponent = CreateDefaultSubobject<USkillComponent>(TEXT("SkillComponent"));
+	
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
+	// 소리 범위 설정
+	USoundAttenuation* soundAtt = NewObject<USoundAttenuation>();
+	FSoundAttenuationSettings setting;
+	setting.FalloffDistance = falloffDistance;
+	soundAtt->Attenuation = setting;
+	AudioComponent->AttenuationSettings = soundAtt;
 
 	WeaponChildActorComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("Weapon"));
 	WeaponChildActorComponent->SetupAttachment(GetMesh(), FName("Weapon_Socket"));
@@ -44,6 +52,8 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	StatusComponent->AddHP(-DamageAmount);
+	AudioComponent->SetSound(hitSound);
+	AudioComponent->Activate();
 
 	return DamageAmount;
 }

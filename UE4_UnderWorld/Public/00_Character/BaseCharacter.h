@@ -22,6 +22,8 @@ protected:
 		class USkillComponent* SkillComponent;
 	UPROPERTY(VisibleAnywhere)
 		class UChildActorComponent* WeaponChildActorComponent;	// 메인무기 액터 컴포넌트
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+		class UAudioComponent* AudioComponent;
 public:
 	class UStatusComponent* GetStatusComponent() { return StatusComponent; }
 	class USkillComponent* GetSkillComponent() { return SkillComponent; }
@@ -44,4 +46,9 @@ public:
 	FTimerHandle hitstopTimerHandle;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "hitstop")
 		float hitstopModifier = 1.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
+		float falloffDistance = 2000.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+		USoundBase* hitSound;
+
 };

@@ -31,12 +31,18 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 	Super::NotifyTick(MeshComp, Animation, FrameDeltaTime);
 	if (owner != nullptr)
 	{
+		if (!startSocketName.IsNone())
+			startLocation = MeshComp->GetSocketLocation(startSocketName);
 		// collision의 EndLocation 구하기(공격 범위)
 		FRotator tempRotator = startRotator;
 		tempRotator.Yaw = angle;
 		FRotator dirRotator = tempRotator + startRotator;	// 캐릭터기준으로 회전값 z축을 angle각도 회전시켰을 때 Rotator
+		
 		FVector endLocation = dirRotator.Vector() * length + owner->GetActorLocation();
-
+		if (!endSocketName.IsNone())
+		{
+			endLocation = MeshComp->GetSocketLocation(endSocketName);
+		}
 		// 차징 공격일 경우에는 차징 시간에 따라 콜리전 크기가 증가한다.(사거리 증가)
 		if (bChargingAttack)
 		{
@@ -56,7 +62,7 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 		objects.Emplace(UEngineTypes::ConvertToObjectType(ECC_Pawn));
 		if (UKismetSystemLibrary::SphereTraceMultiForObjects(
 			owner,
-			owner->GetActorLocation(),
+			startLocation,
 			endLocation,
 			collisionRadius,
 			objects,

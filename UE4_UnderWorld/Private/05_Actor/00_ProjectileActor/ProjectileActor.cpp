@@ -79,9 +79,11 @@ void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* Overlap
 		if (!hitActors.Contains(OtherActor))
 		{
 			hitActors.Emplace(OtherActor);
-			// overlap 효과 재생 한번만
+
+			// overlap 효과 재생
 			if (!isExplored)
 			{
+				// 터지는 Particle 재생
 				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitParticle, SweepResult.Location, FRotator::ZeroRotator, true);
 				UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), hitParticle_Nia, SweepResult.Location);
 				// 소리 범위 설정
@@ -89,12 +91,13 @@ void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* Overlap
 				FSoundAttenuationSettings setting;
 				setting.FalloffDistance = falloffDistance;
 				soundAtt->Attenuation = setting;
-				// 사운드 재생
+				// 터지는 사운드 재생
 				UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundToPlay, SweepResult.Location, FRotator::ZeroRotator,
 					1.f, 1.f, 0.f, soundAtt);
 				Cast<AMyGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->CameraShake(1.f);
 				isExplored = true;
 			}
+
 			// 멀티공격이 아니라면 콜리전을 꺼서 다중공격 방지
 			if (bHitSingle)
 			{
@@ -103,7 +106,7 @@ void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* Overlap
 				audioComponent->VolumeMultiplier = 0.f;
 			}
 			
-			// 캐릭터라면 대미지 주기
+			// 대상이 캐릭터라면 대미지 주기
 			if (OtherActor->IsA<ABaseCharacter>())
 			{
 				auto targetCharacter = Cast<ABaseCharacter>(OtherActor);
