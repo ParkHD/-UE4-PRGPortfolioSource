@@ -2,7 +2,8 @@
 
 
 #include "01_Animation/02_Notify/Notify_PlayNiagaraEffect.h"
-#include "00_Character/PlayerCharacter.h"
+#include "00_Character/00_Player/PlayerCharacter.h"
+
 
 void UNotify_PlayNiagaraEffect::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {

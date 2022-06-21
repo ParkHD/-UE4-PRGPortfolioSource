@@ -4,7 +4,7 @@
 #include "01_Animation/03_NotifyState/NotifyState_AttackCollision.h"
 #include "00_Character/BaseCharacter.h"
 #include "Kismet/GameplayStatics.h"
-#include "00_Character/PlayerCharacter.h"
+#include "00_Character/00_Player/PlayerCharacter.h"
 #include "03_Component/00_Character/StatusComponent.h"
 
 void UNotifyState_AttackCollision::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)

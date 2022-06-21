@@ -5,7 +5,7 @@
 #include "04_Skill/SkillBase.h"
 #include "00_Character/BaseCharacter.h"
 #include "04_Skill/ChargingSkill.h"
-#include "00_Character/PlayerCharacter.h"
+#include "00_Character/00_Player/PlayerCharacter.h"
 
 // Sets default values for this component's properties
 USkillComponent::USkillComponent()

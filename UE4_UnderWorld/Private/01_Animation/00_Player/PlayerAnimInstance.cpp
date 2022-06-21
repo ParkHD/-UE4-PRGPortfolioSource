@@ -3,7 +3,9 @@
 
 #include "01_Animation/00_Player/PlayerAnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "00_Character/PlayerCharacter.h"
+#include "00_Character/00_Player/PlayerCharacter.h"
+
+
 
 // begin에 하면 player가 초기화가 안댐 begin은 겜 시작할떄 한번만 이라 그런듯
 void UPlayerAnimInstance::NativeInitializeAnimation()
