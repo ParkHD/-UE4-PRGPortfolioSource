@@ -6,6 +6,7 @@
 #include "00_Character/BaseCharacter.h"
 #include "04_Skill/ChargingSkill.h"
 #include "00_Character/00_Player/PlayerCharacter.h"
+#include "03_Component/00_Character/QuickSlotComponent.h"
 
 // Sets default values for this component's properties
 USkillComponent::USkillComponent()
@@ -14,7 +15,8 @@ USkillComponent::USkillComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
+	// ½ºÅ³ Äü½½·Ô ÃÊ±âÈ­
+	SkillQuickSlot.Init(nullptr, 8);
 }
 
 
@@ -117,6 +119,16 @@ const FSkillInformation* USkillComponent::GetSkillInfo(const FGameplayTag skillT
 		}
 	}
 	return nullptr;
+}
+
+void USkillComponent::MoveToQuickSlot(int skillIndex, int QuickSlotIndex)
+{
+	auto player = Cast<APlayerCharacter>(owner);
+	if(player != nullptr)
+	{
+		player->GetQuickSlotComponent()->quickSlotList[QuickSlotIndex] = SkillList[skillIndex];
+		player->GetQuickSlotComponent()->UpdateQuickSlot();
+	}
 }
 
 

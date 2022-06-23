@@ -13,5 +13,10 @@ UCLASS()
 class UE4_UNDERWORLD_API UShadowWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+protected:
+	UPROPERTY(Meta = (BindWidget))
+		class UImage* Image_Icon;
+public:
+	void SetUp(class UUserWidget* slot);
 };

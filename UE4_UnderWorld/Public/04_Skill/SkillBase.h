@@ -19,9 +19,7 @@ protected:
 		FGameplayTag skillTag;				// 스킬 종류를 구분할 Tag
 	UPROPERTY(EditAnywhere)
 		class UDataTable* skillDataTable;	// 스킬 DT
-	UPROPERTY()
-		FSkillInformation skillInfo;		// 스킬 정보
-
+	
 	UPROPERTY()
 		class ABaseCharacter* skillOwner;	// 스킬 시전한 캐릭터
 

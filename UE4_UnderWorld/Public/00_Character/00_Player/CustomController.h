@@ -18,7 +18,9 @@ protected:
 	// 컨트롤러가 플레이할 캐릭터 클래스에 빙의되었을때 호출
 	virtual void OnPossess(APawn* aPawn) override;
 	virtual void PlayerTick(float DeltaTime) override;
-
+	virtual void BeginPlay() override;
+public:
+	void OpenSkillWindow();
 protected:
 	UPROPERTY()
 		class APlayerCharacter* ownerPlayer;

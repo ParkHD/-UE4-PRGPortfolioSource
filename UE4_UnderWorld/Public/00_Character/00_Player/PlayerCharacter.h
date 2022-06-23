@@ -39,6 +39,10 @@ protected:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Camera)
 		class UNiagaraComponent* niagaraSys;
 
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Component)
+		class UQuickSlotComponent* QuickSlotComponent;
+public:
+	class UQuickSlotComponent* GetQuickSlotComponent() { return QuickSlotComponent; }
 public:
 	// 공격버튼 입력이 되었는가
 	bool bInputComboAttack = false;
@@ -72,9 +76,9 @@ private:
 
 	void PressAttack();
 	void ReleaseAttack();
-
 	void PressSkill();
 	void ReleaseSkill();
+	void PressSkillWindow();
 public:
 	void CameraShakeDemo(float Scale);
 	void InitChargingSkill();

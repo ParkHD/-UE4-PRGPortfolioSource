@@ -25,12 +25,13 @@ protected:
 public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
 protected:
 	UPROPERTY(EditAnywhere)
 		class ABaseCharacter* owner;
 	UPROPERTY(EditAnywhere)
 		TArray<class USkillBase*> SkillList;		// 가지고 있는 스킬List
+	UPROPERTY(EditAnywhere)
+		TArray<class USkillBase*> SkillQuickSlot;		// 가지고 있는 스킬List
 
 	TMap<FGameplayTag, float> skillEffects;			// 현재 적용 되고 있는 스킬 or 효과
 
@@ -55,12 +56,15 @@ public:
 	void UseChargingSkill(int32 index);					// 차징 스킬 사용
 
 	bool IsContainSkill(const FGameplayTag skillTag);	// 스킬을 보유하고 있는지 확인
-
+	
 	const FSkillInformation* GetSkillInfo(const FGameplayTag skillTag);	// 스킬 정보 확인
+public:
+	// 퀵슬롯 관련
+	void MoveToQuickSlot(int skillIndex, int QuickSlotIndex);
 public:
 	bool SkillUsable(int32 index);						// 인덱스에 있는 스킬을 사용 할 수 있는지 확인
 	int32 GetSkillCount() { return SkillList.Num(); }	// 가지고 있는 스킬 개수 확인
-
+	TArray<TSubclassOf<class USkillBase>> GetSkillList() { return BP_SkillList; }
 //public:
 //	// 스킬 사용가능한지 위젯 업데이트
 //	FOnChangeCoolTime UpdateSkill1Able;

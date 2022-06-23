@@ -9,6 +9,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "NiagaraComponent.h"
+#include "00_Character/00_Player/CustomController.h"
+#include "03_Component/00_Character/QuickSlotComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Camera/CameraShakeBase.h"
 #include "GameFramework/GameModeBase.h"
@@ -45,6 +47,8 @@ APlayerCharacter::APlayerCharacter()
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
 	Camera->SetupAttachment(SpringArm);
+
+	QuickSlotComponent = CreateDefaultSubobject<UQuickSlotComponent>(TEXT("QuickSlotComponent"));
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->FallingLateralFriction = 8.f;
@@ -84,6 +88,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction<FShakeDelegate>("RightClick", EInputEvent::IE_Pressed, this, &APlayerCharacter::CameraShakeDemo, 0.1f);
 	PlayerInputComponent->BindAction("Skill", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressSkill);
 	PlayerInputComponent->BindAction("Skill", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseSkill);
+
+	PlayerInputComponent->BindAction("SkillWindow", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressSkillWindow);
 
 }
 
@@ -137,6 +143,10 @@ void APlayerCharacter::ReleaseSkill()
 	if(bPressChargingSkill)
 		SkillComponent->UseChargingSkill(0);
 	InitChargingSkill();
+}
+void APlayerCharacter::PressSkillWindow()
+{
+	Cast<ACustomController>(GetController())->OpenSkillWindow();
 }
 void APlayerCharacter::CameraShakeDemo(float scale)
 {

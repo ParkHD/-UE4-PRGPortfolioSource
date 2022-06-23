@@ -44,6 +44,18 @@ public:
 	UPROPERTY(EditAnywhere)
 		class UAnimMontage* skill_ChargeMontage;	// 스킬 애니메이션
 };
+
+// 캐릭터의 스킬 리스트
+USTRUCT(BlueprintType)
+struct FSkillList : public FTableRowBase
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere)
+		TArray<TSubclassOf<class USkillBase>> skillList;				// 스킬 태그
+	UPROPERTY(EditAnywhere)
+		float skill;
+};
 UCLASS()
 class UE4_UNDERWORLD_API USkillType : public UObject
 {

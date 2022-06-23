@@ -15,7 +15,7 @@ class UE4_UNDERWORLD_API UDragableWidget : public UUserWidget
 	GENERATED_BODY()
 protected:
 	virtual void NativeConstruct() override;
-	//virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
+	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent) override;
 	virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation) override;
 protected:
 	UPROPERTY(EditAnywhere)

@@ -16,6 +16,13 @@ class UE4_UNDERWORLD_API UMainWidget : public UUserWidget
 protected:
 	UPROPERTY(Meta = (BindWidget))
 		class UPlayerStatusWidget* UMG_PlayerStatus;
+	UPROPERTY(Meta = (BindWidget))
+		class USkillWindowWidget* UMG_SkillWindow;
+	UPROPERTY(Meta = (BindWidget))
+		class UQuickSlotListWidget* UMG_QuickSlotList;
 public:
 	class UPlayerStatusWidget* GetUMG_PlayerStatus() { return UMG_PlayerStatus; }
+	class USkillWindowWidget* GetUMG_SkillWindow() { return UMG_SkillWindow; }
+	class UQuickSlotListWidget* GetUMG_QuickSlotList() { return UMG_QuickSlotList; }
+
 };
