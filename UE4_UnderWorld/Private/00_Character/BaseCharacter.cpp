@@ -5,6 +5,7 @@
 #include "03_Component/00_Character/StatusComponent.h"
 #include "03_Component/00_Character/SkillComponent.h"
 #include "Components/AudioComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 ABaseCharacter::ABaseCharacter()
@@ -68,4 +69,29 @@ void ABaseCharacter::EndHitStop()
 {
 	CustomTimeDilation = 1.f;
 
+}
+
+void ABaseCharacter::SetActionState(EActionState state)
+{
+	actionState = state;
+	switch (state)
+	{
+	case EActionState::ATTACK:
+		SetMoveState(EMoveState::IDLE);
+		break;
+	case EActionState::SKILL:
+		SetMoveState(EMoveState::IDLE);
+		break;
+	}
+}
+
+void ABaseCharacter::SetMoveState(EMoveState state)
+{
+	moveState = state;
+	switch(state)
+	{
+	case EMoveState::IDLE:
+		GetCharacterMovement()->Velocity = FVector::ZeroVector;
+		break;
+	}
 }

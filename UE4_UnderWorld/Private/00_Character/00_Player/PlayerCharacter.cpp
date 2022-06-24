@@ -9,12 +9,14 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Particles/ParticleSystemComponent.h"
 #include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "00_Character/00_Player/CustomController.h"
 #include "03_Component/00_Character/QuickSlotComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Camera/CameraShakeBase.h"
 #include "GameFramework/GameModeBase.h"
 #include "03_Component/00_Character/SkillComponent.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 
 APlayerCharacter::APlayerCharacter()
 {
@@ -77,17 +79,54 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
-	PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::Turn);
-	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::LookUp);
+	//PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
+	//PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
+	//PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::Turn);
+	//PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::LookUp);
+
+	PlayerInputComponent->BindAction("Move", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseMove);
 
 	PlayerInputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressAttack);
 	PlayerInputComponent->BindAction("Dash", EInputEvent::IE_Pressed, this, &APlayerCharacter::Dash);
 	//PlayerInputComponent->BindAction<FShakeDelegate>("Attack", EInputEvent::IE_Pressed, this, &APlayerCharacter::CameraShakeDemo, 1.0f);
 	PlayerInputComponent->BindAction<FShakeDelegate>("RightClick", EInputEvent::IE_Pressed, this, &APlayerCharacter::CameraShakeDemo, 0.1f);
-	PlayerInputComponent->BindAction("Skill", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressSkill);
-	PlayerInputComponent->BindAction("Skill", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseSkill);
+#pragma region QuickSlotKey
+	PlayerInputComponent->BindAction("Quick1", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressQuickSlot1);
+	PlayerInputComponent->BindAction("Quick2", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressQuickSlot2);
+	PlayerInputComponent->BindAction("Quick3", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressQuickSlot3);
+	PlayerInputComponent->BindAction("Quick4", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressQuickSlot4);
+	PlayerInputComponent->BindAction("Quick5", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressQuickSlot5);
+	PlayerInputComponent->BindAction("Quick6", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressQuickSlot6);
+	PlayerInputComponent->BindAction("Quick7", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressQuickSlot7);
+	PlayerInputComponent->BindAction("Quick8", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressQuickSlot8);
+	PlayerInputComponent->BindAction("Quick9", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressQuickSlot9);
+	PlayerInputComponent->BindAction("Quick10", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressQuickSlot10);
+	PlayerInputComponent->BindAction("Quick11", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressQuickSlot11);
+	PlayerInputComponent->BindAction("Quick12", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressQuickSlot12);
+	PlayerInputComponent->BindAction("Quick13", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressQuickSlot13);
+	PlayerInputComponent->BindAction("Quick14", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressQuickSlot14);
+	PlayerInputComponent->BindAction("Quick15", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressQuickSlot15);
+	PlayerInputComponent->BindAction("Quick16", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressQuickSlot16);
+
+	PlayerInputComponent->BindAction("Quick1", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot1);
+	PlayerInputComponent->BindAction("Quick2", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot2);
+	PlayerInputComponent->BindAction("Quick3", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot3);
+	PlayerInputComponent->BindAction("Quick4", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot4);
+	PlayerInputComponent->BindAction("Quick5", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot5);
+	PlayerInputComponent->BindAction("Quick6", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot6);
+	PlayerInputComponent->BindAction("Quick7", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot7);
+	PlayerInputComponent->BindAction("Quick8", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot8);
+	PlayerInputComponent->BindAction("Quick9", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot9);
+	PlayerInputComponent->BindAction("Quick10", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot10);
+	PlayerInputComponent->BindAction("Quick11", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot11);
+	PlayerInputComponent->BindAction("Quick12", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot12);
+	PlayerInputComponent->BindAction("Quick13", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot13);
+	PlayerInputComponent->BindAction("Quick14", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot14);
+	PlayerInputComponent->BindAction("Quick15", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot15);
+	PlayerInputComponent->BindAction("Quick16", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot16);
+
+#pragma endregion
+	
 
 	PlayerInputComponent->BindAction("SkillWindow", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressSkillWindow);
 
@@ -113,11 +152,41 @@ void APlayerCharacter::Turn(float newAxisValue)
 {
 	AddControllerYawInput(newAxisValue);
 }
-
+void APlayerCharacter::ReleaseMove()
+{
+	if(actionState == EActionState::NORMAL)
+	{
+		FHitResult hit;
+		if (GetController<APlayerController>()->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), false, hit))
+		{
+			//// 이미 클릭 효과가 실행되고 있다면 중단 하고 새롭게 클릭된 곳에 효과 실행
+			//if (clickNiagaraComponent != nullptr)
+			//{
+			//	clickNiagaraComponent->DeactivateImmediate();
+			//}
+			//clickNiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), clickParticle, hit.Location);
+			// 캐릭터 이동
+			UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), hit.Location);
+		}
+	}
+}
 void APlayerCharacter::Dash()
 {
-	GetMesh()->GetAnimInstance()->Montage_Play(DashMontage, 1.5f);
-	LaunchCharacter(GetActorForwardVector().GetSafeNormal() * DashSpeed, true, true);
+	if(actionState == EActionState::NORMAL)
+	{
+		SetMoveState(EMoveState::IDLE);
+		SetActionState(EActionState::DASH);
+		TurnToCursor();
+		float animtime = GetMesh()->GetAnimInstance()->Montage_Play(DashMontage, 1.5f, EMontagePlayReturnType::Duration);
+		FTimerHandle dashTimer;
+		FTimerDelegate dashDelegate = FTimerDelegate::CreateUObject(this, &ABaseCharacter::SetActionState, EActionState::NORMAL);
+		GetWorldTimerManager().SetTimer(
+			dashTimer,
+			dashDelegate,
+			animtime,
+			false);
+
+	}
 }
 
 void APlayerCharacter::PressAttack()
@@ -128,26 +197,244 @@ void APlayerCharacter::PressAttack()
 			bInputComboAttack = true;
 		else
 		{
-			FRotator newRotation(0.f, GetControlRotation().Yaw, 0.f);
-			SetActorRotation(newRotation);
-			GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
+			if(actionState == EActionState::NORMAL)
+			{
+				SetActionState(EActionState::ATTACK);
+				TurnToCursor();
+				GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
+			}
 		}
 	}
 }
-void APlayerCharacter::PressSkill()
+#pragma region QuickSlotKey
+
+void APlayerCharacter::PressQuickSlot1()
 {
-	SkillComponent->UseSkill(0);
+	GetQuickSlotComponent()->PressQuickSlot(0);
 }
-void APlayerCharacter::ReleaseSkill()
+
+void APlayerCharacter::ReleaseQuickSlot1()
 {
 	if(bPressChargingSkill)
-		SkillComponent->UseChargingSkill(0);
-	InitChargingSkill();
+	{
+		GetQuickSlotComponent()->ReleaseQuickSlot(0);
+		InitChargingSkill();
+	}
 }
+
+void APlayerCharacter::PressQuickSlot2()
+{
+	GetQuickSlotComponent()->PressQuickSlot(1);
+}
+
+void APlayerCharacter::ReleaseQuickSlot2()
+{
+	if (bPressChargingSkill)
+	{
+		GetQuickSlotComponent()->ReleaseQuickSlot(1);
+		InitChargingSkill();
+	}
+}
+void APlayerCharacter::PressQuickSlot3()
+{
+	GetQuickSlotComponent()->PressQuickSlot(2);
+}
+
+void APlayerCharacter::ReleaseQuickSlot3()
+{
+	if (bPressChargingSkill)
+	{
+		GetQuickSlotComponent()->ReleaseQuickSlot(2);
+		InitChargingSkill();
+	}
+}
+void APlayerCharacter::PressQuickSlot4()
+{
+	GetQuickSlotComponent()->PressQuickSlot(3);
+}
+
+void APlayerCharacter::ReleaseQuickSlot4()
+{
+	if (bPressChargingSkill)
+	{
+		GetQuickSlotComponent()->ReleaseQuickSlot(3);
+		InitChargingSkill();
+	}
+}
+void APlayerCharacter::PressQuickSlot5()
+{
+	GetQuickSlotComponent()->PressQuickSlot(4);
+}
+
+void APlayerCharacter::ReleaseQuickSlot5()
+{
+	if (bPressChargingSkill)
+	{
+		GetQuickSlotComponent()->ReleaseQuickSlot(4);
+		InitChargingSkill();
+	}
+}
+void APlayerCharacter::PressQuickSlot6()
+{
+	GetQuickSlotComponent()->PressQuickSlot(5);
+}
+
+void APlayerCharacter::ReleaseQuickSlot6()
+{
+	if (bPressChargingSkill)
+	{
+		GetQuickSlotComponent()->ReleaseQuickSlot(5);
+		InitChargingSkill();
+	}
+}
+void APlayerCharacter::PressQuickSlot7()
+{
+	GetQuickSlotComponent()->PressQuickSlot(6);
+}
+
+void APlayerCharacter::ReleaseQuickSlot7()
+{
+	if (bPressChargingSkill)
+	{
+		GetQuickSlotComponent()->ReleaseQuickSlot(6);
+		InitChargingSkill();
+	}
+}
+void APlayerCharacter::PressQuickSlot8()
+{
+	GetQuickSlotComponent()->PressQuickSlot(7);
+}
+
+void APlayerCharacter::ReleaseQuickSlot8()
+{
+	if (bPressChargingSkill)
+	{
+		GetQuickSlotComponent()->ReleaseQuickSlot(7);
+		InitChargingSkill();
+	}
+}
+void APlayerCharacter::PressQuickSlot9()
+{
+	GetQuickSlotComponent()->PressQuickSlot(8);
+}
+
+void APlayerCharacter::ReleaseQuickSlot9()
+{
+	if (bPressChargingSkill)
+	{
+		GetQuickSlotComponent()->ReleaseQuickSlot(8);
+		InitChargingSkill();
+	}
+}
+void APlayerCharacter::PressQuickSlot10()
+{
+	GetQuickSlotComponent()->PressQuickSlot(9);
+}
+
+void APlayerCharacter::ReleaseQuickSlot10()
+{
+	if (bPressChargingSkill)
+	{
+		GetQuickSlotComponent()->ReleaseQuickSlot(9);
+		InitChargingSkill();
+	}
+}
+void APlayerCharacter::PressQuickSlot11()
+{
+	GetQuickSlotComponent()->PressQuickSlot(10);
+}
+
+void APlayerCharacter::ReleaseQuickSlot11()
+{
+	if (bPressChargingSkill)
+	{
+		GetQuickSlotComponent()->ReleaseQuickSlot(10);
+		InitChargingSkill();
+	}
+}
+void APlayerCharacter::PressQuickSlot12()
+{
+	GetQuickSlotComponent()->PressQuickSlot(11);
+}
+
+void APlayerCharacter::ReleaseQuickSlot12()
+{
+	if (bPressChargingSkill)
+	{
+		GetQuickSlotComponent()->ReleaseQuickSlot(11);
+		InitChargingSkill();
+	}
+}
+void APlayerCharacter::PressQuickSlot13()
+{
+	GetQuickSlotComponent()->PressQuickSlot(12);
+}
+
+void APlayerCharacter::ReleaseQuickSlot13()
+{
+	if (bPressChargingSkill)
+	{
+		GetQuickSlotComponent()->ReleaseQuickSlot(12);
+		InitChargingSkill();
+	}
+}
+void APlayerCharacter::PressQuickSlot14()
+{
+	GetQuickSlotComponent()->PressQuickSlot(13);
+}
+
+void APlayerCharacter::ReleaseQuickSlot14()
+{
+	if (bPressChargingSkill)
+	{
+		GetQuickSlotComponent()->ReleaseQuickSlot(13);
+		InitChargingSkill();
+	}
+}
+void APlayerCharacter::PressQuickSlot15()
+{
+	GetQuickSlotComponent()->PressQuickSlot(14);
+}
+
+void APlayerCharacter::ReleaseQuickSlot15()
+{
+	if (bPressChargingSkill)
+	{
+		GetQuickSlotComponent()->ReleaseQuickSlot(14);
+		InitChargingSkill();
+	}
+}
+void APlayerCharacter::PressQuickSlot16()
+{
+	GetQuickSlotComponent()->PressQuickSlot(15);
+}
+
+void APlayerCharacter::ReleaseQuickSlot16()
+{
+	if (bPressChargingSkill)
+	{
+		GetQuickSlotComponent()->ReleaseQuickSlot(15);
+		InitChargingSkill();
+	}
+}
+#pragma endregion
+
 void APlayerCharacter::PressSkillWindow()
 {
 	Cast<ACustomController>(GetController())->OpenSkillWindow();
 }
+
+void APlayerCharacter::TurnToCursor()
+{
+	FHitResult hit;
+	if (GetController<APlayerController>()->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), false, hit))
+	{
+		FVector dirCursor = hit.Location - GetActorLocation();
+		FRotator newRotation(0.f, dirCursor.Rotation().Yaw, 0.f);
+		SetActorRotation(newRotation);
+	}
+}
+
 void APlayerCharacter::CameraShakeDemo(float scale)
 {
 	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake( CamSake, scale);
@@ -157,4 +444,21 @@ void APlayerCharacter::InitChargingSkill()
 	//chargingTime = 0.f;
 	bPressChargingSkill = false;
 	//GetMesh()->GetAnimInstance()->Montage_Stop(0.1f, SkillMontage);
+}
+
+void APlayerCharacter::SetMoveState(EMoveState state)
+{
+	moveState = state;
+
+	switch(state)
+	{
+	case EMoveState::IDLE:
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), GetActorLocation());
+		break;
+	}
+}
+
+void APlayerCharacter::SetActionState(EActionState state)
+{
+	Super::SetActionState(state);
 }

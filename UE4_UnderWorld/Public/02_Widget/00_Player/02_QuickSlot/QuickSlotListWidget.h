@@ -21,9 +21,12 @@ protected:
 protected:
 	virtual void NativeConstruct() override;
 protected:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 		TArray<class UQuickSlotWidget*> quickSlotList;
+
 public:
 	UFUNCTION()
 		void UpdateQuickSlotList(TArray<UObject*> quickSlotArray);
+
+
 };

@@ -39,6 +39,7 @@ void UNotifyState_ComboAttack::BranchingPointNotifyEnd(FBranchingPointNotifyPayl
 		else
 		{
 			owner->GetMesh()->GetAnimInstance()->Montage_Stop(0.25f);
+			owner->SetActionState(EActionState::NORMAL);
 		}
 	}
 

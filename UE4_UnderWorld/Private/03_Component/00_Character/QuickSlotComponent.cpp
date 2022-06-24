@@ -3,6 +3,10 @@
 
 #include "03_Component/00_Character/QuickSlotComponent.h"
 
+#include "00_Character/00_Player/PlayerCharacter.h"
+#include "03_Component/00_Character/SkillComponent.h"
+#include "04_Skill/SkillBase.h"
+
 // Sets default values for this component's properties
 UQuickSlotComponent::UQuickSlotComponent()
 {
@@ -20,8 +24,9 @@ void UQuickSlotComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	owner = Cast<APlayerCharacter>(GetOwner());
 	// ...
-	
+	OnUpdateQuickSlot.Broadcast(quickSlotList);
 }
 
 
@@ -42,4 +47,32 @@ void UQuickSlotComponent::SwapQuickSlot(int firstIndex, int secondIndex)
 void UQuickSlotComponent::UpdateQuickSlot()
 {
 	OnUpdateQuickSlot.Broadcast(quickSlotList);
+}
+
+void UQuickSlotComponent::PressQuickSlot(int index)
+{
+	if(owner != nullptr)
+	{
+		if ((index >= 0 && index < quickSlotList.Num()) && quickSlotList[index] != nullptr)
+		{
+			if(quickSlotList[index]->IsA<USkillBase>())
+			{
+				owner->GetSkillComponent()->UseSkill(Cast<USkillBase>(quickSlotList[index]));
+			}
+		}
+	}
+}
+
+void UQuickSlotComponent::ReleaseQuickSlot(int index)
+{
+	if (owner != nullptr)
+	{
+		if ((index >= 0 && index < quickSlotList.Num()) && quickSlotList[index] != nullptr)
+		{
+			if (quickSlotList[index]->IsA<USkillBase>())
+			{
+				owner->GetSkillComponent()->UseChargingSkill(Cast<USkillBase>(quickSlotList[index]));
+			}
+		}
+	}
 }

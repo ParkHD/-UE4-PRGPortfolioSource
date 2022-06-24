@@ -49,7 +49,6 @@ FReply USkillQuickSlotWidget::NativeOnMouseButtonUp(const FGeometry& InGeometry,
 FReply USkillQuickSlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
-	UE_LOG(LogTemp, Log, TEXT("ButtonDown"));
 
 	// 아이템이 있을 때만 드래그 하게 설정
 	if (isEmpty)

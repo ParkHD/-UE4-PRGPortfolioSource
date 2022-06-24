@@ -6,6 +6,29 @@
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
+// 이동 상태
+UENUM(BlueprintType)
+enum class EMoveState : uint8 // Enum이름 앞에 E꼭 붙여야함
+{
+	NORMAL,	// 기본상태
+	IDLE,	// 기본상태
+	RUN,	// 뛰는상태
+	JUMP,	// 점프
+	FLY,	// 날고있는 상태
+};
+// 행동 상태
+UENUM(BlueprintType)
+enum class EActionState : uint8 // Enum이름 앞에 E꼭 붙여야함
+{
+	NORMAL,	// 기본상태
+	DASH,	// 회피 중
+	ATTACK,	// 공격 중
+	AIM,	// 조준 중
+	BLOCK,	// 방어 중
+	SKILL,	// 스킬 사용 중
+	MAX,
+};
+
 UCLASS()
 class UE4_UNDERWORLD_API ABaseCharacter : public ACharacter
 {
@@ -51,4 +74,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 		USoundBase* hitSound;
 
+protected:
+	EActionState actionState;
+	EMoveState moveState;
+public:
+	virtual void SetActionState(EActionState state);
+	virtual void SetMoveState(EMoveState state);
 };

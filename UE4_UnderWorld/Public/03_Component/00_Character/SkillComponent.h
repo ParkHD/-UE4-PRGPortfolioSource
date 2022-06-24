@@ -55,6 +55,9 @@ public:
 	void UseSkill(int32 index);							// 인덱스를 이용 한 스킬 사용
 	void UseChargingSkill(int32 index);					// 차징 스킬 사용
 
+	void UseSkill(class USkillBase* skill);
+	void UseChargingSkill(class USkillBase* skill);					// 차징 스킬 사용
+
 	bool IsContainSkill(const FGameplayTag skillTag);	// 스킬을 보유하고 있는지 확인
 	
 	const FSkillInformation* GetSkillInfo(const FGameplayTag skillTag);	// 스킬 정보 확인

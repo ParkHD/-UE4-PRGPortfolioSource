@@ -96,6 +96,26 @@ void USkillComponent::UseChargingSkill(int32 index)
 	Cast<UChargingSkill>(SkillList[0])->ChargingSkill();
 }
 
+void USkillComponent::UseSkill(USkillBase* skill)
+{
+	// 스킬리스트 중에 해당 해당 인덱스 스킬 사용
+	if (skill->GetSkillInfo()->skill_Type == ESkillType::CHARGING)
+	{
+		// 차징스킬인지 확인
+		auto player = Cast<APlayerCharacter>(owner);
+		if (player != nullptr)
+			player->bPressChargingSkill = true;
+	}
+	// 스킬 실행
+	skill->UseSkill(GetOwner<ABaseCharacter>());
+}
+
+void USkillComponent::UseChargingSkill(USkillBase* skill)
+{
+	// 차징스킬 실행
+	Cast<UChargingSkill>(skill)->ChargingSkill();
+}
+
 bool USkillComponent::IsContainSkill(const FGameplayTag skillTag)
 {
 	// 스킬리스트 중에 해당 스킬태그인 스킬이 있는 지 확인

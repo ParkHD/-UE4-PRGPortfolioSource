@@ -29,12 +29,12 @@ void USkillWindowWidget::OnChangeVisibility(ESlateVisibility visible)
 {
 	if (visible == ESlateVisibility::Visible)
 	{
-		GetOwningPlayer()->SetInputMode(FInputModeGameAndUI());
-		GetOwningPlayer<APlayerController>()->bShowMouseCursor = true;
+		//GetOwningPlayer()->SetInputMode(FInputModeGameAndUI());
+		//GetOwningPlayer<APlayerController>()->bShowMouseCursor = true;
 	}
 	else if (visible == ESlateVisibility::Hidden)
 	{
-		GetOwningPlayer()->SetInputMode(FInputModeGameOnly());
-		GetOwningPlayer<APlayerController>()->bShowMouseCursor = false;
+		//GetOwningPlayer()->SetInputMode(FInputModeGameOnly());
+		//GetOwningPlayer<APlayerController>()->bShowMouseCursor = false;
 	}
 }

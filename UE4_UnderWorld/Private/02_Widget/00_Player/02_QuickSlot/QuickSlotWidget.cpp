@@ -4,6 +4,7 @@
 #include "02_Widget/00_Player/02_QuickSlot/QuickSlotWidget.h"
 #include "00_Character/00_Player/PlayerCharacter.h"
 #include "02_Widget/00_Player/01_Skill/SkillQuickSlotWidget.h"
+#include "02_Widget/00_Player/02_QuickSlot/QuickSlotListWidget.h"
 #include "02_Widget/99_Dragable/WidgetDragDropOperation.h"
 #include "03_Component/00_Character/QuickSlotComponent.h"
 #include "03_Component/00_Character/SkillComponent.h"
@@ -53,6 +54,7 @@ bool UQuickSlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDrop
 			auto slot = oper->widgetRef;
 			if (slot->IsA<USkillQuickSlotWidget>())
 			{
+
 				player->GetSkillComponent()->MoveToQuickSlot(myIndex, targetIndex);
 			}
 			else
@@ -60,9 +62,8 @@ bool UQuickSlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDrop
 				player->GetQuickSlotComponent()->SwapQuickSlot(myIndex, targetIndex);
 			}
 		}
+
 		
-
-
 		//if (GetOwningPlayerPawn()->IsA<APlayerCharacter>())
 		//{
 		//	GetOwningPlayerPawn<APlayerCharacter>()->GetInventoryComponent()->SwapItem(index, targetIndex);

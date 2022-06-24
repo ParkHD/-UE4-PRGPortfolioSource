@@ -32,4 +32,7 @@ public:
 
 	virtual void Init();
 	virtual void SetUp(class UObject* obj);
+
+
+
 };

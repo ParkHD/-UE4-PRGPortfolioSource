@@ -38,6 +38,8 @@ protected:
 		class UParticleSystemComponent* particleSys;
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Camera)
 		class UNiagaraComponent* niagaraSys;
+	//UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	//	class UNiagaraComponent* clickNiagaraComponent;	// 클릭 Particle 관리 컴포넌트
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Component)
 		class UQuickSlotComponent* QuickSlotComponent;
@@ -72,17 +74,60 @@ private:
 	void LookUp(float newAxisValue);
 	void Turn(float newAxisValue);
 
-	void Dash();
 
+	void ReleaseMove();
+	void Dash();
 	void PressAttack();
 	void ReleaseAttack();
-	void PressSkill();
-	void ReleaseSkill();
+#pragma region QuickSlotKey
+	void PressQuickSlot1();
+	void ReleaseQuickSlot1();
+	void PressQuickSlot2();
+	void ReleaseQuickSlot2();
+	void PressQuickSlot3();
+	void ReleaseQuickSlot3();
+	void PressQuickSlot4();
+	void ReleaseQuickSlot4();
+	void PressQuickSlot5();
+	void ReleaseQuickSlot5();
+	void PressQuickSlot6();
+	void ReleaseQuickSlot6();
+	void PressQuickSlot7();
+	void ReleaseQuickSlot7();
+	void PressQuickSlot8();
+	void ReleaseQuickSlot8();
+	void PressQuickSlot9();
+	void ReleaseQuickSlot9();
+	void PressQuickSlot10();
+	void ReleaseQuickSlot10();
+	void PressQuickSlot11();
+	void ReleaseQuickSlot11();
+	void PressQuickSlot12();
+	void ReleaseQuickSlot12();
+	void PressQuickSlot13();
+	void ReleaseQuickSlot13();
+	void PressQuickSlot14();
+	void ReleaseQuickSlot14();
+	void PressQuickSlot15();
+	void ReleaseQuickSlot15();
+	void PressQuickSlot16();
+	void ReleaseQuickSlot16();
+#pragma endregion
+
+
 	void PressSkillWindow();
+protected:
+	void TurnToCursor();
 public:
 	void CameraShakeDemo(float Scale);
 	void InitChargingSkill();
+
+	virtual void SetMoveState(EMoveState state) override;
+	virtual void SetActionState(EActionState state) override;
+
 private:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UCameraShakeBase> CamSake;
 };
+
+

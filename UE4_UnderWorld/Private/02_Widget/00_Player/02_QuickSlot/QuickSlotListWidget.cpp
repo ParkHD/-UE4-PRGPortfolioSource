@@ -57,10 +57,9 @@ void UQuickSlotListWidget::NativeConstruct()
 
 void UQuickSlotListWidget::UpdateQuickSlotList(TArray<UObject*> quickSlotArray)
 {
-	
 	for(int i = 0;i<quickSlotArray.Num();i++)
 	{
 		quickSlotList[i]->SetUp(quickSlotArray[i]);
 	}
-	
 }
+

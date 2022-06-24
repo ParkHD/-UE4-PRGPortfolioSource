@@ -26,6 +26,9 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+protected:
+	UPROPERTY()
+		class APlayerCharacter* owner;
 public:
 	UPROPERTY(VisibleAnywhere)
 		TArray<UObject*> quickSlotList;
@@ -33,6 +36,9 @@ public:
 	void SwapQuickSlot(int firstIndex, int secondIndex);
 
 	void UpdateQuickSlot();
+public:
+	void PressQuickSlot(int index);
+	void ReleaseQuickSlot(int index);
 public:
 	FOnUpdateQuickSlot OnUpdateQuickSlot;
 };

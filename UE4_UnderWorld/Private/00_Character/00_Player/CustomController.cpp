@@ -48,7 +48,7 @@ void ACustomController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
+	SetShowMouseCursor(true);
 }
 
 void ACustomController::OpenSkillWindow()
