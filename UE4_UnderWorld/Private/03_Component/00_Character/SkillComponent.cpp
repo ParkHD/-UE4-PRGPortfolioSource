@@ -39,6 +39,20 @@ void USkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if(owner->IsA<APlayerCharacter>())
+	{
+		for(int i = 0;i<SkillList.Num();i++)
+		{
+			if(SkillList[i]->GetCoolTime() > 0.f)
+			{
+				SkillList[i]->AddCoolTime(-DeltaTime);
+
+				auto player = Cast<APlayerCharacter>(owner);
+				player->GetQuickSlotComponent()->UpdateQuickSlot();
+			}
+		}
+	}
+
 	//// 스킬이 사용가능 한지 확인하고 스킬 위젯 업데이트
 	//if (SkillUsable(0))
 	//{
@@ -98,22 +112,28 @@ void USkillComponent::UseChargingSkill(int32 index)
 
 void USkillComponent::UseSkill(USkillBase* skill)
 {
-	// 스킬리스트 중에 해당 해당 인덱스 스킬 사용
-	if (skill->GetSkillInfo()->skill_Type == ESkillType::CHARGING)
+	if(owner->GetActionState() == EActionState::NORMAL)
 	{
+		// 스킬리스트 중에 해당 해당 인덱스 스킬 사용
 		// 차징스킬인지 확인
-		auto player = Cast<APlayerCharacter>(owner);
-		if (player != nullptr)
-			player->bPressChargingSkill = true;
+		if (skill->GetSkillInfo()->skill_Type == ESkillType::CHARGING)
+		{
+			OnChargingSkill.Broadcast(isCharging);
+		}
+		// 스킬 실행
+		skill->UseSkill(GetOwner<ABaseCharacter>());
 	}
-	// 스킬 실행
-	skill->UseSkill(GetOwner<ABaseCharacter>());
 }
 
 void USkillComponent::UseChargingSkill(USkillBase* skill)
 {
-	// 차징스킬 실행
-	Cast<UChargingSkill>(skill)->ChargingSkill();
+	if(isCharging)
+	{
+		// 차징스킬 실행
+		Cast<UChargingSkill>(skill)->ChargingSkill();
+		isCharging = false;
+		OnChargingSkill.Broadcast(isCharging);
+	}
 }
 
 bool USkillComponent::IsContainSkill(const FGameplayTag skillTag)

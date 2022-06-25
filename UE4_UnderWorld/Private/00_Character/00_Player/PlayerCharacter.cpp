@@ -35,8 +35,8 @@ APlayerCharacter::APlayerCharacter()
 	niagaraSys = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraSystem"));
 	niagaraSys->SetupAttachment(GetCapsuleComponent());
 
-	particleSys = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ParticleSystem"));
-	particleSys->SetupAttachment(GetCapsuleComponent());
+	ChargingParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ChargingParticleSystem"));
+	ChargingParticleComponent->SetupAttachment(GetCapsuleComponent());
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SPRINGARM"));
 	SpringArm->SetupAttachment(GetCapsuleComponent());
 	SpringArm->TargetArmLength = 600.0f;
@@ -62,6 +62,14 @@ void APlayerCharacter::BeginPlay()
 	Super::BeginPlay();
 
 }
+
+void APlayerCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	SkillComponent->OnChargingSkill.AddUniqueDynamic(this, &APlayerCharacter::TurnOnChargingParticle);
+}
+
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
@@ -79,12 +87,12 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	//PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
-	//PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
-	//PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::Turn);
-	//PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::LookUp);
+	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
+	PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::Turn);
+	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::LookUp);
 
-	PlayerInputComponent->BindAction("Move", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseMove);
+	//PlayerInputComponent->BindAction("Move", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseMove);
 
 	PlayerInputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressAttack);
 	PlayerInputComponent->BindAction("Dash", EInputEvent::IE_Pressed, this, &APlayerCharacter::Dash);
@@ -126,23 +134,33 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction("Quick16", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot16);
 
 #pragma endregion
-	
 
 	PlayerInputComponent->BindAction("SkillWindow", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressSkillWindow);
 
 }
 
+void APlayerCharacter::PlayChargingParticle()
+{
+	ChargingParticleComponent->Activate(false);
+}
+
 void APlayerCharacter::MoveForward(float newAxisValue)
 {
-	FRotator newRotation(0.0f, GetControlRotation().Yaw, 0.0f);
-	FVector direction = FRotationMatrix(newRotation).GetUnitAxis(EAxis::X);
-	AddMovementInput(direction, newAxisValue);
+	if (actionState == EActionState::NORMAL)
+	{
+		FRotator newRotation(0.0f, GetControlRotation().Yaw, 0.0f);
+		FVector direction = FRotationMatrix(newRotation).GetUnitAxis(EAxis::X);
+		AddMovementInput(direction, newAxisValue);
+	}
 }
 void APlayerCharacter::MoveRight(float newAxisValue)
 {
-	FRotator newRotation(0.0f, GetControlRotation().Yaw, 0.0f);
-	FVector direction = FRotationMatrix(newRotation).GetUnitAxis(EAxis::Y);
-	AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y), newAxisValue);
+	if (actionState == EActionState::NORMAL)
+	{
+		FRotator newRotation(0.0f, GetControlRotation().Yaw, 0.0f);
+		FVector direction = FRotationMatrix(newRotation).GetUnitAxis(EAxis::Y);
+		AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y), newAxisValue);
+	}
 }
 void APlayerCharacter::LookUp(float newAxisValue)
 {
@@ -215,11 +233,8 @@ void APlayerCharacter::PressQuickSlot1()
 
 void APlayerCharacter::ReleaseQuickSlot1()
 {
-	if(bPressChargingSkill)
-	{
+	
 		GetQuickSlotComponent()->ReleaseQuickSlot(0);
-		InitChargingSkill();
-	}
 }
 
 void APlayerCharacter::PressQuickSlot2()
@@ -229,11 +244,7 @@ void APlayerCharacter::PressQuickSlot2()
 
 void APlayerCharacter::ReleaseQuickSlot2()
 {
-	if (bPressChargingSkill)
-	{
 		GetQuickSlotComponent()->ReleaseQuickSlot(1);
-		InitChargingSkill();
-	}
 }
 void APlayerCharacter::PressQuickSlot3()
 {
@@ -242,11 +253,7 @@ void APlayerCharacter::PressQuickSlot3()
 
 void APlayerCharacter::ReleaseQuickSlot3()
 {
-	if (bPressChargingSkill)
-	{
 		GetQuickSlotComponent()->ReleaseQuickSlot(2);
-		InitChargingSkill();
-	}
 }
 void APlayerCharacter::PressQuickSlot4()
 {
@@ -255,11 +262,7 @@ void APlayerCharacter::PressQuickSlot4()
 
 void APlayerCharacter::ReleaseQuickSlot4()
 {
-	if (bPressChargingSkill)
-	{
 		GetQuickSlotComponent()->ReleaseQuickSlot(3);
-		InitChargingSkill();
-	}
 }
 void APlayerCharacter::PressQuickSlot5()
 {
@@ -268,11 +271,7 @@ void APlayerCharacter::PressQuickSlot5()
 
 void APlayerCharacter::ReleaseQuickSlot5()
 {
-	if (bPressChargingSkill)
-	{
 		GetQuickSlotComponent()->ReleaseQuickSlot(4);
-		InitChargingSkill();
-	}
 }
 void APlayerCharacter::PressQuickSlot6()
 {
@@ -281,11 +280,7 @@ void APlayerCharacter::PressQuickSlot6()
 
 void APlayerCharacter::ReleaseQuickSlot6()
 {
-	if (bPressChargingSkill)
-	{
-		GetQuickSlotComponent()->ReleaseQuickSlot(5);
-		InitChargingSkill();
-	}
+	GetQuickSlotComponent()->ReleaseQuickSlot(5);
 }
 void APlayerCharacter::PressQuickSlot7()
 {
@@ -294,11 +289,7 @@ void APlayerCharacter::PressQuickSlot7()
 
 void APlayerCharacter::ReleaseQuickSlot7()
 {
-	if (bPressChargingSkill)
-	{
 		GetQuickSlotComponent()->ReleaseQuickSlot(6);
-		InitChargingSkill();
-	}
 }
 void APlayerCharacter::PressQuickSlot8()
 {
@@ -307,11 +298,7 @@ void APlayerCharacter::PressQuickSlot8()
 
 void APlayerCharacter::ReleaseQuickSlot8()
 {
-	if (bPressChargingSkill)
-	{
 		GetQuickSlotComponent()->ReleaseQuickSlot(7);
-		InitChargingSkill();
-	}
 }
 void APlayerCharacter::PressQuickSlot9()
 {
@@ -320,11 +307,7 @@ void APlayerCharacter::PressQuickSlot9()
 
 void APlayerCharacter::ReleaseQuickSlot9()
 {
-	if (bPressChargingSkill)
-	{
 		GetQuickSlotComponent()->ReleaseQuickSlot(8);
-		InitChargingSkill();
-	}
 }
 void APlayerCharacter::PressQuickSlot10()
 {
@@ -333,11 +316,7 @@ void APlayerCharacter::PressQuickSlot10()
 
 void APlayerCharacter::ReleaseQuickSlot10()
 {
-	if (bPressChargingSkill)
-	{
 		GetQuickSlotComponent()->ReleaseQuickSlot(9);
-		InitChargingSkill();
-	}
 }
 void APlayerCharacter::PressQuickSlot11()
 {
@@ -346,11 +325,7 @@ void APlayerCharacter::PressQuickSlot11()
 
 void APlayerCharacter::ReleaseQuickSlot11()
 {
-	if (bPressChargingSkill)
-	{
 		GetQuickSlotComponent()->ReleaseQuickSlot(10);
-		InitChargingSkill();
-	}
 }
 void APlayerCharacter::PressQuickSlot12()
 {
@@ -359,11 +334,7 @@ void APlayerCharacter::PressQuickSlot12()
 
 void APlayerCharacter::ReleaseQuickSlot12()
 {
-	if (bPressChargingSkill)
-	{
 		GetQuickSlotComponent()->ReleaseQuickSlot(11);
-		InitChargingSkill();
-	}
 }
 void APlayerCharacter::PressQuickSlot13()
 {
@@ -372,11 +343,7 @@ void APlayerCharacter::PressQuickSlot13()
 
 void APlayerCharacter::ReleaseQuickSlot13()
 {
-	if (bPressChargingSkill)
-	{
 		GetQuickSlotComponent()->ReleaseQuickSlot(12);
-		InitChargingSkill();
-	}
 }
 void APlayerCharacter::PressQuickSlot14()
 {
@@ -385,11 +352,7 @@ void APlayerCharacter::PressQuickSlot14()
 
 void APlayerCharacter::ReleaseQuickSlot14()
 {
-	if (bPressChargingSkill)
-	{
 		GetQuickSlotComponent()->ReleaseQuickSlot(13);
-		InitChargingSkill();
-	}
 }
 void APlayerCharacter::PressQuickSlot15()
 {
@@ -398,11 +361,7 @@ void APlayerCharacter::PressQuickSlot15()
 
 void APlayerCharacter::ReleaseQuickSlot15()
 {
-	if (bPressChargingSkill)
-	{
 		GetQuickSlotComponent()->ReleaseQuickSlot(14);
-		InitChargingSkill();
-	}
 }
 void APlayerCharacter::PressQuickSlot16()
 {
@@ -411,11 +370,7 @@ void APlayerCharacter::PressQuickSlot16()
 
 void APlayerCharacter::ReleaseQuickSlot16()
 {
-	if (bPressChargingSkill)
-	{
 		GetQuickSlotComponent()->ReleaseQuickSlot(15);
-		InitChargingSkill();
-	}
 }
 #pragma endregion
 
@@ -425,14 +380,14 @@ void APlayerCharacter::PressSkillWindow()
 }
 
 void APlayerCharacter::TurnToCursor()
-{
+{/*
 	FHitResult hit;
 	if (GetController<APlayerController>()->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), false, hit))
 	{
 		FVector dirCursor = hit.Location - GetActorLocation();
 		FRotator newRotation(0.f, dirCursor.Rotation().Yaw, 0.f);
 		SetActorRotation(newRotation);
-	}
+	}*/
 }
 
 void APlayerCharacter::CameraShakeDemo(float scale)
@@ -441,9 +396,7 @@ void APlayerCharacter::CameraShakeDemo(float scale)
 }
 void APlayerCharacter::InitChargingSkill()
 {
-	//chargingTime = 0.f;
-	bPressChargingSkill = false;
-	//GetMesh()->GetAnimInstance()->Montage_Stop(0.1f, SkillMontage);
+	chargingTime = 0.f;
 }
 
 void APlayerCharacter::SetMoveState(EMoveState state)
@@ -453,12 +406,31 @@ void APlayerCharacter::SetMoveState(EMoveState state)
 	switch(state)
 	{
 	case EMoveState::IDLE:
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), GetActorLocation());
 		break;
 	}
 }
 
 void APlayerCharacter::SetActionState(EActionState state)
 {
-	Super::SetActionState(state);
+	actionState = state;
+
+	switch (state)
+	{
+	case EActionState::NORMAL:
+		InitChargingSkill();
+		break;
+	}
+}
+void APlayerCharacter::TurnOnChargingParticle(bool isCharging)
+{
+	if(isCharging)
+	{
+		ChargingParticleComponent->Activate();
+		bPressChargingSkill = true;
+	}
+	else
+	{
+		ChargingParticleComponent->Deactivate();
+		bPressChargingSkill = false;
+	}
 }

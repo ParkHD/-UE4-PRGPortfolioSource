@@ -2,20 +2,26 @@
 
 #include "04_Skill/SkillBase.h"
 #include "00_Character/BaseCharacter.h"
+#include "03_Component/00_Character/SkillComponent.h"
 #include "04_Skill/SkillEffect.h"
 
 bool USkillBase::CommitSkill()
 {
 	if (skillOwner != nullptr)
 	{
+		UE_LOG(LogTemp, Log, TEXT("00"));
 		// 스킬이 cooltime이 아닌지 확인
 		auto cooleffect = coolTimeEffect.GetDefaultObject();
 		if (cooleffect != nullptr)
 		{
-			/*if (skillOwner->GetSkillComponent()->IsContainEffect(cooleffect->GetEffectTag()))
+			UE_LOG(LogTemp, Log, TEXT("11"));
+
+			if (skillOwner->GetSkillComponent()->IsContainEffect(cooleffect->GetEffectTag()))
 			{
+				UE_LOG(LogTemp, Log, TEXT("22"));
+
 				return false;
-			}*/
+			}
 		}
 
 		// 충분한 Cost가 있는지 확인
@@ -36,7 +42,7 @@ void USkillBase::ActivateSkill()
 {
 	if (skillOwner != nullptr)
 	{
-		//skillOwner->SetActionState(EActionState::SKILL);
+		skillOwner->SetActionState(EActionState::SKILL);
 	}
 }
 
@@ -61,6 +67,7 @@ void USkillBase::UseSkill(class ABaseCharacter* caller)
 		// 스킬 쿨타임 적용
 		if (skillOwner != nullptr && coolTimeEffect != nullptr)
 		{
+			coolTime = GetSkillInfo()->skill_CoolTime;
 			const auto coolEffect = coolTimeEffect.GetDefaultObject();
 			coolEffect->ApplyEffect(skillOwner);
 		}
@@ -90,5 +97,10 @@ FGameplayTag USkillBase::GetCoolTimeTag()
  		return coolTimeEffect.GetDefaultObject()->GetEffectTag();
 	}
 	return FGameplayTag::EmptyTag;
+}
+
+void USkillBase::AddCoolTime(float value)
+{
+	coolTime = FMath::Clamp(coolTime + value, 0.f, GetSkillInfo()->skill_CoolTime);
 }
 

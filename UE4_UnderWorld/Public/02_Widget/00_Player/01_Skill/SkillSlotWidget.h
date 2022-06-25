@@ -18,7 +18,7 @@ protected:
 		class USkillQuickSlotWidget* UMG_SkillQucikSlot;
 	UPROPERTY(Meta = (BindWidget))
 		class UTextBlock* TextBlock_SkillName;
-
+	
 public:
 	void Update(class USkillBase* skill, int index);
 };

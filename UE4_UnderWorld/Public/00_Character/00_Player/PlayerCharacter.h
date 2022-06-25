@@ -20,7 +20,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
+	virtual void PostInitializeComponents() override;
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -34,8 +34,8 @@ protected:
 		class UCameraComponent* Camera;
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Camera)
 		class USpringArmComponent* SpringArm;
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Camera)
-		class UParticleSystemComponent* particleSys;
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Particle)
+		class UParticleSystemComponent* ChargingParticleComponent;
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Camera)
 		class UNiagaraComponent* niagaraSys;
 	//UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
@@ -45,6 +45,8 @@ protected:
 		class UQuickSlotComponent* QuickSlotComponent;
 public:
 	class UQuickSlotComponent* GetQuickSlotComponent() { return QuickSlotComponent; }
+public:
+	void PlayChargingParticle();
 public:
 	// 공격버튼 입력이 되었는가
 	bool bInputComboAttack = false;
@@ -128,6 +130,7 @@ public:
 private:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UCameraShakeBase> CamSake;
+protected:
+	UFUNCTION()
+		void TurnOnChargingParticle(bool isCharging);
 };
-
-

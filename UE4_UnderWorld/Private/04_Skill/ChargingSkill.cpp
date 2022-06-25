@@ -3,6 +3,7 @@
 
 #include "04_Skill/ChargingSkill.h"
 #include "00_Character/BaseCharacter.h"
+#include "03_Component/00_Character/SkillComponent.h"
 #include "04_Skill/SkillEffect.h"
 
 void UChargingSkill::ActivateSkill()
@@ -11,26 +12,31 @@ void UChargingSkill::ActivateSkill()
 
 	// 스킬사용 -> 스킬 차징 애니메이션 실행
 	if(skillOwner != nullptr)
-		float skillPlayTime = skillOwner->GetMesh()->GetAnimInstance()->Montage_Play(GetSkillInfo()->skill_ChargeMontage, 1.f, EMontagePlayReturnType::Duration);
+	{
 
-	//// 애니메이션 종료 후 ActionState::NORMAL로 변경
-	//FTimerHandle skillTimer;
-	//FTimerDelegate skillDelegate = FTimerDelegate::CreateUObject(skillOwner, &ABaseCharacter::SetActionState, EActionState::NORMAL);
-	//skillOwner->GetWorld()->GetTimerManager().SetTimer(
-	//	skillTimer,
-	//	skillDelegate,
-	//	skillPlayTime,
-	//	false);
+		skillOwner->GetSkillComponent()->SetCharging();
+		skillOwner->GetMesh()->GetAnimInstance()->Montage_Play(GetSkillInfo()->skill_ChargeMontage, 1.f, EMontagePlayReturnType::Duration);
+	}
+
 
 }
 void UChargingSkill::ChargingSkill()
 {
 	// 차징을 풀면서 스킬 실행
-	skillOwner->GetMesh()->GetAnimInstance()->Montage_Play(GetSkillInfo()->skill_Montage, 1.f, EMontagePlayReturnType::Duration);
+	float skillPlayTime = skillOwner->GetMesh()->GetAnimInstance()->Montage_Play(GetSkillInfo()->skill_Montage, 1.f, EMontagePlayReturnType::Duration);
+	// 애니메이션 종료 후 ActionState::NORMAL로 변경
+	FTimerHandle skillTimer;
+	FTimerDelegate skillDelegate = FTimerDelegate::CreateUObject(skillOwner, &ABaseCharacter::SetActionState, EActionState::NORMAL);
+	skillOwner->GetWorld()->GetTimerManager().SetTimer(
+		skillTimer,
+		skillDelegate,
+		skillPlayTime,
+		false);
 
 	// 스킬 쿨타임 및 cost 적용
 	if (skillOwner != nullptr && coolTimeEffect != nullptr)
 	{
+		coolTime = GetSkillInfo()->skill_CoolTime;
 		const auto coolEffect = coolTimeEffect.GetDefaultObject();
 		coolEffect->ApplyEffect(skillOwner);
 	}

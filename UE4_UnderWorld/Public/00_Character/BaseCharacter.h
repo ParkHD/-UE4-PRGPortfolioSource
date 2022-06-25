@@ -78,6 +78,9 @@ protected:
 	EActionState actionState;
 	EMoveState moveState;
 public:
+	EActionState GetActionState() { return actionState; }
+	EMoveState GetMoveState() { return moveState; }
+
 	virtual void SetActionState(EActionState state);
 	virtual void SetMoveState(EMoveState state);
 };

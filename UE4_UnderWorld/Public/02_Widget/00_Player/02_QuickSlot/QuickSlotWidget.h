@@ -15,7 +15,12 @@ class UE4_UNDERWORLD_API UQuickSlotWidget : public UDragableWidget
 	GENERATED_BODY()
 protected:
 	UPROPERTY(Meta = (BindWidget))
-		class UImage* Image_Icon;
+		class UImage* Image_Icon;						// Äü½½·Ô ¾ÆÀÌÄÜ
+	UPROPERTY(Meta = (BindWidget))
+		class UProgressBar* ProgressBar_CoolTimeImage;	// Äü½½·Ô ÄğÅ¸ÀÓ ÀÌ¹ÌÁö
+	UPROPERTY(Meta = (BindWidget))
+		class UTextBlock* TextBlock_CoolTime;			// Äü½½·Ô ÄğÅ¸ÀÓ ½Ã°£
+
 public:
 	class UImage* GetImage_Icon() { return Image_Icon; }
 protected:

@@ -2,6 +2,9 @@
 
 
 #include "02_Widget/00_Player/02_QuickSlot/QuickSlotWidget.h"
+
+#include <string>
+
 #include "00_Character/00_Player/PlayerCharacter.h"
 #include "02_Widget/00_Player/01_Skill/SkillQuickSlotWidget.h"
 #include "02_Widget/00_Player/02_QuickSlot/QuickSlotListWidget.h"
@@ -11,6 +14,8 @@
 #include "04_Skill/SkillBase.h"
 #include "Blueprint/WidgetBlueprintLibrary.h"
 #include "Components/Image.h"
+#include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 
 // 아무 마우스 버튼에 대해 적용된다 따라서 구분해줘야함 
 FReply UQuickSlotWidget::NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
@@ -92,7 +97,12 @@ void UQuickSlotWidget::SetUp(UObject* obj)
 
 		if (obj->IsA<USkillBase>())
 		{
-			Image_Icon->SetBrushFromTexture(Cast<USkillBase>(obj)->GetSkillInfo()->skill_Image);
+			auto skill = Cast<USkillBase>(obj);
+			Image_Icon->SetBrushFromTexture(skill->GetSkillInfo()->skill_Image);
+			ProgressBar_CoolTimeImage->SetPercent(skill->GetCoolTime() / skill->GetSkillInfo()->skill_CoolTime);
+			TextBlock_CoolTime->SetText(FText::FromString(FString::FromInt(skill->GetCoolTime())));
+			if (skill->GetCoolTime() == 0.f)
+				TextBlock_CoolTime->SetText(FText::GetEmpty());
 		}
 		else
 		{

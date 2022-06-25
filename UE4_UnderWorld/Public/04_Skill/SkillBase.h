@@ -19,7 +19,8 @@ protected:
 		FGameplayTag skillTag;				// 스킬 종류를 구분할 Tag
 	UPROPERTY(EditAnywhere)
 		class UDataTable* skillDataTable;	// 스킬 DT
-	
+	UPROPERTY(VisibleAnywhere)
+		float coolTime = 0.f;				// 현재 쿨타임
 	UPROPERTY()
 		class ABaseCharacter* skillOwner;	// 스킬 시전한 캐릭터
 
@@ -44,4 +45,6 @@ public:
 public:
 	FGameplayTag GetCoolTimeTag();
 	void SetSkillOwner(class ABaseCharacter* SkillOwner) { skillOwner = SkillOwner; }
+	void AddCoolTime(float value);
+	float GetCoolTime() { return coolTime; }
 };

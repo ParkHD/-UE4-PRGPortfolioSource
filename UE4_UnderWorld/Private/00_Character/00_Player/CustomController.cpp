@@ -26,6 +26,7 @@ void ACustomController::OnPossess(APawn* aPawn)
 			ownerPlayer->GetStatusComponent()->OnChangeMP.AddUniqueDynamic(mainWidget->GetUMG_PlayerStatus(), &UPlayerStatusWidget::UpdateMPProgressBar);
 
 			ownerPlayer->GetQuickSlotComponent()->OnUpdateQuickSlot.AddUniqueDynamic(mainWidget->GetUMG_QuickSlotList(), &UQuickSlotListWidget::UpdateQuickSlotList);
+
 			//ownerPlayer->GetEquipmentComponent()->OnChangeWeapon.AddUniqueDynamic(mainWidget->GetUMG_PlayerSkillInfo(), &UPlayerSkillWidget::SetUp);
 			//ownerPlayer->GetEquipmentComponent()->UpdateWidget();
 
@@ -48,7 +49,7 @@ void ACustomController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetShowMouseCursor(true);
+	//SetShowMouseCursor(true);
 }
 
 void ACustomController::OpenSkillWindow()

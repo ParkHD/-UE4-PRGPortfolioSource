@@ -9,6 +9,7 @@
 #include "SkillComponent.generated.h"
 
 //DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnChangeCoolTime, bool, skillAble);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCharging, bool, isCharging);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class UE4_UNDERWORLD_API USkillComponent : public UActorComponent
@@ -32,7 +33,7 @@ protected:
 		TArray<class USkillBase*> SkillList;		// 가지고 있는 스킬List
 	UPROPERTY(EditAnywhere)
 		TArray<class USkillBase*> SkillQuickSlot;		// 가지고 있는 스킬List
-
+	UPROPERTY(VisibleAnywhere)
 	TMap<FGameplayTag, float> skillEffects;			// 현재 적용 되고 있는 스킬 or 효과
 
 	// 에디터에서 설정할 스킬List
@@ -72,4 +73,11 @@ public:
 //	// 스킬 사용가능한지 위젯 업데이트
 //	FOnChangeCoolTime UpdateSkill1Able;
 //	FOnChangeCoolTime UpdateSkill2Able;
+protected:
+	bool isCharging = false;
+public:
+	void SetCharging() { isCharging = true; }
+public:
+	// 차징스킬 시전 및 종료
+	FOnCharging OnChargingSkill;
 };

@@ -97,6 +97,8 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 							player->CameraShakeDemo(1.f);
 							// 플레이어 hitStop
 							player->BeginHitStop();
+							// 맞은 위치에 hitparticle 소환
+							UGameplayStatics::SpawnEmitterAtLocation(MeshComp->GetWorld(), hitParticle, hit.Location, FRotator::ZeroRotator, true);
 						}
 
 						target->TakeDamage(damageAmount, FDamageEvent(), owner->GetController(), owner);

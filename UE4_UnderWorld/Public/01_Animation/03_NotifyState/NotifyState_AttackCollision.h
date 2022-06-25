@@ -18,6 +18,9 @@ protected:
 	virtual void NotifyTick(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float FrameDeltaTime)override;
 	virtual void NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)override;
 protected:
+	// hitParticle
+	UPROPERTY(EditAnywhere)
+		class UParticleSystem* hitParticle;
 	UPROPERTY()
 		class ABaseCharacter* owner;	// owner
 	UPROPERTY(VisibleAnywhere)
