@@ -14,8 +14,8 @@ UQuickSlotComponent::UQuickSlotComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
+	// 사이즈 초기화
 	quickSlotList.Init(nullptr, 16);
-	// ...
 }
 
 
@@ -25,7 +25,8 @@ void UQuickSlotComponent::BeginPlay()
 	Super::BeginPlay();
 
 	owner = Cast<APlayerCharacter>(GetOwner());
-	// ...
+
+	// 퀵 슬롯 위젯 업데이트
 	OnUpdateQuickSlot.Broadcast(quickSlotList);
 }
 
@@ -35,7 +36,19 @@ void UQuickSlotComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	// 퀵 슬롯 중에 쿨타임이 도는 스킬을 찾고 위젯을 업데이트
+	for (int i = 0; i < quickSlotList.Num(); i++)
+	{
+		if(quickSlotList[i] != nullptr && quickSlotList[i]->IsA<USkillBase>())
+		{
+			USkillBase* skill = Cast<USkillBase>(quickSlotList[i]);
+			if(skill->GetCoolTime() > 0.f)
+			{
+				skill->AddCoolTime(-DeltaTime);
+				OnUpdateQuickSlot.Broadcast(quickSlotList);
+			}
+		}
+	}
 }
 
 void UQuickSlotComponent::SwapQuickSlot(int firstIndex, int secondIndex)
@@ -55,6 +68,7 @@ void UQuickSlotComponent::PressQuickSlot(int index)
 	{
 		if ((index >= 0 && index < quickSlotList.Num()) && quickSlotList[index] != nullptr)
 		{
+			// 사용하려는 슬롯이 스킬이라면 스킬 사용
 			if(quickSlotList[index]->IsA<USkillBase>())
 			{
 				owner->GetSkillComponent()->UseSkill(Cast<USkillBase>(quickSlotList[index]));
@@ -69,6 +83,7 @@ void UQuickSlotComponent::ReleaseQuickSlot(int index)
 	{
 		if ((index >= 0 && index < quickSlotList.Num()) && quickSlotList[index] != nullptr)
 		{
+			// 사용하려는 슬롯이 스킬이라면 스킬 사용
 			if (quickSlotList[index]->IsA<USkillBase>())
 			{
 				owner->GetSkillComponent()->UseChargingSkill(Cast<USkillBase>(quickSlotList[index]));

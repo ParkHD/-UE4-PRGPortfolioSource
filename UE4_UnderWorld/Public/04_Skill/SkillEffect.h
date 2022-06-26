@@ -50,6 +50,8 @@ protected:
 public:
 	FGameplayTag& GetEffectTag() { return effectTag; }
 	const float GetEffectValue() { return effectValue; }
+	const float GetEffectTime() { return effectTime; }
+
 
 protected:
 	// Effect 적용 -> ApplyEffect에서 관리

@@ -86,6 +86,7 @@ void UQuickSlotWidget::Init()
 {
 	Image_Icon->SetBrushFromTexture(nullptr);
 	Image_Icon->SetOpacity(0.f);
+	TextBlock_CoolTime->SetText(FText::GetEmpty());
 	isEmpty = true;
 }
 

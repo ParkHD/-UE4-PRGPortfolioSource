@@ -126,11 +126,10 @@ public:
 
 	virtual void SetMoveState(EMoveState state) override;
 	virtual void SetActionState(EActionState state) override;
+	virtual void SetAttackState(EAttackState state) override;
 
 private:
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UCameraShakeBase> CamSake;
-protected:
-	UFUNCTION()
-		void TurnOnChargingParticle(bool isCharging);
 };
+

@@ -23,12 +23,19 @@ enum class EActionState : uint8 // Enum이름 앞에 E꼭 붙여야함
 	NORMAL,	// 기본상태
 	DASH,	// 회피 중
 	ATTACK,	// 공격 중
-	AIM,	// 조준 중
 	BLOCK,	// 방어 중
 	SKILL,	// 스킬 사용 중
 	MAX,
 };
-
+// 행동 상태
+UENUM(BlueprintType)
+enum class EAttackState : uint8 // Enum이름 앞에 E꼭 붙여야함
+{
+	NORMAL,	// 기본상태
+	ATTACK,
+	CHARGING,
+	MAX,
+};
 UCLASS()
 class UE4_UNDERWORLD_API ABaseCharacter : public ACharacter
 {
@@ -77,10 +84,15 @@ public:
 protected:
 	EActionState actionState;
 	EMoveState moveState;
+	EAttackState attackState;
 public:
 	EActionState GetActionState() { return actionState; }
 	EMoveState GetMoveState() { return moveState; }
+	EAttackState GetAttackState() { return attackState; }
 
 	virtual void SetActionState(EActionState state);
 	virtual void SetMoveState(EMoveState state);
+	virtual void SetAttackState(EAttackState state);
+
+	virtual void InitState();
 };

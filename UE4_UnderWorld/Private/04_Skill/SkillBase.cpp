@@ -9,17 +9,12 @@ bool USkillBase::CommitSkill()
 {
 	if (skillOwner != nullptr)
 	{
-		UE_LOG(LogTemp, Log, TEXT("00"));
 		// 스킬이 cooltime이 아닌지 확인
 		auto cooleffect = coolTimeEffect.GetDefaultObject();
 		if (cooleffect != nullptr)
 		{
-			UE_LOG(LogTemp, Log, TEXT("11"));
-
 			if (skillOwner->GetSkillComponent()->IsContainEffect(cooleffect->GetEffectTag()))
 			{
-				UE_LOG(LogTemp, Log, TEXT("22"));
-
 				return false;
 			}
 		}
@@ -67,9 +62,9 @@ void USkillBase::UseSkill(class ABaseCharacter* caller)
 		// 스킬 쿨타임 적용
 		if (skillOwner != nullptr && coolTimeEffect != nullptr)
 		{
-			coolTime = GetSkillInfo()->skill_CoolTime;
 			const auto coolEffect = coolTimeEffect.GetDefaultObject();
 			coolEffect->ApplyEffect(skillOwner);
+			coolTime = coolEffect->GetEffectTime();
 		}
 		// 스킬 Cost 적용
 		if (skillOwner != nullptr && costEffect != nullptr)

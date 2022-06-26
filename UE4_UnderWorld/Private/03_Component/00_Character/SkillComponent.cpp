@@ -15,8 +15,6 @@ USkillComponent::USkillComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// 스킬 퀵슬롯 초기화
-	SkillQuickSlot.Init(nullptr, 8);
 }
 
 
@@ -25,7 +23,9 @@ void USkillComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 컴포넌트 소유자 설정
 	owner = GetOwner<ABaseCharacter>();
+	// 캐릭터의 스킬 추가
 	for (auto skill : BP_SkillList)
 	{
 		AddSkill(skill.GetDefaultObject());
@@ -38,39 +38,6 @@ void USkillComponent::BeginPlay()
 void USkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	if(owner->IsA<APlayerCharacter>())
-	{
-		for(int i = 0;i<SkillList.Num();i++)
-		{
-			if(SkillList[i]->GetCoolTime() > 0.f)
-			{
-				SkillList[i]->AddCoolTime(-DeltaTime);
-
-				auto player = Cast<APlayerCharacter>(owner);
-				player->GetQuickSlotComponent()->UpdateQuickSlot();
-			}
-		}
-	}
-
-	//// 스킬이 사용가능 한지 확인하고 스킬 위젯 업데이트
-	//if (SkillUsable(0))
-	//{
-	//	UpdateSkill1Able.Broadcast(true);
-	//}
-	//else
-	//{
-	//	UpdateSkill1Able.Broadcast(false);
-	//}
-	//// 스킬이 사용가능 한지 확인하고 스킬 위젯 업데이트
-	//if (SkillUsable(1))
-	//{
-	//	UpdateSkill2Able.Broadcast(true);
-	//}
-	//else
-	//{
-	//	UpdateSkill2Able.Broadcast(false);
-	//}
 }
 
 void USkillComponent::AddSkill(USkillBase* skill)
@@ -91,48 +58,27 @@ void USkillComponent::UseSkill(const FGameplayTag skillTag)
 	}
 }
 
-void USkillComponent::UseSkill(int32 index)
-{
-	// 스킬리스트 중에 해당 해당 인덱스 스킬 사용
-	if (SkillList[index]->GetSkillInfo()->skill_Type == ESkillType::CHARGING)
-	{
-		// 차징스킬인지 확인
-		auto player = Cast<APlayerCharacter>(owner);
-		if (player != nullptr)
-			player->bPressChargingSkill = true;
-	}
-	// 스킬 실행
-	SkillList[index]->UseSkill(GetOwner<ABaseCharacter>());
-}
-void USkillComponent::UseChargingSkill(int32 index)
-{
-	// 차징스킬 실행
-	Cast<UChargingSkill>(SkillList[0])->ChargingSkill();
-}
-
 void USkillComponent::UseSkill(USkillBase* skill)
 {
 	if(owner->GetActionState() == EActionState::NORMAL)
 	{
 		// 스킬리스트 중에 해당 해당 인덱스 스킬 사용
 		// 차징스킬인지 확인
+		// 스킬 실행
 		if (skill->GetSkillInfo()->skill_Type == ESkillType::CHARGING)
 		{
-			OnChargingSkill.Broadcast(isCharging);
 		}
-		// 스킬 실행
-		skill->UseSkill(GetOwner<ABaseCharacter>());
+
+		skill->UseSkill(owner);
 	}
 }
 
 void USkillComponent::UseChargingSkill(USkillBase* skill)
 {
-	if(isCharging)
+	if(owner->GetAttackState() == EAttackState::CHARGING)
 	{
 		// 차징스킬 실행
 		Cast<UChargingSkill>(skill)->ChargingSkill();
-		isCharging = false;
-		OnChargingSkill.Broadcast(isCharging);
 	}
 }
 
@@ -172,15 +118,3 @@ void USkillComponent::MoveToQuickSlot(int skillIndex, int QuickSlotIndex)
 }
 
 
-bool USkillComponent::SkillUsable(int32 index)
-{
-	// 해당 인덱스의 스킬을 사용가능 한지 확인
-	if (SkillList.Num() > index)
-	{
-		if (SkillList[index]->CommitSkill())
-		{
-			return true;
-		}
-	}
-	return false;
-}

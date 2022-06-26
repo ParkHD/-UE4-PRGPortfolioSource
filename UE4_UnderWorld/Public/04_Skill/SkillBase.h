@@ -16,25 +16,26 @@ class UE4_UNDERWORLD_API USkillBase : public UObject
 	GENERATED_BODY()
 protected:
 	UPROPERTY(EditAnywhere)
-		FGameplayTag skillTag;				// 스킬 종류를 구분할 Tag
-	UPROPERTY(EditAnywhere)
 		class UDataTable* skillDataTable;	// 스킬 DT
-	UPROPERTY(VisibleAnywhere)
-		float coolTime = 0.f;				// 현재 쿨타임
+	UPROPERTY(EditAnywhere)
+		FGameplayTag skillTag;				// 스킬 종류를 구분할 Tag
+
 	UPROPERTY()
 		class ABaseCharacter* skillOwner;	// 스킬 시전한 캐릭터
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class USkillEffect> coolTimeEffect;	// 스킬의 쿨타임을 관리할 effect
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class USkillEffect> buffEffect;		// 스킬의 buff를 관리할 effect
+		TSubclassOf<class USkillEffect> buffEffect;		// 스킬의 Buff를 관리할 effect
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class USkillEffect> costEffect;		// 스킬의 Cost를 관리할 effect
 
+	UPROPERTY(VisibleAnywhere)
+		float coolTime = 0.f;				// 현재 쿨타임
+
 	// UseSkill로 관리
-public:
-	virtual bool CommitSkill();		// 스킬을 실행할 수 있는지 확인
 protected:
+	virtual bool CommitSkill();		// 스킬을 실행할 수 있는지 확인
 	virtual void ActivateSkill();	// 스킬 실행
 	virtual void EndSkill();		// 스킬 종료
 public:

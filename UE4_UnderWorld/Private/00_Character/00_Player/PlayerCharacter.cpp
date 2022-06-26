@@ -66,8 +66,6 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
-	SkillComponent->OnChargingSkill.AddUniqueDynamic(this, &APlayerCharacter::TurnOnChargingParticle);
 }
 
 // Called every frame
@@ -75,7 +73,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (bPressChargingSkill)
+	if (attackState == EAttackState::CHARGING)
 	{
 		chargingTime += DeltaTime;
 		chargingTime = FMath::Clamp(chargingTime, 1.f, 2.f);
@@ -417,20 +415,27 @@ void APlayerCharacter::SetActionState(EActionState state)
 	switch (state)
 	{
 	case EActionState::NORMAL:
-		InitChargingSkill();
+		SetAttackState(EAttackState::NORMAL);
+		chargingTime = 0.f;
 		break;
 	}
 }
-void APlayerCharacter::TurnOnChargingParticle(bool isCharging)
+
+void APlayerCharacter::SetAttackState(EAttackState state)
 {
-	if(isCharging)
+	Super::SetAttackState(state);
+
+	switch(state)
 	{
-		ChargingParticleComponent->Activate();
-		bPressChargingSkill = true;
-	}
-	else
-	{
+	case EAttackState::NORMAL:
 		ChargingParticleComponent->Deactivate();
-		bPressChargingSkill = false;
+		break;
+	case EAttackState::CHARGING:
+		ChargingParticleComponent->Activate();
+		break;
+	case EAttackState::ATTACK:
+
+		break;
 	}
 }
+

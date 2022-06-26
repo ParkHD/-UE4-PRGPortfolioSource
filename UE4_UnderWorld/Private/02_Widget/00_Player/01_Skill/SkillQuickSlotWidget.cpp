@@ -11,6 +11,7 @@
 #include "03_Component/00_Character/QuickSlotComponent.h"
 #include "03_Component/00_Character/SkillComponent.h"
 #include "04_Skill/SkillBase.h"
+#include "Components/TextBlock.h"
 
 void USkillQuickSlotWidget::NativeConstruct()
 {
@@ -87,32 +88,12 @@ void USkillQuickSlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, co
 }
 
 
-
-void USkillQuickSlotWidget::Init()
-{
-	// 빈 슬롯으로 초기화
-	Image_Icon->SetOpacity(0.f);
-	isEmpty = true;
-}
 void USkillQuickSlotWidget::SetUpSlot(USkillBase* skillbase)
 {
 	// 아이템이 있다면 인벤토리 슬롯 UI 업데이트
 	if (skillbase != nullptr)
 	{
-		//const auto info = item->GetItemInfo<FItemInformation>();
-		//if (info != nullptr)
-		//{
-		//	UTexture2D* texture = info->item_Image;
-
-		//	if (texture != nullptr)
-		//	{
-		//		Image_ItemIcon->SetBrushFromTexture(texture);
-		//		Image_ItemIcon->SetOpacity(1.f);
-		//	}
-		//	tooltip->SetUp(item);
-		//}
-		//// 툴팁이 나오게설정
-		//ToolTipWidget->SetVisibility(ESlateVisibility::Visible);
+		TextBlock_CoolTime->SetText(FText::GetEmpty());
 		Image_Icon->SetBrushFromTexture(skillbase->GetSkillInfo()->skill_Image);
 		isEmpty = false;
 	}
@@ -120,8 +101,6 @@ void USkillQuickSlotWidget::SetUpSlot(USkillBase* skillbase)
 	else
 	{
 		Init();
-		// 툴팁이 안 나오게 설정
-		//ToolTipWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
 }
 

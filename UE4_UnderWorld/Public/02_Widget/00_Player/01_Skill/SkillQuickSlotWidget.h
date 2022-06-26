@@ -29,6 +29,5 @@ protected:
 	virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)override;
 
 public:
-	virtual void Init() override;
 	void SetUpSlot(class USkillBase* skillbase);				// ½½·Ô SetUp
 };

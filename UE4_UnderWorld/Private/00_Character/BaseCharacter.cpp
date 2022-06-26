@@ -95,3 +95,15 @@ void ABaseCharacter::SetMoveState(EMoveState state)
 		break;
 	}
 }
+
+void ABaseCharacter::SetAttackState(EAttackState state)
+{
+	attackState = state;
+}
+
+void ABaseCharacter::InitState()
+{
+	moveState = EMoveState::IDLE;
+	actionState = EActionState::NORMAL;
+	attackState = EAttackState::CHARGING;
+}
