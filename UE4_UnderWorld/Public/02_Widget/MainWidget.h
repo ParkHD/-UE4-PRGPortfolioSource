@@ -14,10 +14,13 @@ class UE4_UNDERWORLD_API UMainWidget : public UUserWidget
 {
 	GENERATED_BODY()
 protected:
+	// 플레이어 스테이터스
 	UPROPERTY(Meta = (BindWidget))
 		class UPlayerStatusWidget* UMG_PlayerStatus;
+	// 플레이어 스킬 창
 	UPROPERTY(Meta = (BindWidget))
 		class USkillWindowWidget* UMG_SkillWindow;
+	// 플레이어 퀵 슬롯
 	UPROPERTY(Meta = (BindWidget))
 		class UQuickSlotListWidget* UMG_QuickSlotList;
 public:

@@ -11,22 +11,18 @@
 void USkillWindowWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-	
-	auto player = Cast<APlayerCharacter>(GetOwningPlayerPawn());
-	if(player != nullptr)
-	{
-		
-	}
+
 	OnVisibilityChanged.AddUniqueDynamic(this, &USkillWindowWidget::OnChangeVisibility);
-	//UpdateSkillList();
 }
 
 void USkillWindowWidget::UpdateSkillList(TArray<TSubclassOf<class USkillBase>> skillList)
 {
+	// 스킬List 업데이트
 	SkillSlotList->UpdateList(skillList);
 }
 void USkillWindowWidget::OnChangeVisibility(ESlateVisibility visible)
 {
+	// 스킬 창 Visibility에 따른 InputMode 및 커서모듭 변경
 	if (visible == ESlateVisibility::Visible)
 	{
 		GetOwningPlayer()->SetInputMode(FInputModeGameAndUI());

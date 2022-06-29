@@ -15,10 +15,11 @@ class UE4_UNDERWORLD_API USkillSlotWidget : public UUserWidget
 	GENERATED_BODY()
 protected:
 	UPROPERTY(Meta = (BindWidget))
-		class USkillQuickSlotWidget* UMG_SkillQucikSlot;
+		class USkillQuickSlotWidget* UMG_SkillQucikSlot;	// ½ºÅ³ Äü ½½·Ô À§Á¬
 	UPROPERTY(Meta = (BindWidget))
-		class UTextBlock* TextBlock_SkillName;
+		class UTextBlock* TextBlock_SkillName;				// ½ºÅ³ ÀÌ¸§
 	
 public:
+	// ½ºÅ³ ½½·Ô ¾÷µ¥ÀÌÆ®
 	void Update(class USkillBase* skill, int index);
 };

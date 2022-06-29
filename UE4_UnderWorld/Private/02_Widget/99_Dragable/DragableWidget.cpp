@@ -10,6 +10,7 @@ void UDragableWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	// visibility On
 	SetVisibility(ESlateVisibility::Visible);
 }
 FReply UDragableWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
@@ -23,17 +24,18 @@ void UDragableWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FP
 {
 	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
 
-	// 드래그 되는 쉐도우 위젯 생성
+	// 쉐도우 위젯 생성
 	dragShadowWidget = CreateWidget<UShadowWidget>(GetOwningPlayer(), dragShadowWidgetClass);
 	if (dragShadowWidget != nullptr)
 	{
-		//dragShadowWidget->SetWidgetRef(this);
-		//dragShadowWidget->SetUp();
+		// 쉐도우 위젯 SetUp
 		dragShadowWidget->SetUp(this);
+		// DragDropOperation 생성
 		UWidgetDragDropOperation* oper = Cast<UWidgetDragDropOperation>
 			(UWidgetBlueprintLibrary::CreateDragDropOperation(dragDropOperationClass));
 		if (oper != nullptr)
 		{
+			// 참조하는 위젯 자기 자신으로 설정해서 넘김
 			oper->widgetRef = this;
 			// 드래그 시 생성될 비주얼위젯을 넘김
 			oper->DefaultDragVisual = dragShadowWidget;

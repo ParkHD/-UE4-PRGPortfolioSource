@@ -21,10 +21,12 @@ void ACustomController::OnPossess(APawn* aPawn)
 		mainWidget = CreateWidget<UMainWidget>(this, mainWidgetClass);
 		if (mainWidget != nullptr)
 		{
+			// 플레이어 스테이터스 바 업데이트 델리게이트 함수 바인딩
 			ownerPlayer->GetStatusComponent()->OnChangeHP.AddUniqueDynamic(mainWidget->GetUMG_PlayerStatus(), &UPlayerStatusWidget::UpdateHPProgressBar);
 			ownerPlayer->GetStatusComponent()->OnChangeSP.AddUniqueDynamic(mainWidget->GetUMG_PlayerStatus(), &UPlayerStatusWidget::UpdateSPProgressBar);
 			ownerPlayer->GetStatusComponent()->OnChangeMP.AddUniqueDynamic(mainWidget->GetUMG_PlayerStatus(), &UPlayerStatusWidget::UpdateMPProgressBar);
 
+			// 플레이어 퀵슬롯 업데이트 델리게이트 함수 바인딩
 			ownerPlayer->GetQuickSlotComponent()->OnUpdateQuickSlot.AddUniqueDynamic(mainWidget->GetUMG_QuickSlotList(), &UQuickSlotListWidget::UpdateQuickSlotList);
 
 			//ownerPlayer->GetEquipmentComponent()->OnChangeWeapon.AddUniqueDynamic(mainWidget->GetUMG_PlayerSkillInfo(), &UPlayerSkillWidget::SetUp);
@@ -33,17 +35,14 @@ void ACustomController::OnPossess(APawn* aPawn)
 			//ownerPlayer->GetSkillComponent()->UpdateSkill1Able.AddUniqueDynamic(mainWidget->GetUMG_PlayerSkillInfo(), &UPlayerSkillWidget::UpdateSkill1CoolTime);
 			//ownerPlayer->GetSkillComponent()->UpdateSkill2Able.AddUniqueDynamic(mainWidget->GetUMG_PlayerSkillInfo(), &UPlayerSkillWidget::UpdateSkill2CoolTime);
 
+			// 스킬 창 업데이트
 			mainWidget->GetUMG_SkillWindow()->UpdateSkillList(ownerPlayer->GetSkillComponent()->GetSkillList());
 
 			mainWidget->AddToViewport();
 		}
 	}
 }
-void ACustomController::PlayerTick(float DeltaTime)
-{
-	Super::PlayerTick(DeltaTime);
 
-}
 
 void ACustomController::BeginPlay()
 {
@@ -54,7 +53,6 @@ void ACustomController::BeginPlay()
 
 void ACustomController::OpenSkillWindow()
 {
-	UE_LOG(LogTemp, Log, TEXT("Open"));
 	if(mainWidget != nullptr)
 	{
 		if(mainWidget->GetUMG_SkillWindow()->GetVisibility() == ESlateVisibility::Hidden)

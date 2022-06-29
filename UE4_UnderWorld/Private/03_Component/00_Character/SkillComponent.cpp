@@ -42,6 +42,7 @@ void USkillComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActor
 
 void USkillComponent::AddSkill(USkillBase* skill)
 {
+	// 스킬 추가 및 스킬 owner설정
 	skill->SetSkillOwner(GetOwner<ABaseCharacter>());
 	SkillList.Emplace(skill);
 }
@@ -109,9 +110,11 @@ const FSkillInformation* USkillComponent::GetSkillInfo(const FGameplayTag skillT
 
 void USkillComponent::MoveToQuickSlot(int skillIndex, int QuickSlotIndex)
 {
+	// 플레이어 인지 확인
 	auto player = Cast<APlayerCharacter>(owner);
 	if(player != nullptr)
 	{
+		// 스킬을 퀵슬롯으로 이동 및 퀵슬롯 업데이트
 		player->GetQuickSlotComponent()->quickSlotList[QuickSlotIndex] = SkillList[skillIndex];
 		player->GetQuickSlotComponent()->UpdateQuickSlot();
 	}

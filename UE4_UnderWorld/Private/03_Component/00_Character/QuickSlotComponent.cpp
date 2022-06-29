@@ -14,7 +14,7 @@ UQuickSlotComponent::UQuickSlotComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// 사이즈 초기화
+	// 퀵슬롯List 사이즈 초기화
 	quickSlotList.Init(nullptr, 16);
 }
 
@@ -36,15 +36,18 @@ void UQuickSlotComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// 퀵 슬롯 중에 쿨타임이 도는 스킬을 찾고 위젯을 업데이트
+	// 퀵 슬롯 중에 쿨타임이 도는 스킬을 찾고 있다면 해당 퀵슬롯 위젯을 업데이트
 	for (int i = 0; i < quickSlotList.Num(); i++)
 	{
 		if(quickSlotList[i] != nullptr && quickSlotList[i]->IsA<USkillBase>())
 		{
+			// 쿨타임이 도는 스킬
 			USkillBase* skill = Cast<USkillBase>(quickSlotList[i]);
 			if(skill->GetCoolTime() > 0.f)
 			{
+				// 쿨타임 적용
 				skill->AddCoolTime(-DeltaTime);
+				// 슬롯 쿨타임 위젯 업데이트
 				OnUpdateQuickSlot.Broadcast(quickSlotList);
 			}
 		}

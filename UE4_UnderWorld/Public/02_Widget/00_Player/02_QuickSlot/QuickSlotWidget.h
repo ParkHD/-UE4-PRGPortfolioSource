@@ -20,7 +20,6 @@ protected:
 		class UProgressBar* ProgressBar_CoolTimeImage;	// Äü½½·Ô ÄğÅ¸ÀÓ ÀÌ¹ÌÁö
 	UPROPERTY(Meta = (BindWidget))
 		class UTextBlock* TextBlock_CoolTime;			// Äü½½·Ô ÄğÅ¸ÀÓ ½Ã°£
-
 public:
 	class UImage* GetImage_Icon() { return Image_Icon; }
 protected:
@@ -32,12 +31,11 @@ protected:
 		int32 slotIndex;		// ½½·Ô ÀÎµ¦½º
 	bool isEmpty = true;		// ½½·ÔÀÌ ºñ¾ú´Â°¡?
 public:
-	int32 GetIndex() const { return slotIndex; }
+	int32 GetIndex() const { return slotIndex; }		// ½½·Ô ÀÎµ¦½º ¹İÈ¯
 	void SetIndex(int32 index) { slotIndex = index; }	// ½½·Ô ÀÎµ¦½º ¼³Á¤
 
+	// ½½·Ô ÃÊ±âÈ­
 	virtual void Init();
+	// ½½·Ô SetUp
 	virtual void SetUp(class UObject* obj);
-
-
-
 };

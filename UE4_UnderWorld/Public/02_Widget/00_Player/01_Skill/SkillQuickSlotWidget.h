@@ -21,13 +21,11 @@ protected:
 	virtual void NativeOnMouseLeave(const FPointerEvent& InMouseEvent)override;
 	virtual FReply NativeOnMouseButtonUp(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)override;
 
-	// 아이템 사용
-	virtual FReply NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)override;
-
 	// 아이템 드래그
 	virtual FReply NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)override;
 	virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)override;
-
+	virtual bool NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation) override;
 public:
-	void SetUpSlot(class USkillBase* skillbase);				// 슬롯 SetUp
+	// 슬롯 SetUp
+	void SetUpSlot(class USkillBase* skillbase);				
 };

@@ -7,6 +7,7 @@
 
 void UShadowWidget::SetUp(UUserWidget* slot)
 {
+	// Äü½½·ÔÀÌ¶ó¸é Äü½½·ÔÀÇ ¾ÆÀÌÄÜ ÀÌ¹ÌÁö¸¦ °¡Á®¿Â´Ù.
 	if(slot->IsA<UQuickSlotWidget>())
 	{
 		Image_Icon->SetBrush(Cast<UQuickSlotWidget>(slot)->GetImage_Icon()->Brush);

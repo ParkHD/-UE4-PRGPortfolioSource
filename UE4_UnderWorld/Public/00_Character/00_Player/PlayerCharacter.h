@@ -29,58 +29,47 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 protected:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Mesh)
-		class USkeletalMeshComponent* WeaponSkeletalMesh;
+		class USkeletalMeshComponent* WeaponSkeletalMesh;				// 무기 스켈레탈
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Camera)
-		class UCameraComponent* Camera;
+		class UCameraComponent* Camera;									// 카메라
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Camera)
-		class USpringArmComponent* SpringArm;
+		class USpringArmComponent* SpringArm;							// 스프링 암
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Particle)
-		class UParticleSystemComponent* ChargingParticleComponent;
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Camera)
-		class UNiagaraComponent* niagaraSys;
-	//UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
-	//	class UNiagaraComponent* clickNiagaraComponent;	// 클릭 Particle 관리 컴포넌트
+		class UParticleSystemComponent* ChargingParticleComponent;		// 차징 파티클
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Component)
-		class UQuickSlotComponent* QuickSlotComponent;
+		class UQuickSlotComponent* QuickSlotComponent;					// 퀵슬롯 컴포넌트
 public:
 	class UQuickSlotComponent* GetQuickSlotComponent() { return QuickSlotComponent; }
 public:
-	void PlayChargingParticle();
-public:
 	// 공격버튼 입력이 되었는가
 	bool bInputComboAttack = false;
-
-	bool bPressChargingSkill = false;
-protected:
+	// 스킬 차징 타임
 	float chargingTime = 0.f;
 public:
 	const float GetChargingTime() { return chargingTime; }
 protected:
-	UPROPERTY(EditAnywhere)
-		float DashPlaySpeed = 1.f;
-	UPROPERTY(EditAnywhere)
-		float DashSpeed = 1000.f;
+	// 몽타주 관련
+	UPROPERTY(EditAnywhere, Category = Montage)
+		class UAnimMontage* AttackMontage;		// 공격 몽타주
+	UPROPERTY(EditAnywhere, Category = Montage)
+		class UAnimMontage* DashMontage;		// 대쉬 몽타주
 
-	UPROPERTY(EditAnywhere, Category = Montage)
-		class UAnimMontage* AttackMontage;
-	UPROPERTY(EditAnywhere, Category = Montage)
-		class UAnimMontage* DashMontage;
-	UPROPERTY(EditAnywhere, Category = Montage)
-		class UAnimMontage* SkillMontage;
-	UPROPERTY(EditAnywhere, Category = Montage)
-		class UAnimMontage* SkillMontage2;
 private:
+	// 키 조작 함수
+	// 앞뒤 이동
 	void MoveForward(float newAxisValue);
+	// 왼쪽 오른쪽 이동
 	void MoveRight(float newAxisValue);
+	// 카메라 위아래 이동
 	void LookUp(float newAxisValue);
+	// 카메라 왼쪽 오른쪽 이동
 	void Turn(float newAxisValue);
-
-
-	void ReleaseMove();
+	// 대쉬
 	void Dash();
+	// 공격
 	void PressAttack();
-	void ReleaseAttack();
+	// 퀵슬롯 사용 함수
 #pragma region QuickSlotKey
 	void PressQuickSlot1();
 	void ReleaseQuickSlot1();
@@ -115,20 +104,23 @@ private:
 	void PressQuickSlot16();
 	void ReleaseQuickSlot16();
 #pragma endregion
-
-
+	// 스킬 창 열기
 	void PressSkillWindow();
-protected:
-	void TurnToCursor();
-public:
-	void CameraShakeDemo(float Scale);
-	void InitChargingSkill();
 
+public:
+	// 플레이어 카메라 쉐이킹
+	void CameraShakeDemo(float Scale);
+
+	// Character State 설정
+	// MoveState SetUp
 	virtual void SetMoveState(EMoveState state) override;
+	// ActionState SetUp
 	virtual void SetActionState(EActionState state) override;
+	// AttackState SetUp
 	virtual void SetAttackState(EAttackState state) override;
 
 private:
+	// 카메라 쉐이크 BP
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UCameraShakeBase> CamSake;
 };

@@ -14,7 +14,7 @@ void UQuickSlotListWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	// 왼쪽 퀵슬롯 리스트 인덱스 설정(0 ~)
+	// 왼쪽 퀵슬롯 리스트에 있는 슬롯 인덱스 설정(0 ~)
 	int Index = 0;
 	for(auto horizontalBox : VerticalBox_LeftQuickSlot->GetAllChildren())
 	{
@@ -34,7 +34,7 @@ void UQuickSlotListWidget::NativeConstruct()
 		}
 	}
 
-	// 오른쪽 퀵슬롯 리스트 인덱스 설정(10 ~)
+	// 오른쪽 퀵슬롯 리스트에 있는 슬롯 인덱스 설정(10 ~)
 	for (auto horizontalBox : VerticalBox_RightQuickSlot->GetAllChildren())
 	{
 		for (auto widget : Cast<UHorizontalBox>(horizontalBox)->GetAllChildren())
@@ -57,6 +57,7 @@ void UQuickSlotListWidget::NativeConstruct()
 
 void UQuickSlotListWidget::UpdateQuickSlotList(TArray<UObject*> quickSlotArray)
 {
+	// 전체 퀵슬롯 업데이트
 	for(int i = 0;i<quickSlotArray.Num();i++)
 	{
 		quickSlotList[i]->SetUp(quickSlotArray[i]);

@@ -16,7 +16,8 @@ class UE4_UNDERWORLD_API UShadowWidget : public UUserWidget
 
 protected:
 	UPROPERTY(Meta = (BindWidget))
-		class UImage* Image_Icon;
+		class UImage* Image_Icon;		// 아이콘 이미지
 public:
+	// 쉐도우 위젯 SetUp
 	void SetUp(class UUserWidget* slot);
 };

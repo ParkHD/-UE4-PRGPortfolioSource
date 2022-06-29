@@ -15,18 +15,17 @@ class UE4_UNDERWORLD_API UQuickSlotListWidget : public UUserWidget
 	GENERATED_BODY()
 protected:
 	UPROPERTY(Meta = (BindWidget))
-		class UVerticalBox* VerticalBox_LeftQuickSlot;
+		class UVerticalBox* VerticalBox_LeftQuickSlot;		// ¿ÞÂÊ Äü½½·Ô À§Á¬µé
 	UPROPERTY(Meta = (BindWidget))
-		class UVerticalBox* VerticalBox_RightQuickSlot;
+		class UVerticalBox* VerticalBox_RightQuickSlot;		// ¿À¸¥ÂÊ Äü½½·Ô À§Á¬µé
 protected:
 	virtual void NativeConstruct() override;
 protected:
 	UPROPERTY(VisibleAnywhere)
-		TArray<class UQuickSlotWidget*> quickSlotList;
+		TArray<class UQuickSlotWidget*> quickSlotList;		// ¸¸µé¾îÁø ÀüÃ¼ Äü½½·Ô List
 
 public:
+	// Äü½½·Ô ¾÷µ¥ÀÌÆ® ÇÔ¼ö
 	UFUNCTION()
 		void UpdateQuickSlotList(TArray<UObject*> quickSlotArray);
-
-
 };

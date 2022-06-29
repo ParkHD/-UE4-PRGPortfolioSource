@@ -19,10 +19,10 @@ protected:
 	virtual void NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation) override;
 protected:
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class UShadowWidget> dragShadowWidgetClass;
+		TSubclassOf<class UShadowWidget> dragShadowWidgetClass;	// 溅档快 困连 BP
 	UPROPERTY()
-		class UShadowWidget* dragShadowWidget;
+		class UShadowWidget* dragShadowWidget;					// 溅档快 困连
 
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class UWidgetDragDropOperation> dragDropOperationClass;
+		TSubclassOf<class UWidgetDragDropOperation> dragDropOperationClass;	// dragdropOperation
 };

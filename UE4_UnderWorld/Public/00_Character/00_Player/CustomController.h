@@ -17,13 +17,14 @@ class UE4_UNDERWORLD_API ACustomController : public APlayerController
 protected:
 	// 컨트롤러가 플레이할 캐릭터 클래스에 빙의되었을때 호출
 	virtual void OnPossess(APawn* aPawn) override;
-	virtual void PlayerTick(float DeltaTime) override;
 	virtual void BeginPlay() override;
 public:
+	// 스킬 창 열기
 	void OpenSkillWindow();
 protected:
 	UPROPERTY()
 		class APlayerCharacter* ownerPlayer;
+
 	// 블루프린트 클래스를 받아올 변수
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UMainWidget> mainWidgetClass;

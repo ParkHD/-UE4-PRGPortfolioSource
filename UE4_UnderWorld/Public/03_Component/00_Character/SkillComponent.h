@@ -26,16 +26,14 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 protected:
 	UPROPERTY(EditAnywhere)
-		class ABaseCharacter* owner;				// 컴포넌트 소유자
+		class ABaseCharacter* owner;						// 컴포넌트 소유자
 	UPROPERTY(EditAnywhere)
-		TArray<class USkillBase*> SkillList;		// 가지고 있는 스킬List
-	// 에디터에서 설정할 스킬List
+		TArray<class USkillBase*> SkillList;				// 가지고 있는 스킬List
 	UPROPERTY(EditAnywhere)
-		TArray<TSubclassOf<class USkillBase>> BP_SkillList;
+		TArray<TSubclassOf<class USkillBase>> BP_SkillList;	// 에디터에서 추가할 스킬 List
 
 	UPROPERTY(VisibleAnywhere)
-	TMap<FGameplayTag, float> skillEffects;			// 현재 적용 되고 있는 스킬 효과
-
+	TMap<FGameplayTag, float> skillEffects;					// 현재 캐릭터에 적용 되고 있는 스킬 효과
 public:
 	// SkillEffect 관련
 	// 해당 Tag의 효과가 적용되고 있는 지 확인

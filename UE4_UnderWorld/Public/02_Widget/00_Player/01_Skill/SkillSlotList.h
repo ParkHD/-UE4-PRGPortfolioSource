@@ -15,12 +15,13 @@ class UE4_UNDERWORLD_API USkillSlotList : public UUserWidget
 	GENERATED_BODY()
 protected:
 	UPROPERTY(Meta = (BindWidget))
-		class UVerticalBox* VerticalBox_SkillList;
+		class UVerticalBox* VerticalBox_SkillList;	// ½½·Ô À§Á¬ List
 protected:
 	virtual void NativeConstruct() override;
 
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class USkillSlotWidget> skillSlotWidgetClass;
+		TSubclassOf<class USkillSlotWidget> skillSlotWidgetClass;	// ½ºÅ³ ½½·Ô UMG
 public:
+	// ½ºÅ³ List ¾÷µ¥ÀÌÆ®
 	void UpdateList(TArray<TSubclassOf<class USkillBase>> skillList);
 };

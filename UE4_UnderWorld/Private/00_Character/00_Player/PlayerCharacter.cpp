@@ -23,28 +23,23 @@ APlayerCharacter::APlayerCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// 컨트롤러랑 Pawn이랑 같이 돌것인가
+	// 컨트롤러랑 Pawn이랑 같이 안 돌게 설정
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-	
+
 	WeaponSkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponSkeletalMesh"));
 	WeaponSkeletalMesh->SetupAttachment(GetMesh(), "S_Sword");
 
-	niagaraSys = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraSystem"));
-	niagaraSys->SetupAttachment(GetCapsuleComponent());
-
 	ChargingParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ChargingParticleSystem"));
 	ChargingParticleComponent->SetupAttachment(GetCapsuleComponent());
+
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SPRINGARM"));
 	SpringArm->SetupAttachment(GetCapsuleComponent());
 	SpringArm->TargetArmLength = 600.0f;
 	SpringArm->SetRelativeRotation(FRotator::ZeroRotator);
 	SpringArm->bUsePawnControlRotation = true;	// Controller에 맞춰서 SpringArm이 움직인다.
-	//SpringArm->bInheritPitch = true;			// Y Controller에서 Y축은 안받아옴
-	//SpringArm->bInheritRoll = true;				// X
-	//SpringArm->bInheritYaw = true;				// Z
 	SpringArm->bDoCollisionTest = true;			// 시야에 방해물이 있으면 확대기능
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
@@ -52,8 +47,8 @@ APlayerCharacter::APlayerCharacter()
 
 	QuickSlotComponent = CreateDefaultSubobject<UQuickSlotComponent>(TEXT("QuickSlotComponent"));
 
-	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->FallingLateralFriction = 8.f;
+	GetCharacterMovement()->bOrientRotationToMovement = true;	// 움직이는 방향으로 캐릭터 회전
+	GetCharacterMovement()->FallingLateralFriction = 8.f;		// 공중에서도 마찰 높이기
 }
 
 // Called when the game starts or when spawned
@@ -73,6 +68,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 차징 시간++
 	if (attackState == EAttackState::CHARGING)
 	{
 		chargingTime += DeltaTime;
@@ -85,12 +81,11 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	// 키 입력 관련 함수 바인드
 	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::Turn);
 	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::LookUp);
-
-	//PlayerInputComponent->BindAction("Move", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseMove);
 
 	PlayerInputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressAttack);
 	PlayerInputComponent->BindAction("Dash", EInputEvent::IE_Pressed, this, &APlayerCharacter::Dash);
@@ -132,18 +127,13 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAction("Quick16", EInputEvent::IE_Released, this, &APlayerCharacter::ReleaseQuickSlot16);
 
 #pragma endregion
-
 	PlayerInputComponent->BindAction("SkillWindow", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressSkillWindow);
-
 }
 
-void APlayerCharacter::PlayChargingParticle()
-{
-	ChargingParticleComponent->Activate(false);
-}
 
 void APlayerCharacter::MoveForward(float newAxisValue)
 {
+	// 아무것도 안하고 있는 상태에서만 이동가능
 	if (actionState == EActionState::NORMAL)
 	{
 		FRotator newRotation(0.0f, GetControlRotation().Yaw, 0.0f);
@@ -153,6 +143,7 @@ void APlayerCharacter::MoveForward(float newAxisValue)
 }
 void APlayerCharacter::MoveRight(float newAxisValue)
 {
+	// 아무것도 안하고 있는 상태에서만 이동가능
 	if (actionState == EActionState::NORMAL)
 	{
 		FRotator newRotation(0.0f, GetControlRotation().Yaw, 0.0f);
@@ -168,31 +159,15 @@ void APlayerCharacter::Turn(float newAxisValue)
 {
 	AddControllerYawInput(newAxisValue);
 }
-void APlayerCharacter::ReleaseMove()
-{
-	if(actionState == EActionState::NORMAL)
-	{
-		FHitResult hit;
-		if (GetController<APlayerController>()->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), false, hit))
-		{
-			//// 이미 클릭 효과가 실행되고 있다면 중단 하고 새롭게 클릭된 곳에 효과 실행
-			//if (clickNiagaraComponent != nullptr)
-			//{
-			//	clickNiagaraComponent->DeactivateImmediate();
-			//}
-			//clickNiagaraComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), clickParticle, hit.Location);
-			// 캐릭터 이동
-			UAIBlueprintHelperLibrary::SimpleMoveToLocation(GetController(), hit.Location);
-		}
-	}
-}
+
 void APlayerCharacter::Dash()
 {
+	// 아무것도 안하고 있는 상태에서만 이동가능
 	if(actionState == EActionState::NORMAL)
 	{
 		SetMoveState(EMoveState::IDLE);
 		SetActionState(EActionState::DASH);
-		TurnToCursor();
+		// 대쉬 후 characterState Normal로 변경
 		float animtime = GetMesh()->GetAnimInstance()->Montage_Play(DashMontage, 1.5f, EMontagePlayReturnType::Duration);
 		FTimerHandle dashTimer;
 		FTimerDelegate dashDelegate = FTimerDelegate::CreateUObject(this, &ABaseCharacter::SetActionState, EActionState::NORMAL);
@@ -201,7 +176,6 @@ void APlayerCharacter::Dash()
 			dashDelegate,
 			animtime,
 			false);
-
 	}
 }
 
@@ -209,14 +183,15 @@ void APlayerCharacter::PressAttack()
 {
 	if (AttackMontage != nullptr)
 	{
+		// 이미 공격 중이라면 콤보 공격
 		if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage))
 			bInputComboAttack = true;
+		// 공격 중이 아니라면 공격 몽타주 실행
 		else
 		{
 			if(actionState == EActionState::NORMAL)
 			{
 				SetActionState(EActionState::ATTACK);
-				TurnToCursor();
 				GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
 			}
 		}
@@ -377,25 +352,13 @@ void APlayerCharacter::PressSkillWindow()
 	Cast<ACustomController>(GetController())->OpenSkillWindow();
 }
 
-void APlayerCharacter::TurnToCursor()
-{/*
-	FHitResult hit;
-	if (GetController<APlayerController>()->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), false, hit))
-	{
-		FVector dirCursor = hit.Location - GetActorLocation();
-		FRotator newRotation(0.f, dirCursor.Rotation().Yaw, 0.f);
-		SetActorRotation(newRotation);
-	}*/
-}
+
 
 void APlayerCharacter::CameraShakeDemo(float scale)
 {
 	GetWorld()->GetFirstPlayerController()->PlayerCameraManager->StartCameraShake( CamSake, scale);
 }
-void APlayerCharacter::InitChargingSkill()
-{
-	chargingTime = 0.f;
-}
+
 
 void APlayerCharacter::SetMoveState(EMoveState state)
 {
@@ -415,6 +378,7 @@ void APlayerCharacter::SetActionState(EActionState state)
 	switch (state)
 	{
 	case EActionState::NORMAL:
+		// AttackState 및 차징 시간 초기화
 		SetAttackState(EAttackState::NORMAL);
 		chargingTime = 0.f;
 		break;
@@ -428,9 +392,11 @@ void APlayerCharacter::SetAttackState(EAttackState state)
 	switch(state)
 	{
 	case EAttackState::NORMAL:
+		// 차징 Particle 끄기
 		ChargingParticleComponent->Deactivate();
 		break;
 	case EAttackState::CHARGING:
+		// 차징 Particle 켜기
 		ChargingParticleComponent->Activate();
 		break;
 	case EAttackState::ATTACK:

@@ -11,7 +11,6 @@ void USkillSlotList::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-
 }
 
 void USkillSlotList::UpdateList(TArray<TSubclassOf<class USkillBase>> skillList)

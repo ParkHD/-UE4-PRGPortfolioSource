@@ -28,14 +28,12 @@ public:
 
 protected:
 	UPROPERTY()
-		class ABaseCharacter* owner;
-
-	// 캐릭터의 능력치
-	UPROPERTY(EditAnywhere)
-		FStat CharacterStat;
+		class ABaseCharacter* owner;	// 컴포넌트 소유자
 
 	UPROPERTY(EditAnywhere)
-		int32 level = 1;
+		FStat CharacterStat;			// 캐릭터 능력치
+	UPROPERTY(EditAnywhere)
+		int32 level = 1;				// 캐릭터 레벨
 
 	// 현재 캐릭터 상태
 	UPROPERTY(EditAnywhere)
@@ -46,13 +44,18 @@ protected:
 		float currentSP = CharacterStat.MaxSP;
 public:
 	FStat GetStat() const { return CharacterStat; }
+
+	// 현재 HP비율 반환
 	float GetHPRatio() { return currentHP / CharacterStat.MaxHP; }
+	// 현재 SP비율 반환
 	float GetSPRatio() { return currentSP / CharacterStat.MaxSP; }
+	// 현재 MP비율 반환
 	float GetMPRatio() { return currentMP / CharacterStat.MaxMP; }
 
 	float const GetCurrentSP() const { return currentSP; }
 	float const GetCurrentMP() const { return currentMP; }
 public:
+	// 캐릭터 상태 초기화
 	void Init();
 
 	// 스텟 변동(장비 장착)

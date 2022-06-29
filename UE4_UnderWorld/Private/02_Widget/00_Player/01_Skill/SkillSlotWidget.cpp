@@ -9,6 +9,7 @@
 
  void USkillSlotWidget::Update(class USkillBase* skill, int index)
  {
+	 // ½ºÅ³ ÀÌ¸§ ¹× Äü½½·Ô SetUp
 	 TextBlock_SkillName->SetText(FText::FromString(skill->GetSkillInfo()->skill_Name));
 	 UMG_SkillQucikSlot->SetUpSlot(skill);
 	 UMG_SkillQucikSlot->SetIndex(index);

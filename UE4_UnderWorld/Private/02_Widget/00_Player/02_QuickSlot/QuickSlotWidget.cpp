@@ -27,17 +27,12 @@ FReply UQuickSlotWidget::NativeOnMouseButtonUp(const FGeometry& InGeometry, cons
 FReply UQuickSlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
 {
 	Super::NativeOnMouseButtonDown(InGeometry, InMouseEvent);
-	UE_LOG(LogTemp, Log, TEXT("ButtonDown"));
 
-	// 아이템이 있을 때만 드래그 하게 설정
+	// 슬롯이 비어있지 않을 때만 드래그 하게 설정
 	if (isEmpty)
-	{
 		return FReply::Handled();
-	}
 	else
-	{
 		return UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton).NativeReply;
-	}
 }
 bool UQuickSlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent, UDragDropOperation* InOperation)
 {
@@ -45,38 +40,27 @@ bool UQuickSlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDrop
 	{
 		// 받은 operation을 통해 드래그 된 위젯의 정보를 가져와서 아이템 이동
 		UWidgetDragDropOperation* oper = Cast<UWidgetDragDropOperation>(InOperation);
+		// 드래그 중인 슬롯의 인덱스
 		int32 myIndex = Cast<UQuickSlotWidget>(oper->widgetRef)->GetIndex();
+		// 드랍된 곳이 슬롯의 인덱스
 		int32 targetIndex = slotIndex;
-
 
 		auto player = GetOwningPlayerPawn<APlayerCharacter>();
 		if(player != nullptr)
 		{
-			UE_LOG(LogTemp, Log, TEXT("%s"), *oper->widgetRef->GetName());
-			UE_LOG(LogTemp, Log, TEXT("%s"), *GetName());
-			UE_LOG(LogTemp, Log, TEXT("%d"), myIndex);
-			UE_LOG(LogTemp, Log, TEXT("%d"), targetIndex);
 			auto slot = oper->widgetRef;
+			// 드래그 중인 슬롯이 스킬 슬롯이라면
 			if (slot->IsA<USkillQuickSlotWidget>())
 			{
-
+				// 스킬을 퀵 슬롯으로 이동
 				player->GetSkillComponent()->MoveToQuickSlot(myIndex, targetIndex);
 			}
 			else
 			{
+				// 퀵슬롯 끼리 Swap
 				player->GetQuickSlotComponent()->SwapQuickSlot(myIndex, targetIndex);
 			}
 		}
-
-		
-		//if (GetOwningPlayerPawn()->IsA<APlayerCharacter>())
-		//{
-		//	GetOwningPlayerPawn<APlayerCharacter>()->GetInventoryComponent()->SwapItem(index, targetIndex);
-		//}
-		//if (GetOwningPlayerPawn()->IsA<AWorldPlayerCharacter>())
-		//{
-		//	GetOwningPlayerPawn<AWorldPlayerCharacter>()->GetInventoryComponent()->SwapItem(index, targetIndex);
-		//}
 		return true;
 	}
 	return false;
@@ -84,8 +68,10 @@ bool UQuickSlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDrop
 
 void UQuickSlotWidget::Init()
 {
+	// 아이콘 초기화
 	Image_Icon->SetBrushFromTexture(nullptr);
 	Image_Icon->SetOpacity(0.f);
+	// 쿨타임 text 초기화
 	TextBlock_CoolTime->SetText(FText::GetEmpty());
 	isEmpty = true;
 }
@@ -96,10 +82,15 @@ void UQuickSlotWidget::SetUp(UObject* obj)
 	{
 		Image_Icon->SetOpacity(1.f);
 
+		// 슬롯에 무엇이 들어있는 지 확인
+		// 슬롯에 스킬이 들어있다면
 		if (obj->IsA<USkillBase>())
 		{
+			// 스킬에 맞게 슬롯 SetUp
 			auto skill = Cast<USkillBase>(obj);
+			// 스킬 아이콘
 			Image_Icon->SetBrushFromTexture(skill->GetSkillInfo()->skill_Image);
+			// 스킬 쿨타임
 			ProgressBar_CoolTimeImage->SetPercent(skill->GetCoolTime() / skill->GetSkillInfo()->skill_CoolTime);
 			TextBlock_CoolTime->SetText(FText::FromString(FString::FromInt(skill->GetCoolTime())));
 			if (skill->GetCoolTime() == 0.f)

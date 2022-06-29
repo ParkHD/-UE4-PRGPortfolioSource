@@ -42,7 +42,7 @@ public:
 	void PressQuickSlot(int index);
 	void ReleaseQuickSlot(int index);
 public:
-	// 퀵슬롯 업데이트 델리게이트
+	// 퀵슬롯 업데이트 바인딩 함수
 	FOnUpdateQuickSlot OnUpdateQuickSlot;
 };
 

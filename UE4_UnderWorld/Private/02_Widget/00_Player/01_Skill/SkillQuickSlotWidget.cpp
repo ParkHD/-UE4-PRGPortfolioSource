@@ -61,30 +61,18 @@ FReply USkillQuickSlotWidget::NativeOnMouseButtonDown(const FGeometry& InGeometr
 		return UWidgetBlueprintLibrary::DetectDragIfPressed(InMouseEvent, this, EKeys::LeftMouseButton).NativeReply;
 	}
 }
-FReply USkillQuickSlotWidget::NativeOnMouseButtonDoubleClick(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent)
-{
-	Super::NativeOnMouseButtonDoubleClick(InGeometry, InMouseEvent);
-	// 왼쪽 마우스 클릭인지 검사
-	if (InMouseEvent.GetEffectingButton() == EKeys::LeftMouseButton)
-	{
-		//UInventoryComponent* InventoryComponent = NewObject<UInventoryComponent>();
-		//if (GetOwningPlayerPawn()->IsA<APlayerCharacter>())
-		//{
-		//	InventoryComponent = GetOwningPlayerPawn<APlayerCharacter>()->GetInventoryComponent();
-		//}
-		//else if (GetOwningPlayerPawn()->IsA<AWorldPlayerCharacter>())
-		//{
-		//	InventoryComponent = GetOwningPlayerPawn<AWorldPlayerCharacter>()->GetInventoryComponent();
-		//}
-		//// 아이템 사용
-		//InventoryComponent->UseItem(itemIndex);
-	}
-	return FReply::Handled(); // 정상처리
-}
+
 void USkillQuickSlotWidget::NativeOnDragDetected(const FGeometry& InGeometry, const FPointerEvent& InMouseEvent, UDragDropOperation*& OutOperation)
 {
 	Super::NativeOnDragDetected(InGeometry, InMouseEvent, OutOperation);
 
+}
+
+bool USkillQuickSlotWidget::NativeOnDrop(const FGeometry& InGeometry, const FDragDropEvent& InDragDropEvent,
+	UDragDropOperation* InOperation)
+{
+	// 스킬 퀵슬롯은 드래그 드랍 기능X
+	return false;
 }
 
 
