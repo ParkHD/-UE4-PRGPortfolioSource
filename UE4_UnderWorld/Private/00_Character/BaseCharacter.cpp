@@ -5,6 +5,7 @@
 #include "03_Component/00_Character/StatusComponent.h"
 #include "03_Component/00_Character/SkillComponent.h"
 #include "Components/AudioComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -26,6 +27,12 @@ ABaseCharacter::ABaseCharacter()
 
 	WeaponChildActorComponent = CreateDefaultSubobject<UChildActorComponent>(TEXT("Weapon"));
 	WeaponChildActorComponent->SetupAttachment(GetMesh(), FName("Weapon_Socket"));
+
+	HPBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBarWidget"));
+	HPBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	HPBarWidgetComponent->SetDrawSize(FVector2D(100.f, 10.f));
+	HPBarWidgetComponent->SetupAttachment(RootComponent);
+	HPBarWidgetComponent->SetVisibility(false);
 }
 
 // Called when the game starts or when spawned

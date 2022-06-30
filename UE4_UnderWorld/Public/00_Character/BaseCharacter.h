@@ -54,10 +54,12 @@ protected:
 		class UChildActorComponent* WeaponChildActorComponent;	// 메인무기 액터 컴포넌트
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 		class UAudioComponent* AudioComponent;
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
+		class UWidgetComponent* HPBarWidgetComponent;			// BPBarWidget
 public:
 	class UStatusComponent* GetStatusComponent() { return StatusComponent; }
 	class USkillComponent* GetSkillComponent() { return SkillComponent; }
-
+	class UWidgetComponent* GetHPBarWidgetComponent() { return HPBarWidgetComponent; }
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
