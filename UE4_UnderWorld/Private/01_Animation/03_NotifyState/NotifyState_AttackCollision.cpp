@@ -82,8 +82,6 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 					if (!hitActors.Contains(target))
 					{
 						hitActors.Emplace(target);
-						// 피격대상 HitStop 실행
-						target->BeginHitStop();
 
 						// 공격 대미지
 						float damageAmount = owner->GetStatusComponent()->GetStat().Damage;
@@ -102,6 +100,8 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 						}
 
 						target->TakeDamage(damageAmount, FDamageEvent(), owner->GetController(), owner);
+						// 피격대상 HitStop 실행
+						target->BeginHitStop();
 						//FDamageEvent damageEvent;
 						//auto skillInfo = owner->GetSkillComponent()->GetSkillInfo(skill_Tag);
 						//if (skillInfo != nullptr)

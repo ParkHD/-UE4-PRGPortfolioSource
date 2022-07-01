@@ -57,11 +57,20 @@ void ABaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 }
 float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
+	if (isDead)
+		return 0.f;
+
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	StatusComponent->AddHP(-DamageAmount);
 	AudioComponent->SetSound(hitSound);
 	AudioComponent->Activate();
+
+	if(actionState == EActionState::NORMAL)
+	{
+		if(!GetMesh()->GetAnimInstance()->Montage_IsPlaying(hitMontage))
+			GetMesh()->GetAnimInstance()->Montage_Play(hitMontage);
+	}
 
 	return DamageAmount;
 }
@@ -75,7 +84,6 @@ void ABaseCharacter::BeginHitStop()
 void ABaseCharacter::EndHitStop()
 {
 	CustomTimeDilation = 1.f;
-
 }
 
 void ABaseCharacter::SetActionState(EActionState state)

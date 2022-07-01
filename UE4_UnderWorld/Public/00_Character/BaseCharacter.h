@@ -77,12 +77,15 @@ public:
 	void EndHitStop();
 	FTimerHandle hitstopTimerHandle;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "hitstop")
-		float hitstopModifier = 1.f;
+		float hitstopModifier = 0.08f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
 		float falloffDistance = 2000.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 		USoundBase* hitSound;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
+		class UAnimMontage* hitMontage;
 
+	bool isDead = false;
 protected:
 	EActionState actionState;
 	EMoveState moveState;
