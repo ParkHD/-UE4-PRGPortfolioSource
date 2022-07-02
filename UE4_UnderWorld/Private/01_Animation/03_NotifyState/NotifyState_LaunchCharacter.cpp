@@ -28,7 +28,6 @@ void UNotifyState_LaunchCharacter::NotifyTick(USkeletalMeshComponent* MeshComp, 
 			break;
 		case EForceDir::DOWN:
 			owner->LaunchCharacter(-owner->GetActorUpVector().GetSafeNormal() * force, true, true);
-
 			break;
 		case EForceDir::LEFT:
 			owner->LaunchCharacter(-owner->GetActorRightVector().GetSafeNormal() * force, true, true);

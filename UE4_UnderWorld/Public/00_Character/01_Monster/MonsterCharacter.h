@@ -51,6 +51,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		bool isBoss = false;			// 보스몬스터인지 설정
+
+	UPROPERTY(EditAnywhere, Category = "Animation")	
+		TArray<class UAnimMontage*> attackMontageArray;		// 공격 몽타주
 public:
 	FName GetMonsterTag() { return monsterTag.GetTagName(); }
 	class UBehaviorTree* GetAIBehaviorTree() { return AITree; }
@@ -58,11 +61,12 @@ public:
 	const FMonsterInfo* GetMonsterInfo();
 	// 상태 설정
 	//virtual void SetMoveState(EMoveState state) override;
-	//virtual void SetActionState(EActionState state) override;
-	//virtual void SetAttackState(EAttackState state) override;
+	virtual void SetActionState(EActionState state) override;
+	virtual void SetAttackState(EAttackState state) override;
 
+	virtual void TakeStun(float stunTime) override;
 	// 죽었을 때 이벤트
-	//virtual void OnDeadEvent() override;
+	virtual void OnDead() override;
 
 	// Team설정
 	//virtual void SetGenericTeamId(const FGenericTeamId& TeamID) override;
@@ -76,7 +80,8 @@ public:
 	void SetStat();
 	// 몬스터 정보
 	
-
+	// 일반 공격
+	virtual void NormalAttack();
 	// 이동 방향 구하기
 	//float GetMoveDirection();
 	

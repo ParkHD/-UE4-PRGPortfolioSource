@@ -44,6 +44,7 @@ protected:
 		float currentSP = CharacterStat.MaxSP;
 public:
 	FStat GetStat() const { return CharacterStat; }
+	void SetStat(FStat stat) { CharacterStat = stat; }
 
 	// 현재 HP비율 반환
 	float GetHPRatio() { return currentHP / CharacterStat.MaxHP; }

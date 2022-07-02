@@ -33,6 +33,10 @@ ABaseCharacter::ABaseCharacter()
 	HPBarWidgetComponent->SetDrawSize(FVector2D(100.f, 10.f));
 	HPBarWidgetComponent->SetupAttachment(RootComponent);
 	HPBarWidgetComponent->SetVisibility(false);
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;	// 움직이는 방향으로 캐릭터 회전
+	GetCharacterMovement()->FallingLateralFriction = 8.f;		// 공중에서도 마찰 높이기
 }
 
 // Called when the game starts or when spawned
@@ -62,15 +66,11 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+	GetMesh()->GetAnimInstance()->Montage_Play(hitMontage);
+
 	StatusComponent->AddHP(-DamageAmount);
 	AudioComponent->SetSound(hitSound);
 	AudioComponent->Activate();
-
-	if(actionState == EActionState::NORMAL)
-	{
-		if(!GetMesh()->GetAnimInstance()->Montage_IsPlaying(hitMontage))
-			GetMesh()->GetAnimInstance()->Montage_Play(hitMontage);
-	}
 
 	return DamageAmount;
 }
@@ -114,6 +114,14 @@ void ABaseCharacter::SetMoveState(EMoveState state)
 void ABaseCharacter::SetAttackState(EAttackState state)
 {
 	attackState = state;
+}
+
+void ABaseCharacter::TakeStun(float stunTime)
+{
+}
+
+void ABaseCharacter::OnDead()
+{
 }
 
 void ABaseCharacter::InitState()

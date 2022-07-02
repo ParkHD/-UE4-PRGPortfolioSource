@@ -2,8 +2,14 @@
 
 
 #include "00_Character/01_Monster/MonsterCharacter.h"
+
+#include "00_Character/01_Monster/MonsterController.h"
 #include "Components/WidgetComponent.h"
 #include "02_Widget/DamageTextWidget.h"
+#include "03_Component/00_Character/StatusComponent.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Damage.h"
 #include "Perception/AISense_Sight.h"
@@ -22,11 +28,15 @@ AMonsterCharacter::AMonsterCharacter()
 void AMonsterCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
+	OnDeadEvent.AddUniqueDynamic(this, &AMonsterCharacter::OnDead);
 }
 
 void AMonsterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	SetStat();
 }
 
 float AMonsterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -37,7 +47,8 @@ float AMonsterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 	CreateDamageWidget(DamageAmount);
 	// 체력 바 켜기
 	TurnOnHPBarWidget();
-
+	// 스턴
+	TakeStun(0.5f);
 	return DamageAmount;
 }
 
@@ -55,12 +66,98 @@ const FMonsterInfo* AMonsterCharacter::GetMonsterInfo()
 	return nullptr;
 }
 
+void AMonsterCharacter::SetActionState(EActionState state)
+{
+	Super::SetActionState(state);
+
+	Cast<AMonsterController>(GetController())->GetBlackboardComponent()->SetValueAsEnum("ActionState", (uint8)state);
+
+	switch (state)
+	{
+	case EActionState::ATTACK:
+		break;
+	}
+}
+
+void AMonsterCharacter::SetAttackState(EAttackState state)
+{
+	Super::SetAttackState(state);
+
+	Cast<AMonsterController>(GetController())->GetBlackboardComponent()->SetValueAsEnum("AttackState", (uint8)state);
+
+	switch (state)
+	{
+	case EAttackState::COOLTIME:
+		break;
+	}
+}
+
+void AMonsterCharacter::TakeStun(float stunTime)
+{
+	Super::TakeStun(stunTime);
+
+	// 로직 멈추기
+	AMonsterController* controller = GetController<AMonsterController>();
+	controller->BrainComponent->StopLogic("Hit");
+
+	// 마지막 스턴을 기준으로 타이머 시간 설정
+	if (GetWorldTimerManager().TimerExists(StunTimerHandle))
+	{
+		GetWorldTimerManager().ClearTimer(StunTimerHandle);
+	}
+
+	// 죽지 않았다면 일정 시간 후에 로직 재시작 타이머 설정
+	if (!isDead)
+	{
+		FTimerDelegate hitDelegate;
+		hitDelegate.BindUObject(controller->BrainComponent, &UBrainComponent::StartLogic);
+		GetWorldTimerManager().SetTimer(StunTimerHandle, hitDelegate, stunTime, false);
+	}
+}
+
+void AMonsterCharacter::OnDead()
+{
+	Super::OnDead();
+
+	isDead = true;
+
+	GetMesh()->GetAnimInstance()->Montage_Play(DeadMontage);
+	// Behavior Tree 비활성화
+	AMonsterController* controller = GetController<AMonsterController>();
+	controller->BrainComponent->StopLogic("Dead");
+
+	GetMesh()->SetCollisionProfileName(FName("Spectator"));
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
 void AMonsterCharacter::SetStat()
 {
 	auto info = GetMonsterInfo();
 	if(info != nullptr)
 	{
-		
+		StatusComponent->SetStat(info->monster_Stat);
+		attackMontageArray = info->monster_AttackMontage;
+		DeadMontage = info->monster_DeadMontage;
+	}
+}
+
+void AMonsterCharacter::NormalAttack()
+{
+	if(attackMontageArray.Num() > 0)
+	{
+		int randIndex = FMath::RandRange(0, attackMontageArray.Num() - 1);
+		float time = GetMesh()->GetAnimInstance()->Montage_Play(attackMontageArray[randIndex]);
+
+		FTimerHandle attackTimer;
+		FTimerDelegate attackDelegate = FTimerDelegate::CreateUObject(
+			this,
+			&AMonsterCharacter::SetActionState,
+			EActionState::NORMAL);
+		GetWorldTimerManager().SetTimer(
+			attackTimer,
+			attackDelegate,
+			time,
+			false);
 	}
 }
 

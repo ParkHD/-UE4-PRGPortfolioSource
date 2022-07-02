@@ -47,8 +47,7 @@ APlayerCharacter::APlayerCharacter()
 
 	QuickSlotComponent = CreateDefaultSubobject<UQuickSlotComponent>(TEXT("QuickSlotComponent"));
 
-	GetCharacterMovement()->bOrientRotationToMovement = true;	// 움직이는 방향으로 캐릭터 회전
-	GetCharacterMovement()->FallingLateralFriction = 8.f;		// 공중에서도 마찰 높이기
+
 }
 
 // Called when the game starts or when spawned

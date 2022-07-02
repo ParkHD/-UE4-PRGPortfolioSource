@@ -86,9 +86,9 @@ void UStatusComponent::AddHP(float value)
 	// Monster : HPBar 업데이트
 	OnChangeHP.Broadcast(this);
 
-	//// Dead Event
-	//if (currentHP <= 0)
-	//	Cast<ABaseCharacter>(GetOwner())->OnDead.Broadcast();
+	// Dead Event
+	if (currentHP <= 0)
+		Cast<ABaseCharacter>(GetOwner())->OnDeadEvent.Broadcast();
 }
 
 bool UStatusComponent::CheckHP(float value)

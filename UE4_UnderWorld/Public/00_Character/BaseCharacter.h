@@ -33,9 +33,13 @@ enum class EAttackState : uint8 // Enum이름 앞에 E꼭 붙여야함
 {
 	NORMAL,	// 기본상태
 	ATTACK,
+	COOLTIME,
 	CHARGING,
 	MAX,
 };
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDead);
+
 UCLASS()
 class UE4_UNDERWORLD_API ABaseCharacter : public ACharacter
 {
@@ -77,14 +81,18 @@ public:
 	void EndHitStop();
 	FTimerHandle hitstopTimerHandle;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "hitstop")
-		float hitstopModifier = 0.08f;
+		float hitstopModifier = 0.08f;			// HitStop 시간
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
-		float falloffDistance = 2000.f;
+		float falloffDistance = 2000.f;			// 사운드 유효 범위
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-		USoundBase* hitSound;
+		USoundBase* hitSound;					// 피격 사운드
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
-		class UAnimMontage* hitMontage;
-
+		class UAnimMontage* hitMontage;			// 피격 몽타주
+	// 몽타주 관련
+	UPROPERTY(EditAnywhere, Category = "Animation")
+		class UAnimMontage* AttackMontage;		// 공격 몽타주
+	UPROPERTY(EditAnywhere, Category = "Animation")
+		class UAnimMontage* DeadMontage;		// Dead 몽타주
 	bool isDead = false;
 protected:
 	EActionState actionState;
@@ -99,5 +107,12 @@ public:
 	virtual void SetMoveState(EMoveState state);
 	virtual void SetAttackState(EAttackState state);
 
+	virtual void TakeStun(float stunTime);
+
+	UFUNCTION()
+		virtual void OnDead();
+
 	virtual void InitState();
+public:
+	FOnDead OnDeadEvent;
 };

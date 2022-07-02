@@ -90,7 +90,8 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 						if (player != nullptr)
 						{
 							// 차징시간에 따른 대미지 증가
-							damageAmount *= player->GetChargingTime();
+							if(bChargingAttack)
+								damageAmount *= player->GetChargingTime();
 							// 카메라 쉐이크
 							player->CameraShakeDemo(1.f);
 							// 플레이어 hitStop
@@ -100,6 +101,10 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 						}
 
 						target->TakeDamage(damageAmount, FDamageEvent(), owner->GetController(), owner);
+
+						FVector knockbackDir = target->GetActorLocation() - owner->GetActorLocation();
+						if (isKnockback)
+							target->LaunchCharacter(knockbackDir.GetSafeNormal() * Knockbackpower, true, true);
 						// 피격대상 HitStop 실행
 						target->BeginHitStop();
 						//FDamageEvent damageEvent;

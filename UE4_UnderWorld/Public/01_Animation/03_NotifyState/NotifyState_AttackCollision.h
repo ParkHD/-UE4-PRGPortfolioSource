@@ -53,6 +53,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 		float interpSpeed;		// 횡방향 회전 속도
-
+	UPROPERTY(EditAnywhere)
+		bool isKnockback = false;
+	UPROPERTY(EditAnywhere)
+		float Knockbackpower = 100.f;
 	float angle;	// 콜리전이 생성 될 각도 -range ~ range
 };

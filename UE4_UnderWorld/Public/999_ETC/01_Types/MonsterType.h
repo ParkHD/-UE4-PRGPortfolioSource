@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "StatTypes.h"
 #include "Engine/DataTable.h"
 #include "UObject/NoExportTypes.h"
 #include "MonsterType.generated.h"
@@ -17,25 +18,25 @@ struct FMonsterInfo : public FTableRowBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere)
-		FGameplayTag skill_Tag;				// 스킬 태그
+		FGameplayTag monster_Tag;				// 몬스터 태그
 
 	UPROPERTY(EditAnywhere)
-		FString skill_Name;					// 스킬 이름
+		FString monster_Name;					// 몬스터 이름
 	UPROPERTY(EditAnywhere)
-		class UTexture2D* skill_Image;		// 스킬 이미지
+		FString monster_Description;			// 몬스터 설명
 	UPROPERTY(EditAnywhere)
-		FString skill_Description;			// 스킬 설명
+		FStat monster_Stat;						// 몬스터 능력치
+	UPROPERTY(EditAnywhere)
+		float monster_AttackRange;				// 공격 범위(사용 할 수 있는 거리)
 
 	UPROPERTY(EditAnywhere)
-		float skill_Damage;					// 스킬 대미지(%)
+		TArray<class UAnimMontage*> monster_AttackMontage;	// 공격 몽타주
 	UPROPERTY(EditAnywhere)
-		float skill_AttackRange;			// 스킬 범위(사용 할 수 있는 거리)
-	UPROPERTY(EditAnywhere)
-		float skill_CoolTime;				// 스킬 쿨타임
-	UPROPERTY(EditAnywhere)
-		class UAnimMontage* skill_Montage;	// 스킬 애니메이션
-	UPROPERTY(EditAnywhere)
-		class UAnimMontage* skill_ChargeMontage;	// 스킬 애니메이션
+		class UAnimMontage* monster_DeadMontage;			// Dead 몽타주
+	//UPROPERTY(EditAnywhere)
+	//	class UAnimMontage* skill_Montage;	// 스킬 애니메이션
+	//UPROPERTY(EditAnywhere)
+	//	class UAnimMontage* skill_ChargeMontage;	// 스킬 애니메이션
 };
 UCLASS()
 class UE4_UNDERWORLD_API UMonsterType : public UObject

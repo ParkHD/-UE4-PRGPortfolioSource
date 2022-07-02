@@ -49,9 +49,7 @@ public:
 public:
 	const float GetChargingTime() { return chargingTime; }
 protected:
-	// 根鸥林 包访
-	UPROPERTY(EditAnywhere, Category = Montage)
-		class UAnimMontage* AttackMontage;		// 傍拜 根鸥林
+
 	UPROPERTY(EditAnywhere, Category = Montage)
 		class UAnimMontage* DashMontage;		// 措浆 根鸥林
 
