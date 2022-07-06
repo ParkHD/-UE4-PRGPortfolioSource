@@ -60,6 +60,8 @@ void APlayerCharacter::BeginPlay()
 void APlayerCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
+	SetGenericTeamId(10);
 }
 
 // Called every frame
@@ -147,7 +149,7 @@ void APlayerCharacter::MoveRight(float newAxisValue)
 	{
 		FRotator newRotation(0.0f, GetControlRotation().Yaw, 0.0f);
 		FVector direction = FRotationMatrix(newRotation).GetUnitAxis(EAxis::Y);
-		AddMovementInput(FRotationMatrix(GetControlRotation()).GetUnitAxis(EAxis::Y), newAxisValue);
+		AddMovementInput(direction, newAxisValue);
 	}
 }
 void APlayerCharacter::LookUp(float newAxisValue)
@@ -166,6 +168,14 @@ void APlayerCharacter::Dash()
 	{
 		SetMoveState(EMoveState::IDLE);
 		SetActionState(EActionState::DASH);
+
+		float moveRight = InputComponent->GetAxisValue("MoveRight");
+		float moveForward = InputComponent->GetAxisValue("MoveForward");
+		FVector keyDir = { moveForward, moveRight, 0 };
+		FRotator keyRotator = keyDir.Rotation();
+		keyRotator.Yaw += GetControlRotation().Yaw;
+		SetActorRotation(keyRotator);
+
 		// 대쉬 후 characterState Normal로 변경
 		float animtime = GetMesh()->GetAnimInstance()->Montage_Play(DashMontage, 1.5f, EMontagePlayReturnType::Duration);
 		FTimerHandle dashTimer;
@@ -191,7 +201,7 @@ void APlayerCharacter::PressAttack()
 			if(actionState == EActionState::NORMAL)
 			{
 				SetActionState(EActionState::ATTACK);
-				GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage);
+				GetMesh()->GetAnimInstance()->Montage_Play(AttackMontage, 1.3f);
 			}
 		}
 	}

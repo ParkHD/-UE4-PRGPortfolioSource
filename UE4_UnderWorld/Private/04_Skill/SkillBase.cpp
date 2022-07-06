@@ -18,7 +18,6 @@ bool USkillBase::CommitSkill()
 				return false;
 			}
 		}
-
 		// 충분한 Cost가 있는지 확인
 		auto costeffect = costEffect.GetDefaultObject();
 		if (costeffect != nullptr)
@@ -85,14 +84,7 @@ void USkillBase::UseSkill(class ABaseCharacter* caller)
 	EndSkill();
 }
 
-FGameplayTag USkillBase::GetCoolTimeTag()
-{
-	if (coolTimeEffect != nullptr)
-	{
- 		return coolTimeEffect.GetDefaultObject()->GetEffectTag();
-	}
-	return FGameplayTag::EmptyTag;
-}
+
 
 void USkillBase::AddCoolTime(float value)
 {

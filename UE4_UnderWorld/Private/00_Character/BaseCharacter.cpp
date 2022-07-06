@@ -37,6 +37,8 @@ ABaseCharacter::ABaseCharacter()
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;	// 움직이는 방향으로 캐릭터 회전
 	GetCharacterMovement()->FallingLateralFriction = 8.f;		// 공중에서도 마찰 높이기
+
+	GetCharacterMovement()->RotationRate = { 0,720.f,0 };
 }
 
 // Called when the game starts or when spawned
@@ -129,4 +131,9 @@ void ABaseCharacter::InitState()
 	moveState = EMoveState::IDLE;
 	actionState = EActionState::NORMAL;
 	attackState = EAttackState::CHARGING;
+}
+
+void ABaseCharacter::SetGenericTeamId(const FGenericTeamId& TeamID)
+{
+	myTeam = TeamID;
 }

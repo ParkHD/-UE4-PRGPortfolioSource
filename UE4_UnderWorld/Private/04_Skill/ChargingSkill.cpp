@@ -21,7 +21,7 @@ void UChargingSkill::ChargingSkill()
 {
 	// 차징을 풀면서 스킬 실행
 	skillOwner->SetAttackState(EAttackState::NORMAL);
-	float skillPlayTime = skillOwner->GetMesh()->GetAnimInstance()->Montage_Play(GetSkillInfo()->skill_Montage, 1.f, EMontagePlayReturnType::Duration);
+	const float skillPlayTime = skillOwner->GetMesh()->GetAnimInstance()->Montage_Play(GetSkillInfo()->skill_Montage, 1.f, EMontagePlayReturnType::Duration);
 	// 애니메이션 종료 후 ActionState::NORMAL로 변경
 	FTimerHandle skillTimer;
 	FTimerDelegate skillDelegate = FTimerDelegate::CreateUObject(skillOwner, &ABaseCharacter::SetActionState, EActionState::NORMAL);
@@ -31,7 +31,7 @@ void UChargingSkill::ChargingSkill()
 		skillPlayTime,
 		false);
 
-	// 스킬 쿨타임 및 cost 적용
+	// 스킬 쿨타임 적용
 	if (skillOwner != nullptr && coolTimeEffect != nullptr)
 	{
 		const auto coolEffect = coolTimeEffect.GetDefaultObject();
@@ -39,6 +39,7 @@ void UChargingSkill::ChargingSkill()
 		// 쿨타임 적용 -> 쿨타임 위젯 재생
 		coolTime = coolEffect->GetEffectTime();
 	}
+	// 스킬 cost 적용
 	if (skillOwner != nullptr && costEffect != nullptr)
 	{
 		const auto costeffect = costEffect.GetDefaultObject();

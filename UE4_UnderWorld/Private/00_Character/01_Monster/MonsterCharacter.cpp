@@ -29,6 +29,8 @@ void AMonsterCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
+	SetGenericTeamId(20);
+
 	OnDeadEvent.AddUniqueDynamic(this, &AMonsterCharacter::OnDead);
 }
 

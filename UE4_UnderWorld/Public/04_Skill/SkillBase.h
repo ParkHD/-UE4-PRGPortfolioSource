@@ -21,7 +21,7 @@ protected:
 		FGameplayTag skillTag;				// 스킬 종류를 구분할 Tag
 
 	UPROPERTY()
-		class ABaseCharacter* skillOwner;	// 스킬 시전한 캐릭터
+		class ABaseCharacter* skillOwner;	// 스킬 소유자
 
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class USkillEffect> coolTimeEffect;	// 스킬의 쿨타임을 관리할 effect
@@ -44,8 +44,9 @@ public:
 	virtual void UseSkill(class ABaseCharacter* caller); // 스킬 사용
 
 public:
-	FGameplayTag GetCoolTimeTag();
+	// 스킬 소유자 설정
 	void SetSkillOwner(class ABaseCharacter* SkillOwner) { skillOwner = SkillOwner; }
+	// 스킬 쿨타임 설정
 	void AddCoolTime(float value);
-	float GetCoolTime() { return coolTime; }
+	float GetCoolTime() const { return coolTime; }
 };

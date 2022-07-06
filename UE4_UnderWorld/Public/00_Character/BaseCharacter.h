@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GenericTeamAgentInterface.h"
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
@@ -94,6 +95,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Animation")
 		class UAnimMontage* DeadMontage;		// Dead ¸ùÅ¸ÁÖ
 	bool isDead = false;
+
+	UPROPERTY(EditAnywhere)
+		FGenericTeamId myTeam;					// TeamID
 protected:
 	EActionState actionState;
 	EMoveState moveState;
@@ -113,6 +117,10 @@ public:
 		virtual void OnDead();
 
 	virtual void InitState();
+
+	// ÆÀ ¼³Á¤
+	virtual void SetGenericTeamId(const FGenericTeamId& TeamID);
+	virtual FGenericTeamId GetGenericTeamId() const { return myTeam; }
 public:
 	FOnDead OnDeadEvent;
 };

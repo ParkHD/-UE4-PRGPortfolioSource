@@ -44,15 +44,13 @@ protected:
 	UPROPERTY(EditAnywhere)
 		float effectValue;			// cost 값
 	UPROPERTY(EditAnywhere)
-		float effectTime;			// cooltime 값
+		float effectTime;			// 지속시간(쿨타임) 값
 
 	FTimerHandle endEffectTimer;	// 지속효과 관리 타이머
 public:
 	FGameplayTag& GetEffectTag() { return effectTag; }
-	const float GetEffectValue() { return effectValue; }
-	const float GetEffectTime() { return effectTime; }
-
-
+	float GetEffectValue() const { return effectValue; }
+	float GetEffectTime() const { return effectTime; }
 protected:
 	// Effect 적용 -> ApplyEffect에서 관리
 	// 지속 효과 적용

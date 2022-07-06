@@ -10,12 +10,13 @@ void USkillEffect::ApplyDurationEffect(ABaseCharacter* target)
 {
 	// effect를 적용한다. 타깃에 따라 다르게 적용한다.
 	target->GetSkillComponent()->AddSkillEffect(effectTag, effectTime);
+	// 효과 적용
 	switch (effectTarget)
 	{
-	case EEffectTarget::COOLTIME:
-		break;
 	case EEffectTarget::DAMAGE:
 		target->GetStatusComponent()->AddDamage(effectValue);
+		break;
+	default:
 		break;
 	}
 	// 일정시간 후에 effect를 삭제한다.
@@ -29,9 +30,9 @@ void USkillEffect::ApplyDurationEffect(ABaseCharacter* target)
 void USkillEffect::ApplyInstantEffect(class ABaseCharacter* target)
 {
 	// effect를 적용한다
-	//target->GetSkillComponent()->AddSkillEffect(effectTag, 0);
+	target->GetSkillComponent()->AddSkillEffect(effectTag, 0);
 	// cost를 깍는다
-	//target->GetStatusComponent()->AddMP(-effectValue);
+	target->GetStatusComponent()->AddMP(-effectValue);
 	// effect를 삭제한다.
 	RemoveEffect(target);
 }
@@ -47,10 +48,10 @@ void USkillEffect::RemoveEffect(class ABaseCharacter* target)
 		// 적용되어 있던 효과 제거
 		switch (effectTarget)
 		{
-		case EEffectTarget::COOLTIME:
-			break;
 		case EEffectTarget::DAMAGE:
 			target->GetStatusComponent()->AddDamage(-effectValue);
+			break;
+		default:
 			break;
 		}
 	}
@@ -71,6 +72,5 @@ void USkillEffect::ApplyEffect(class ABaseCharacter* target)
 bool USkillEffect::CheckEffectValue(class ABaseCharacter* target)
 {
 	// 충분한 MP가 있는지 확인한다.
-	//return target->GetStatusComponent()->CheckMP(effectValue);
-	return true;
+	return target->GetStatusComponent()->CheckMP(effectValue);
 }

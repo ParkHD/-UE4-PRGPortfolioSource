@@ -13,7 +13,7 @@ UCLASS()
 class UE4_UNDERWORLD_API UChargingSkill : public USkillBase
 {
 	GENERATED_BODY()
-public:
+protected:
 	virtual void ActivateSkill() override;
 public:
 	virtual void ChargingSkill();

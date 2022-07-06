@@ -73,7 +73,7 @@ void AMonsterController::OnActorPerceptionUpdatedEvent(AActor* Actor, FAIStimulu
 
 		if (target != nullptr)
 		{
-			//if (target->GetGenericTeamId() != ownerMonster->GetGenericTeamId())
+			if (target->GetGenericTeamId() != ownerCharacter->GetGenericTeamId())
 			{
 				// 현재 Target과 지금 인지된 Target의 거리를 비교하여 가까운 것을 Target으로 삼는다.
 				GetBlackboardComponent()->SetValueAsObject("Target", target);
