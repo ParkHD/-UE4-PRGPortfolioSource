@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "00_Character/01_Monster/MonsterCharacter.h"
 #include "MonsterAnimInstance.generated.h"
 
 /**
@@ -25,6 +26,12 @@ protected:
 		float moveSpeed;		// 이동 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
 		float moveDir;			// 이동 방향
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
+		bool  isLevitate;			// 에어본 진행 방향 위 아래
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
+		bool  isAirborne;			// 에어본인가
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
+		ECharacterState  characterState;			// 캐릭터 상태
 
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Pawn)
 	//	EActionState actionState;	// 캐릭터의 ActionState

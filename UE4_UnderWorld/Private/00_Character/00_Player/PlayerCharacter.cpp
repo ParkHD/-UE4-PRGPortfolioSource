@@ -40,13 +40,12 @@ APlayerCharacter::APlayerCharacter()
 	SpringArm->TargetArmLength = 600.0f;
 	SpringArm->SetRelativeRotation(FRotator::ZeroRotator);
 	SpringArm->bUsePawnControlRotation = true;	// Controller에 맞춰서 SpringArm이 움직인다.
-	SpringArm->bDoCollisionTest = true;			// 시야에 방해물이 있으면 확대기능
+	//SpringArm->bDoCollisionTest = true;			// 시야에 방해물이 있으면 확대기능
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
 	Camera->SetupAttachment(SpringArm);
 
 	QuickSlotComponent = CreateDefaultSubobject<UQuickSlotComponent>(TEXT("QuickSlotComponent"));
-
 
 }
 

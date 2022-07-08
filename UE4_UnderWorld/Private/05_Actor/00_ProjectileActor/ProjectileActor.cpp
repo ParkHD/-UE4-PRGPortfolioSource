@@ -41,6 +41,8 @@ AProjectileActor::AProjectileActor()
 	audioComponent->SetupAttachment(RootComponent);
 	audioComponent->bOverrideAttenuation = true;
 
+	
+
 	// 이동방향으로 회전
 	projectileComponent->bRotationFollowsVelocity = true;
 }
@@ -50,6 +52,7 @@ void AProjectileActor::BeginPlay()
 {
 	Super::BeginPlay();
 	sphereComponent->OnComponentBeginOverlap.AddUniqueDynamic(this, &AProjectileActor::OnComponentBeginOverlapEvent);
+
 	if (bLifeSpan)
 	{
 		// 생명주기 설정
@@ -83,9 +86,12 @@ void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* Overlap
 			// overlap 효과 재생
 			if (!isExplored)
 			{
+				UE_LOG(LogTemp, Log, TEXT("%s"), *OtherActor->GetName());
 				// 터지는 Particle 재생
-				UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitParticle, SweepResult.Location, FRotator::ZeroRotator, true);
-				UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), hitParticle_Nia, SweepResult.Location);
+				if(hitParticle != nullptr)
+					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitParticle, SweepResult.Location, FRotator::ZeroRotator, true);
+				else if(hitParticle_Nia != nullptr)
+					UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), hitParticle_Nia, SweepResult.Location);
 				// 소리 범위 설정
 				USoundAttenuation* soundAtt = NewObject<USoundAttenuation>();
 				FSoundAttenuationSettings setting;
@@ -104,13 +110,14 @@ void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* Overlap
 				sphereComponent->SetCollisionProfileName("NoCollision");
 				projectileComponent->Velocity = FVector::ZeroVector;
 				audioComponent->VolumeMultiplier = 0.f;
+				Destroy();
 			}
 			
 			// 대상이 캐릭터라면 대미지 주기
 			if (OtherActor->IsA<ABaseCharacter>())
 			{
 				auto targetCharacter = Cast<ABaseCharacter>(OtherActor);
-				targetCharacter->TakeDamage(damage, FDamageEvent(), myCharacter->GetController(), myCharacter);
+				//targetCharacter->TakeDamage(damage, FDamageEvent(), myCharacter->GetController(), myCharacter);
 				//if (targetCharacter != myCharacter && targetCharacter->GetGenericTeamId() != myCharacter->GetGenericTeamId())
 				//{
 				//	FDamageEvent damageEvent;
@@ -126,5 +133,8 @@ void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* Overlap
 
 void AProjectileActor::TurnOnCollision(bool bTurn)
 {
-	//sphereComponent->SetCollisionProfileName("Weapon");
+	if(bTurn)
+		sphereComponent->SetCollisionProfileName("Projectile");
+	else
+		sphereComponent->SetCollisionProfileName("NoCollision");
 }

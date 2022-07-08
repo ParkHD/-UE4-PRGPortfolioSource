@@ -3,7 +3,6 @@
 
 #include "01_Animation/04_Monster/MonsterAnimInstance.h"
 
-#include "00_Character/01_Monster/MonsterCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 void UMonsterAnimInstance::NativeInitializeAnimation()
@@ -16,6 +15,8 @@ void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	if (owner != nullptr)
 	{
 		moveSpeed = owner->GetCharacterMovement()->Velocity.Size();
-
+		isLevitate = owner->isLevitate;
+		isAirborne = owner->isAirborne;
+		characterState = owner->GetCharacterState();
 	}
 }

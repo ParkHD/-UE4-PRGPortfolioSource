@@ -5,6 +5,7 @@
 #include "03_Component/00_Character/StatusComponent.h"
 #include "03_Component/00_Character/SkillComponent.h"
 #include "Components/AudioComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
@@ -45,13 +46,22 @@ ABaseCharacter::ABaseCharacter()
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
 void ABaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if(isAirborne)
+	{
+		UE_LOG(LogTemp, Log, TEXT("ddd"));
+		LaunchMesh(200, 5.f);
+		/*FVector newLocation = GetActorLocation();
+		GetMesh()->SetWorldLocation(GetCapsuleComponent())
+		GetCapsuleComponent()->SetWorldLocation(GetMesh()->GetSocketLocation("pelvis"));*/
+	}
 
 }
 
@@ -65,17 +75,50 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 {
 	if (isDead)
 		return 0.f;
-
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	GetMesh()->GetAnimInstance()->Montage_Play(hitMontage);
+	// ÇÇ°Ý ¾Ö´Ô
+	if (characterState != ECharacterState::AIRBORNE)
+		GetMesh()->GetAnimInstance()->Montage_Play(hitMontage);
 
 	StatusComponent->AddHP(-DamageAmount);
 	AudioComponent->SetSound(hitSound);
 	AudioComponent->Activate();
 
+	// Èý½ºÅ¾
+	BeginHitStop();
+
 	return DamageAmount;
 }
+
+float ABaseCharacter::CustomTakeDamage(EAttackType type, float DamageAmount, FDamageEvent const& DamageEvent,
+	AController* EventInstigator, AActor* DamageCauser, float value)
+{
+	float damage = TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	if(!isDead)
+	{
+		switch(type)
+		{
+		case EAttackType::NORMAL:
+			TakeStun(0.5f);
+			break;
+		case EAttackType::KNOCKBACK:
+			{
+				TakeStun(0.5f);
+				FVector knockbackDir = GetActorLocation() - DamageCauser->GetActorLocation();
+				LaunchCharacter(knockbackDir.GetSafeNormal(1.f) * value, true, true);
+			}
+			break;
+		case EAttackType::AIRBORNE :
+			TakeAirborne(200, value);
+			break;
+		}
+	}
+
+	return damage;
+}
+
 void ABaseCharacter::BeginHitStop()
 {
 	CustomTimeDilation = 0.001f;
@@ -118,8 +161,28 @@ void ABaseCharacter::SetAttackState(EAttackState state)
 	attackState = state;
 }
 
+void ABaseCharacter::SetCharacterState(ECharacterState state)
+{
+	characterState = state;
+}
+
 void ABaseCharacter::TakeStun(float stunTime)
 {
+	if(characterState == ECharacterState::NORMAL)
+		SetCharacterState(ECharacterState::STUN);
+}
+
+void ABaseCharacter::TakeAirborne(float airbornePower, float stunTime)
+{
+	if (GetWorldTimerManager().IsTimerActive(standUpTimer))
+		GetWorldTimerManager().ClearTimer(standUpTimer);
+
+	GetMesh()->GetAnimInstance()->Montage_Stop(1.f);
+
+	SetCharacterState(ECharacterState::AIRBORNE);
+
+	isAirborne = true;
+	isLevitate = true;
 }
 
 void ABaseCharacter::OnDead()
@@ -136,4 +199,26 @@ void ABaseCharacter::InitState()
 void ABaseCharacter::SetGenericTeamId(const FGenericTeamId& TeamID)
 {
 	myTeam = TeamID;
+}
+
+void ABaseCharacter::LaunchMesh(float zValue, float interpSpeed)
+{
+	FVector newLocation = GetMesh()->GetRelativeLocation();
+
+	if(isLevitate)
+		newLocation.Z += interpSpeed;
+	else
+		newLocation.Z -= interpSpeed;
+
+	GetMesh()->SetRelativeLocation(newLocation);
+
+	if (GetMesh()->GetRelativeLocation().Z > zValue)
+		isLevitate = false;
+	else if(GetMesh()->GetRelativeLocation().Z <= -90)
+		isAirborne = false;
+}
+
+void ABaseCharacter::StandUp()
+{
+
 }

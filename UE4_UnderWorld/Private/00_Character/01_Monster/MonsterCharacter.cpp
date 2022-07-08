@@ -49,8 +49,7 @@ float AMonsterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 	CreateDamageWidget(DamageAmount);
 	// 체력 바 켜기
 	TurnOnHPBarWidget();
-	// 스턴
-	TakeStun(0.5f);
+
 	return DamageAmount;
 }
 
@@ -94,6 +93,50 @@ void AMonsterCharacter::SetAttackState(EAttackState state)
 	}
 }
 
+void AMonsterCharacter::SetCharacterState(ECharacterState state)
+{
+	Super::SetCharacterState(state);
+
+	switch (state)
+	{
+	case ECharacterState::NORMAL:
+		// 로직 가동
+		AMonsterController* controller = GetController<AMonsterController>();
+		if(!isDead && !controller->BrainComponent->IsRunning())
+		{
+			controller->BrainComponent->StartLogic();
+		}
+		break;
+	}
+}
+
+void AMonsterCharacter::TakeAirborne(float airbornePower, float stunTime)
+{
+	Super::TakeAirborne(airbornePower, stunTime);
+
+	// 로직 멈추기
+	AMonsterController* controller = GetController<AMonsterController>();
+	controller->BrainComponent->StopLogic("airborne");
+
+	// 스턴 남은 시간을 기준에서 비교해서 더 큰것을 타이머 시간 설정
+	float time = stunTime;
+	if (GetWorldTimerManager().TimerExists(StunTimerHandle))
+	{
+		float remainTimer = GetWorldTimerManager().GetTimerRemaining(StunTimerHandle);;
+		if (remainTimer > time)
+			time = remainTimer;
+		GetWorldTimerManager().ClearTimer(StunTimerHandle);
+	}
+
+	// 죽지 않았다면 일정 시간 후에 로직 재시작 타이머 설정
+	if (!isDead)
+	{
+		FTimerDelegate hitDelegate;
+		hitDelegate.BindUObject(this, &AMonsterCharacter::StandUp);
+		GetWorldTimerManager().SetTimer(StunTimerHandle, hitDelegate, stunTime, false);
+	}
+}
+
 void AMonsterCharacter::TakeStun(float stunTime)
 {
 	Super::TakeStun(stunTime);
@@ -105,16 +148,38 @@ void AMonsterCharacter::TakeStun(float stunTime)
 	// 마지막 스턴을 기준으로 타이머 시간 설정
 	if (GetWorldTimerManager().TimerExists(StunTimerHandle))
 	{
-		GetWorldTimerManager().ClearTimer(StunTimerHandle);
-	}
+		float remainTime = GetWorldTimerManager().GetTimerRemaining(StunTimerHandle);
+		if(remainTime < stunTime)
+		{
+			GetWorldTimerManager().ClearTimer(StunTimerHandle);
 
-	// 죽지 않았다면 일정 시간 후에 로직 재시작 타이머 설정
-	if (!isDead)
+			// 죽지 않았다면 일정 시간 후에 로직 재시작 타이머 설정
+			
+			FTimerDelegate hitDelegate;
+			hitDelegate.BindUObject(controller->BrainComponent, &UBrainComponent::StartLogic);
+			hitDelegate.BindUObject(this, &ABaseCharacter::SetCharacterState, ECharacterState::NORMAL);
+			GetWorldTimerManager().SetTimer(StunTimerHandle, hitDelegate, stunTime, false);
+		}
+	}
+	else
 	{
 		FTimerDelegate hitDelegate;
 		hitDelegate.BindUObject(controller->BrainComponent, &UBrainComponent::StartLogic);
+		hitDelegate.BindUObject(this, &ABaseCharacter::SetCharacterState, ECharacterState::NORMAL);
 		GetWorldTimerManager().SetTimer(StunTimerHandle, hitDelegate, stunTime, false);
 	}
+}
+
+void AMonsterCharacter::StandUp()
+{
+	Super::StandUp();
+
+	float time = GetMesh()->GetAnimInstance()->Montage_Play(StandUpMontage);
+	// 로직 멈추기
+	FTimerDelegate standUpdelegate = FTimerDelegate::CreateUObject(
+		this, &AMonsterCharacter::SetCharacterState, ECharacterState::NORMAL);
+
+	GetWorldTimerManager().SetTimer(standUpTimer, standUpdelegate, time, false);
 }
 
 void AMonsterCharacter::OnDead()
@@ -124,9 +189,11 @@ void AMonsterCharacter::OnDead()
 	isDead = true;
 
 	GetMesh()->GetAnimInstance()->Montage_Play(DeadMontage);
+	GetWorldTimerManager().ClearAllTimersForObject(this);
 	// Behavior Tree 비활성화
 	AMonsterController* controller = GetController<AMonsterController>();
 	controller->BrainComponent->StopLogic("Dead");
+	
 
 	GetMesh()->SetCollisionProfileName(FName("Spectator"));
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);

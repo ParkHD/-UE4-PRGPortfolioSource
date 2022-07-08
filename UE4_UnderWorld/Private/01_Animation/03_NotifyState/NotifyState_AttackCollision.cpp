@@ -2,9 +2,9 @@
 
 
 #include "01_Animation/03_NotifyState/NotifyState_AttackCollision.h"
-#include "00_Character/BaseCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "00_Character/00_Player/PlayerCharacter.h"
+#include "03_Component/00_Character/SkillComponent.h"
 #include "03_Component/00_Character/StatusComponent.h"
 
 void UNotifyState_AttackCollision::NotifyBegin(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation, float TotalDuration)
@@ -81,6 +81,7 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 					// 이미 대미지를 준 대상인지 확인
 					if (!hitActors.Contains(target))
 					{
+						
 						hitActors.Emplace(target);
 
 						// 공격 대미지
@@ -99,24 +100,23 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 							// 맞은 위치에 hitparticle 소환
 							UGameplayStatics::SpawnEmitterAtLocation(MeshComp->GetWorld(), hitParticle, hit.Location, FRotator::ZeroRotator, true);
 						}
+						
 
-						target->TakeDamage(damageAmount, FDamageEvent(), owner->GetController(), owner);
+						float value = 0;
+						if(isSkillAttack)
+						{
+							auto skillInfo = owner->GetSkillComponent()->GetSkillInfo(skill_Tag);
+							if (skillInfo != nullptr)
+							{
+								// 대미지 계산
+								damageAmount = damageAmount * skillInfo->skill_Damage / 100;
+								value = skillInfo->skill_value;
+							}
+						}
 
-						FVector knockbackDir = target->GetActorLocation() - owner->GetActorLocation();
-						if (isKnockback)
-							target->LaunchCharacter(knockbackDir.GetSafeNormal() * Knockbackpower, true, true);
-						// 피격대상 HitStop 실행
-						target->BeginHitStop();
-						//FDamageEvent damageEvent;
-						//auto skillInfo = owner->GetSkillComponent()->GetSkillInfo(skill_Tag);
-						//if (skillInfo != nullptr)
-						//{
-						//	// 대미지 계산
-						//	float ownerDamage = owner->GetStatusComponent()->GetStat().Damage;
-						//	float skillDamage = ownerDamage * skillInfo->skill_Damage / 100;
-						//	// Hit된 Actor에 대미지 적용
-						//	target->TakeDamageType(EDamageType::SKILL, skillDamage, damageEvent, target->GetController(), target);
-						//}
+						
+
+						target->CustomTakeDamage(attackType, damageAmount, FDamageEvent(), owner->GetController(), owner, value);
 					}
 				}
 			}

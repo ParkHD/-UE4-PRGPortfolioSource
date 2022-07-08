@@ -63,8 +63,11 @@ public:
 	//virtual void SetMoveState(EMoveState state) override;
 	virtual void SetActionState(EActionState state) override;
 	virtual void SetAttackState(EAttackState state) override;
+	virtual void SetCharacterState(ECharacterState state) override;
 
+	virtual void TakeAirborne(float airbornePower, float stunTime) override;
 	virtual void TakeStun(float stunTime) override;
+	virtual void StandUp() override;
 	// 죽었을 때 이벤트
 	virtual void OnDead() override;
 

@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayTagContainer.h"
 #include "Animation/AnimNotifies/AnimNotifyState.h"
+#include "00_Character/BaseCharacter.h"
 #include "NotifyState_AttackCollision.generated.h"
 
 /**
@@ -35,8 +37,10 @@ protected:
 	UPROPERTY(EditAnywhere)
 		FName endSocketName;
 
-	//UPROPERTY(EditAnywhere)
-	//	FGameplayTag skill_Tag;	// 스킬 태그
+	UPROPERTY(EditAnywhere)
+		bool isSkillAttack = false;
+	UPROPERTY(EditAnywhere, meta = (EditCondition = "isSkillAttack == true"))
+		FGameplayTag skill_Tag;	// 스킬 태그
 
 	UPROPERTY(EditAnywhere)
 		bool bChargingAttack = false;	// 차징 공격인지
@@ -54,8 +58,11 @@ protected:
 	UPROPERTY(EditAnywhere)
 		float interpSpeed;		// 횡방향 회전 속도
 	UPROPERTY(EditAnywhere)
-		bool isKnockback = false;
+		bool isKnockback = false;		// 넉백 공격인가
+	UPROPERTY(EditAnywhere, meta = (EditCondition = "isKnockback == true"))
+		float Knockbackpower = 100.f;	// 넉백 파워
+
 	UPROPERTY(EditAnywhere)
-		float Knockbackpower = 100.f;
+		EAttackType attackType = EAttackType::NORMAL;
 	float angle;	// 콜리전이 생성 될 각도 -range ~ range
 };

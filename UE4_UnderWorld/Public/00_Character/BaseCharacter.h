@@ -38,7 +38,21 @@ enum class EAttackState : uint8 // Enum이름 앞에 E꼭 붙여야함
 	CHARGING,
 	MAX,
 };
-
+// 캐릭터 상태
+UENUM(BlueprintType)
+enum class ECharacterState : uint8 // Enum이름 앞에 E꼭 붙여야함
+{
+	NORMAL,	// 기본상태
+	STUN,
+	AIRBORNE
+};
+UENUM(BlueprintType)
+enum class EAttackType : uint8
+{
+	NORMAL,		// 기본 공격
+	KNOCKBACK,	// 넉백 공격
+	AIRBORNE,	// 에어본 공격
+};
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDead);
 
 UCLASS()
@@ -76,6 +90,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	virtual float CustomTakeDamage(EAttackType type, float DamageAmount, FDamageEvent const& DamageEvent, 
+		AController* EventInstigator, AActor* DamageCauser, float value);
 
 public:
 	void BeginHitStop();
@@ -94,25 +110,34 @@ public:
 		class UAnimMontage* AttackMontage;		// 공격 몽타주
 	UPROPERTY(EditAnywhere, Category = "Animation")
 		class UAnimMontage* DeadMontage;		// Dead 몽타주
+	UPROPERTY(EditAnywhere, Category = "Animation")
+		class UAnimMontage* StandUpMontage;		// StandUp 몽타주
+
 	bool isDead = false;
 
 	UPROPERTY(EditAnywhere)
 		FGenericTeamId myTeam;					// TeamID
+
+	FTimerHandle standUpTimer;
 protected:
 	EActionState actionState;
 	EMoveState moveState;
 	EAttackState attackState;
+	UPROPERTY(VisibleAnywhere)
+	ECharacterState characterState;
 public:
 	EActionState GetActionState() { return actionState; }
 	EMoveState GetMoveState() { return moveState; }
 	EAttackState GetAttackState() { return attackState; }
+	ECharacterState GetCharacterState() { return characterState; }
 
 	virtual void SetActionState(EActionState state);
 	virtual void SetMoveState(EMoveState state);
 	virtual void SetAttackState(EAttackState state);
+	virtual void SetCharacterState(ECharacterState state);
 
 	virtual void TakeStun(float stunTime);
-
+	virtual void TakeAirborne(float airbornePower, float stunTime);
 	UFUNCTION()
 		virtual void OnDead();
 
@@ -121,6 +146,13 @@ public:
 	// 팀 설정
 	virtual void SetGenericTeamId(const FGenericTeamId& TeamID);
 	virtual FGenericTeamId GetGenericTeamId() const { return myTeam; }
+protected:
+	virtual void LaunchMesh(float zValue, float interpSpeed);
+	virtual void StandUp();
 public:
 	FOnDead OnDeadEvent;
+
+
+	bool isAirborne = false;
+	bool isLevitate = false;
 };

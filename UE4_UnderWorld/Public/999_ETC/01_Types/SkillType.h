@@ -40,6 +40,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		float skill_CoolTime;				// 스킬 쿨타임
 	UPROPERTY(EditAnywhere)
+		float skill_value;					// 스킬의 스턴 타임이나 넉백 파워
+	UPROPERTY(EditAnywhere)
 		class UAnimMontage* skill_Montage;	// 스킬 애니메이션
 	UPROPERTY(EditAnywhere)
 		class UAnimMontage* skill_ChargeMontage;	// 스킬 애니메이션
