@@ -86,7 +86,6 @@ void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* Overlap
 			// overlap 효과 재생
 			if (!isExplored)
 			{
-				UE_LOG(LogTemp, Log, TEXT("%s"), *OtherActor->GetName());
 				// 터지는 Particle 재생
 				if(hitParticle != nullptr)
 					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitParticle, SweepResult.Location, FRotator::ZeroRotator, true);
@@ -100,6 +99,8 @@ void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* Overlap
 				// 터지는 사운드 재생
 				UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundToPlay, SweepResult.Location, FRotator::ZeroRotator,
 					1.f, 1.f, 0.f, soundAtt);
+
+				// 카메라 쉐이크
 				Cast<AMyGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->CameraShake(1.f);
 				isExplored = true;
 			}

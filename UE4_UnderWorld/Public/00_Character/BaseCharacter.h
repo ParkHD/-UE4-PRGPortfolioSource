@@ -71,6 +71,9 @@ protected:
 		class USkillComponent* SkillComponent;
 	UPROPERTY(VisibleAnywhere)
 		class UChildActorComponent* WeaponChildActorComponent;	// 메인무기 액터 컴포넌트
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Mesh)
+		class USkeletalMeshComponent* WeaponSkeletalMesh;		// 무기 스켈레탈
+
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 		class UAudioComponent* AudioComponent;
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
@@ -118,12 +121,13 @@ public:
 	UPROPERTY(EditAnywhere)
 		FGenericTeamId myTeam;					// TeamID
 
-	FTimerHandle standUpTimer;
+	FTimerHandle standUpTimer;			
+	FTimerHandle StunTimerHandle;		// 스턴 타이머
+
 protected:
 	EActionState actionState;
 	EMoveState moveState;
 	EAttackState attackState;
-	UPROPERTY(VisibleAnywhere)
 	ECharacterState characterState;
 public:
 	EActionState GetActionState() { return actionState; }

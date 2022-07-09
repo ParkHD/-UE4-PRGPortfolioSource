@@ -16,7 +16,9 @@ enum class ESkillType : uint8 // Enum이름 앞에 E꼭 붙여야함
 {
 	INSTANT,	// 즉시시전
 	CHARGING,	// 차징시전
+	DURATION,	// 지속시전
 };
+
 USTRUCT(BlueprintType)
 struct FSkillInformation : public FTableRowBase
 {
@@ -45,6 +47,10 @@ public:
 		class UAnimMontage* skill_Montage;	// 스킬 애니메이션
 	UPROPERTY(EditAnywhere)
 		class UAnimMontage* skill_ChargeMontage;	// 스킬 애니메이션
+	UPROPERTY(EditAnywhere, meta = (EditCondition = "skill_Type == ESkillType::DURATION"))
+		class UAnimMontage* skill_DurationMontage;	// 스킬 애니메이션
+	UPROPERTY(EditAnywhere, meta = (EditCondition = "skill_Type == ESkillType::DURATION"))
+		class UAnimMontage* skill_FinishMontage;	// 스킬 애니메이션
 };
 
 // 캐릭터의 스킬 리스트

@@ -17,7 +17,10 @@ ABaseCharacter::ABaseCharacter()
 	
 	StatusComponent = CreateDefaultSubobject<UStatusComponent>(TEXT("StatusComponent"));
 	SkillComponent = CreateDefaultSubobject<USkillComponent>(TEXT("SkillComponent"));
-	
+
+	WeaponSkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponSkeletalMesh"));
+	WeaponSkeletalMesh->SetupAttachment(GetMesh(), "S_Sword");
+
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio"));
 	// 소리 범위 설정
 	USoundAttenuation* soundAtt = NewObject<USoundAttenuation>();
@@ -56,11 +59,8 @@ void ABaseCharacter::Tick(float DeltaTime)
 
 	if(isAirborne)
 	{
-		UE_LOG(LogTemp, Log, TEXT("ddd"));
 		LaunchMesh(200, 5.f);
-		/*FVector newLocation = GetActorLocation();
-		GetMesh()->SetWorldLocation(GetCapsuleComponent())
-		GetCapsuleComponent()->SetWorldLocation(GetMesh()->GetSocketLocation("pelvis"));*/
+		UE_LOG(LogTemp, Log, TEXT("0"));
 	}
 
 }
@@ -78,7 +78,8 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	// 피격 애님
-	if (characterState != ECharacterState::AIRBORNE)
+	if (characterState != ECharacterState::AIRBORNE
+			&& actionState == EActionState::NORMAL)
 		GetMesh()->GetAnimInstance()->Montage_Play(hitMontage);
 
 	StatusComponent->AddHP(-DamageAmount);
@@ -101,17 +102,22 @@ float ABaseCharacter::CustomTakeDamage(EAttackType type, float DamageAmount, FDa
 		switch(type)
 		{
 		case EAttackType::NORMAL:
-			TakeStun(0.5f);
+			{
+			
+			}
 			break;
 		case EAttackType::KNOCKBACK:
 			{
-				TakeStun(0.5f);
+				
 				FVector knockbackDir = GetActorLocation() - DamageCauser->GetActorLocation();
 				LaunchCharacter(knockbackDir.GetSafeNormal(1.f) * value, true, true);
 			}
 			break;
 		case EAttackType::AIRBORNE :
-			TakeAirborne(200, value);
+			{
+				TakeAirborne(200, value);
+				LaunchMesh(200, 5.f);
+			}
 			break;
 		}
 	}
@@ -220,5 +226,10 @@ void ABaseCharacter::LaunchMesh(float zValue, float interpSpeed)
 
 void ABaseCharacter::StandUp()
 {
+	float time = GetMesh()->GetAnimInstance()->Montage_Play(StandUpMontage);
+	// 로직 멈추기
+	FTimerDelegate standUpdelegate = FTimerDelegate::CreateUObject(
+		this, &ABaseCharacter::SetCharacterState, ECharacterState::NORMAL);
 
+	GetWorldTimerManager().SetTimer(standUpTimer, standUpdelegate, time, false);
 }

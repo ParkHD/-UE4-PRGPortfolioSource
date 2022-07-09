@@ -28,8 +28,6 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 protected:
-	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Mesh)
-		class USkeletalMeshComponent* WeaponSkeletalMesh;				// ¹«±â ½ºÄÌ·¹Å»
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Camera)
 		class UCameraComponent* Camera;									// Ä«¸Þ¶ó
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Camera)
@@ -117,6 +115,9 @@ public:
 	// AttackState SetUp
 	virtual void SetAttackState(EAttackState state) override;
 
+	virtual void TakeStun(float stunTime) override;
+	virtual void TakeAirborne(float airbornePower, float stunTime) override;
+	virtual void StandUp() override;
 private:
 	// Ä«¸Þ¶ó ½¦ÀÌÅ© BP
 	UPROPERTY(EditAnywhere)

@@ -72,7 +72,8 @@ void UQuickSlotComponent::PressQuickSlot(int index)
 		if ((index >= 0 && index < quickSlotList.Num()) && quickSlotList[index] != nullptr)
 		{
 			// 사용하려는 슬롯이 스킬이라면 스킬 사용
-			if(quickSlotList[index]->IsA<USkillBase>())
+			if(quickSlotList[index]->IsA<USkillBase>()
+					&& owner->GetCharacterState() == ECharacterState::NORMAL)
 			{
 				owner->GetSkillComponent()->UseSkill(Cast<USkillBase>(quickSlotList[index]));
 			}

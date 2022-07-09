@@ -42,7 +42,6 @@ protected:
 		TSubclassOf<class UWidgetComponent> damageTextWidgetComponentClass;
 
 	FTimerHandle HPBarTimerHandle;		// HPBar 위젯 Visible 타이머
-	FTimerHandle StunTimerHandle;		// 몬스터 스턴 타이머
 
 	bool bodyAppearance = false;		// 죽은 후 시체 사라지기
 	float currentOpacity = 1.f;			// 시체 투명도

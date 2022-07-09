@@ -21,5 +21,8 @@ void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	if (player != nullptr && player->InputComponent)
 	{
 		playerSpeed = player->GetVelocity().Size();
+		isLevitate = player->isLevitate;
+		isAirborne = player->isAirborne;
+		characterState = player->GetCharacterState();
 	}
 }

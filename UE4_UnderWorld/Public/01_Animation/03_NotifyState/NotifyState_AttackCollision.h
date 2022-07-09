@@ -38,9 +38,9 @@ protected:
 		FName endSocketName;
 
 	UPROPERTY(EditAnywhere)
-		bool isSkillAttack = false;
+		bool isSkillAttack = false;		// 스킬 공격인지?
 	UPROPERTY(EditAnywhere, meta = (EditCondition = "isSkillAttack == true"))
-		FGameplayTag skill_Tag;	// 스킬 태그
+		FGameplayTag skill_Tag;			// 스킬 태그
 
 	UPROPERTY(EditAnywhere)
 		bool bChargingAttack = false;	// 차징 공격인지

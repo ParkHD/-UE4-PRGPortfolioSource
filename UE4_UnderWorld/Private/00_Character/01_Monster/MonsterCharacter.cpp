@@ -50,6 +50,8 @@ float AMonsterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 	// 체력 바 켜기
 	TurnOnHPBarWidget();
 
+	TakeStun(1.f);
+
 	return DamageAmount;
 }
 
@@ -174,12 +176,6 @@ void AMonsterCharacter::StandUp()
 {
 	Super::StandUp();
 
-	float time = GetMesh()->GetAnimInstance()->Montage_Play(StandUpMontage);
-	// 로직 멈추기
-	FTimerDelegate standUpdelegate = FTimerDelegate::CreateUObject(
-		this, &AMonsterCharacter::SetCharacterState, ECharacterState::NORMAL);
-
-	GetWorldTimerManager().SetTimer(standUpTimer, standUpdelegate, time, false);
 }
 
 void AMonsterCharacter::OnDead()

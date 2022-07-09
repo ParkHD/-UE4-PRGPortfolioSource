@@ -29,8 +29,6 @@ APlayerCharacter::APlayerCharacter()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	WeaponSkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponSkeletalMesh"));
-	WeaponSkeletalMesh->SetupAttachment(GetMesh(), "S_Sword");
 
 	ChargingParticleComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ChargingParticleSystem"));
 	ChargingParticleComponent->SetupAttachment(GetCapsuleComponent());
@@ -54,6 +52,7 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	SetGenericTeamId(10);
 }
 
 void APlayerCharacter::PostInitializeComponents()
@@ -134,7 +133,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 void APlayerCharacter::MoveForward(float newAxisValue)
 {
 	// 아무것도 안하고 있는 상태에서만 이동가능
-	if (actionState == EActionState::NORMAL)
+	if (actionState == EActionState::NORMAL
+		&& characterState == ECharacterState::NORMAL)
 	{
 		FRotator newRotation(0.0f, GetControlRotation().Yaw, 0.0f);
 		FVector direction = FRotationMatrix(newRotation).GetUnitAxis(EAxis::X);
@@ -144,7 +144,8 @@ void APlayerCharacter::MoveForward(float newAxisValue)
 void APlayerCharacter::MoveRight(float newAxisValue)
 {
 	// 아무것도 안하고 있는 상태에서만 이동가능
-	if (actionState == EActionState::NORMAL)
+	if (actionState == EActionState::NORMAL
+			&& characterState == ECharacterState::NORMAL)
 	{
 		FRotator newRotation(0.0f, GetControlRotation().Yaw, 0.0f);
 		FVector direction = FRotationMatrix(newRotation).GetUnitAxis(EAxis::Y);
@@ -189,7 +190,8 @@ void APlayerCharacter::Dash()
 
 void APlayerCharacter::PressAttack()
 {
-	if (AttackMontage != nullptr)
+	if (AttackMontage != nullptr 
+			&& characterState == ECharacterState::NORMAL)
 	{
 		// 이미 공격 중이라면 콤보 공격
 		if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage))
@@ -411,5 +413,63 @@ void APlayerCharacter::SetAttackState(EAttackState state)
 
 		break;
 	}
+}
+
+void APlayerCharacter::TakeStun(float stunTime)
+{
+	Super::TakeStun(stunTime);
+
+	// 마지막 스턴을 기준으로 타이머 시간 설정
+	if (GetWorldTimerManager().TimerExists(StunTimerHandle))
+	{
+		float remainTime = GetWorldTimerManager().GetTimerRemaining(StunTimerHandle);
+		if (remainTime < stunTime)
+		{
+			GetWorldTimerManager().ClearTimer(StunTimerHandle);
+
+			// 죽지 않았다면 일정 시간 후에 로직 재시작 타이머 설정
+
+			FTimerDelegate hitDelegate;
+			hitDelegate.BindUObject(this, &ABaseCharacter::SetCharacterState, ECharacterState::NORMAL);
+			GetWorldTimerManager().SetTimer(StunTimerHandle, hitDelegate, stunTime, false);
+		}
+	}
+	else
+	{
+		FTimerDelegate hitDelegate;
+		hitDelegate.BindUObject(this, &ABaseCharacter::SetCharacterState, ECharacterState::NORMAL);
+		GetWorldTimerManager().SetTimer(StunTimerHandle, hitDelegate, stunTime, false);
+	}
+}
+
+void APlayerCharacter::TakeAirborne(float airbornePower, float stunTime)
+{
+	Super::TakeAirborne(airbornePower, stunTime);
+
+
+	// 스턴 남은 시간을 기준에서 비교해서 더 큰것을 타이머 시간 설정
+	float time = stunTime;
+	if (GetWorldTimerManager().TimerExists(StunTimerHandle))
+	{
+		float remainTimer = GetWorldTimerManager().GetTimerRemaining(StunTimerHandle);;
+		if (remainTimer > time)
+			time = remainTimer;
+		GetWorldTimerManager().ClearTimer(StunTimerHandle);
+	}
+
+	// 죽지 않았다면 일정 시간 후에 로직 재시작 타이머 설정
+	if (!isDead)
+	{
+		FTimerDelegate hitDelegate;
+		hitDelegate.BindUObject(this, &APlayerCharacter::StandUp);
+		GetWorldTimerManager().SetTimer(StunTimerHandle, hitDelegate, stunTime, false);
+	}
+}
+
+void APlayerCharacter::StandUp()
+{
+	Super::StandUp();
+
+
 }
 
