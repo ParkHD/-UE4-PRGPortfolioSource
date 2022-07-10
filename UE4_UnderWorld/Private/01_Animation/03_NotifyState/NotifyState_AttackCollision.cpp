@@ -79,9 +79,9 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 				if (target != nullptr)
 				{
 					// 이미 대미지를 준 대상인지 확인
-					if (!hitActors.Contains(target))
+					if (!hitActors.Contains(target) 
+							&& target->GetGenericTeamId() != owner->GetGenericTeamId())
 					{
-						
 						hitActors.Emplace(target);
 
 						// 공격 대미지
@@ -100,7 +100,6 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 							// 맞은 위치에 hitparticle 소환
 							UGameplayStatics::SpawnEmitterAtLocation(MeshComp->GetWorld(), hitParticle, hit.Location, FRotator::ZeroRotator, true);
 						}
-						
 
 						float value = 0;
 						if(isSkillAttack)
@@ -113,8 +112,6 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 								value = skillInfo->skill_value;
 							}
 						}
-
-						
 
 						target->CustomTakeDamage(attackType, damageAmount, FDamageEvent(), owner->GetController(), owner, value);
 					}

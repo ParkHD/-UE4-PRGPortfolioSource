@@ -6,7 +6,10 @@
 #include "00_Character/BaseCharacter.h"
 #include "04_Skill/ChargingSkill.h"
 #include "00_Character/00_Player/PlayerCharacter.h"
+#include "00_Character/01_Monster/MonsterCharacter.h"
+#include "00_Character/01_Monster/MonsterController.h"
 #include "03_Component/00_Character/QuickSlotComponent.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 // Sets default values for this component's properties
 USkillComponent::USkillComponent()
@@ -50,13 +53,23 @@ void USkillComponent::AddSkill(USkillBase* skill)
 void USkillComponent::UseSkill(const FGameplayTag skillTag)
 {
 	// 스킬리스트 중에 해당 스킬태그가 있는 지 확인하고 스킬 사용
-	for (auto skill : SkillList)
+	for(int i = 0;i<SkillList.Num();i++)
 	{
-		if (skill->GetSkillInfo()->skill_Tag == skillTag)
+		if (SkillList[i]->GetSkillInfo()->skill_Tag == skillTag)
 		{
-			skill->UseSkill(GetOwner<ABaseCharacter>());
+			SkillList[i]->UseSkill(GetOwner<ABaseCharacter>());
+			if(owner->IsA<AMonsterCharacter>())
+			{
+				auto controller = owner->GetController<AMonsterController>();
+				if(controller != nullptr)
+				{
+					controller->GetBlackboardComponent()->SetValueAsInt("SkillIndex", i);
+				}
+			}
+			break;
 		}
 	}
+	
 }
 
 void USkillComponent::UseSkill(USkillBase* skill)

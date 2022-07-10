@@ -77,11 +77,6 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 		return 0.f;
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	// ÇÇ°Ý ¾Ö´Ô
-	if (characterState != ECharacterState::AIRBORNE
-			&& actionState == EActionState::NORMAL)
-		GetMesh()->GetAnimInstance()->Montage_Play(hitMontage);
-
 	StatusComponent->AddHP(-DamageAmount);
 	AudioComponent->SetSound(hitSound);
 	AudioComponent->Activate();
@@ -108,8 +103,8 @@ float ABaseCharacter::CustomTakeDamage(EAttackType type, float DamageAmount, FDa
 			break;
 		case EAttackType::KNOCKBACK:
 			{
-				
 				FVector knockbackDir = GetActorLocation() - DamageCauser->GetActorLocation();
+				UE_LOG(LogTemp, Log, TEXT("%f"), value);
 				LaunchCharacter(knockbackDir.GetSafeNormal(1.f) * value, true, true);
 			}
 			break;

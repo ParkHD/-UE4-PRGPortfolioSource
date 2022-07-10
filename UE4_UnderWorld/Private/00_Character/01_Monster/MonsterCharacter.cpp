@@ -7,12 +7,14 @@
 #include "Components/WidgetComponent.h"
 #include "02_Widget/DamageTextWidget.h"
 #include "03_Component/00_Character/StatusComponent.h"
+#include "99_GameMode/MyGameMode.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Damage.h"
 #include "Perception/AISense_Sight.h"
+#include "Kismet/GameplayStatics.h"
 
 AMonsterCharacter::AMonsterCharacter()
 {
@@ -43,7 +45,9 @@ void AMonsterCharacter::BeginPlay()
 
 float AMonsterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	// 피격 애님
+	if (characterState != ECharacterState::AIRBORNE)
+		GetMesh()->GetAnimInstance()->Montage_Play(hitMontage);
 
 	// 대미지 Text 생성
 	CreateDamageWidget(DamageAmount);
@@ -51,8 +55,7 @@ float AMonsterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 	TurnOnHPBarWidget();
 
 	TakeStun(1.f);
-
-	return DamageAmount;
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
 void AMonsterCharacter::Tick(float DeltaTime)
@@ -186,13 +189,18 @@ void AMonsterCharacter::OnDead()
 
 	GetMesh()->GetAnimInstance()->Montage_Play(DeadMontage);
 	GetWorldTimerManager().ClearAllTimersForObject(this);
+
 	// Behavior Tree 비활성화
 	AMonsterController* controller = GetController<AMonsterController>();
 	controller->BrainComponent->StopLogic("Dead");
-	
 
+	GetWorldTimerManager().ClearAllTimersForObject(this);
+
+	SetActorEnableCollision(false);
 	GetMesh()->SetCollisionProfileName(FName("Spectator"));
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	Cast<AMyGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->AddDeadEnemyArmy(this);
 }
 
 void AMonsterCharacter::SetStat()

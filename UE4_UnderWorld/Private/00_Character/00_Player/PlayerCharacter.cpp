@@ -62,6 +62,17 @@ void APlayerCharacter::PostInitializeComponents()
 	SetGenericTeamId(10);
 }
 
+float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	// ÇÇ°Ý ¾Ö´Ô
+	if (characterState != ECharacterState::AIRBORNE
+		&& actionState == EActionState::NORMAL)
+		GetMesh()->GetAnimInstance()->Montage_Play(hitMontage);
+
+	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+}
+
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {

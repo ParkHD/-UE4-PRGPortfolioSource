@@ -48,6 +48,7 @@ void UNotifyState_SpawnActor::NotifyEnd(USkeletalMeshComponent* MeshComp, UAnimS
 					// 대미지 계산
 					damage += damage * (skillInfo->skill_Damage / 100);
 					Cast<ASkillRangeActor>(spawnedActor)->SetValue(skillInfo->skill_value);
+					UE_LOG(LogTemp, Log, TEXT("%f"), skillInfo->skill_value);
 				}
 			}
 			Cast<ASkillRangeActor>(spawnedActor)->SetDamage(damage);
@@ -59,9 +60,12 @@ void UNotifyState_SpawnActor::SetSpawnLocation()
 {
 	if(owner != nullptr)
 	{
-		if(spawnTarget == ETarget::TARGET)
+		FVector startLocation;
+		FVector endLocation;
+
+		if (spawnTarget == ETarget::TARGET)
 		{
-			if(owner->IsA<AMonsterCharacter>())
+			if (owner->IsA<AMonsterCharacter>())
 			{
 				auto monController = owner->GetController<AMonsterController>();
 				if (monController != nullptr)
@@ -70,39 +74,38 @@ void UNotifyState_SpawnActor::SetSpawnLocation()
 					if (target != nullptr)
 					{
 						auto targetActor = Cast<AActor>(target);
-						if(targetActor != nullptr)
+						if (targetActor != nullptr)
 						{
-							FHitResult OutHit;
-							TArray<TEnumAsByte<EObjectTypeQuery>> objects;
-							objects.Emplace(UEngineTypes::ConvertToObjectType(ECC_WorldStatic));
-							if (UKismetSystemLibrary::LineTraceSingleForObjects(
-								owner->GetWorld(),
-								targetActor->GetActorLocation(),
-								targetActor->GetActorLocation() - targetActor->GetActorUpVector() * rayLength,
-								objects,
-								false,
-								TArray<AActor*>(),
-								EDrawDebugTrace::ForDuration,
-								OutHit,
-								true))
-							{
-
-								spawnLocation = OutHit.Location;
-
-							}
+							startLocation = targetActor->GetActorLocation();
+							endLocation = targetActor->GetActorLocation() - targetActor->GetActorUpVector() * rayLength;
 						}
-					}
-					else
-					{
-						
 					}
 				}
 			}
 		}
-		else if(spawnTarget == ETarget::ME)
+		else if (spawnTarget == ETarget::ME)
 		{
-			spawnLocation = owner->GetActorLocation();
+			startLocation = owner->GetActorLocation();
+			endLocation = owner->GetActorLocation() - owner->GetActorUpVector() * rayLength;
+
 			spawnRotator = owner->GetActorRotation();
+		}
+			
+		FHitResult OutHit;
+		TArray<TEnumAsByte<EObjectTypeQuery>> objects;
+		objects.Emplace(UEngineTypes::ConvertToObjectType(ECC_WorldStatic));
+		if (UKismetSystemLibrary::LineTraceSingleForObjects(
+			owner->GetWorld(),
+			startLocation,
+			endLocation,
+			objects,
+			false,
+			TArray<AActor*>(),
+			EDrawDebugTrace::ForDuration,
+			OutHit,
+			true))
+		{
+			spawnLocation = OutHit.Location;
 		}
 	}
 }

@@ -52,7 +52,7 @@ public:
 	void SetValue(float value);
 protected:
 	UFUNCTION()
-		void OnActorOverlapEvent(AActor* OverlappedActor, AActor* OtherActor);
+		virtual void OnActorOverlapEvent(AActor* OverlappedActor, AActor* OtherActor);
 };
 
 inline void ASkillRangeActor::SetValue(float value)

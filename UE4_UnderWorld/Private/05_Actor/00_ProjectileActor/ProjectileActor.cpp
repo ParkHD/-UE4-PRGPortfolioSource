@@ -70,65 +70,57 @@ void AProjectileActor::Tick(float DeltaTime)
 void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	auto myCharacter = Cast<ABaseCharacter>(GetOwner());
-	
-	// 자신을 제외한 캐릭터에 대미지를 줄것이다.
-	// owner가 같다면 반응을 안한다.
-	if (OtherActor->GetOwner() != GetOwner() && myCharacter != OtherActor)
+	if (myCharacter != nullptr)
 	{
 		// 지형지물에 닿았다면 destroy
 		if (OtherComp->GetCollisionObjectType() == ECC_WorldStatic)
 			Destroy();
-		// 대미지 중복 방지
-		if (!hitActors.Contains(OtherActor))
+		// 캐릭터라면?
+		if(OtherActor->IsA<ABaseCharacter>())
 		{
-			hitActors.Emplace(OtherActor);
-
-			// overlap 효과 재생
-			if (!isExplored)
+			// 적 캐릭터에만 대미지를 준다.
+			auto target = Cast<ABaseCharacter>(OtherActor);
+			if(target != nullptr
+				&& target->GetGenericTeamId() != myCharacter->GetGenericTeamId())
 			{
-				// 터지는 Particle 재생
-				if(hitParticle != nullptr)
-					UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitParticle, SweepResult.Location, FRotator::ZeroRotator, true);
-				else if(hitParticle_Nia != nullptr)
-					UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), hitParticle_Nia, SweepResult.Location);
-				// 소리 범위 설정
-				USoundAttenuation* soundAtt = NewObject<USoundAttenuation>();
-				FSoundAttenuationSettings setting;
-				setting.FalloffDistance = falloffDistance;
-				soundAtt->Attenuation = setting;
-				// 터지는 사운드 재생
-				UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundToPlay, SweepResult.Location, FRotator::ZeroRotator,
-					1.f, 1.f, 0.f, soundAtt);
+				// 대미지 중복 방지
+				if (!hitActors.Contains(target))
+				{
+					hitActors.Emplace(target);
+					target->CustomTakeDamage(EAttackType::NORMAL, damage, FDamageEvent(), myCharacter->GetController(), myCharacter, 0);
+					// overlap 효과 재생
+					if (!isExplored)
+					{
+						// 터지는 Particle 재생
+						if (hitParticle != nullptr)
+							UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitParticle, SweepResult.Location, FRotator::ZeroRotator, true);
+						else if (hitParticle_Nia != nullptr)
+							UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), hitParticle_Nia, SweepResult.Location);
+						// 소리 범위 설정
+						USoundAttenuation* soundAtt = NewObject<USoundAttenuation>();
+						FSoundAttenuationSettings setting;
+						setting.FalloffDistance = falloffDistance;
+						soundAtt->Attenuation = setting;
+						// 터지는 사운드 재생
+						UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundToPlay, SweepResult.Location, FRotator::ZeroRotator,
+							1.f, 1.f, 0.f, soundAtt);
 
-				// 카메라 쉐이크
-				Cast<AMyGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->CameraShake(1.f);
-				isExplored = true;
-			}
+						// 카메라 쉐이크
+						Cast<AMyGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->CameraShake(1.f);
+						isExplored = true;
+					}
 
-			// 멀티공격이 아니라면 콜리전을 꺼서 다중공격 방지
-			if (bHitSingle)
-			{
-				sphereComponent->SetCollisionProfileName("NoCollision");
-				projectileComponent->Velocity = FVector::ZeroVector;
-				audioComponent->VolumeMultiplier = 0.f;
-				Destroy();
-			}
-			
-			// 대상이 캐릭터라면 대미지 주기
-			if (OtherActor->IsA<ABaseCharacter>())
-			{
-				auto targetCharacter = Cast<ABaseCharacter>(OtherActor);
-				//targetCharacter->TakeDamage(damage, FDamageEvent(), myCharacter->GetController(), myCharacter);
-				//if (targetCharacter != myCharacter && targetCharacter->GetGenericTeamId() != myCharacter->GetGenericTeamId())
-				//{
-				//	FDamageEvent damageEvent;
-				//	/*EDamageType damageType = isSkill ? EDamageType::SKILL : EDamageType::NORMAL;
-				//	targetCharacter->TakeDamageType(damageType, skillDamage
-				//		, damageEvent, myCharacter->GetController(), myCharacter);*/
-				//}
+					// 멀티공격이 아니라면 콜리전을 꺼서 다중공격 방지
+					if (bHitSingle)
+					{
+						sphereComponent->SetCollisionProfileName("NoCollision");
+						projectileComponent->Velocity = FVector::ZeroVector;
+						audioComponent->VolumeMultiplier = 0.f;
+						Destroy();
+					}
+				}
 			}
 		}
-
 	}
 }
 
