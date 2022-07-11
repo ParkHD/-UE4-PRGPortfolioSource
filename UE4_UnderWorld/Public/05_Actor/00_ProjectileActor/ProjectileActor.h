@@ -71,4 +71,7 @@ public:
 public:
 	void TurnOnCollision(bool bTurn);
 	void SetDamage(float damageAmount) { damage = damageAmount; }	// 대미지 설정
+
+	void Explored(FVector Location);
 };
+

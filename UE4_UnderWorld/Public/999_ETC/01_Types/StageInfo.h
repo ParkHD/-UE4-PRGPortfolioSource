@@ -36,8 +36,13 @@ struct FDungeonInfo : public FTableRowBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere)
-		FGameplayTag Dungeon_Tag;				// 던전 태그
+		FGameplayTag Dungeon_Tag;						// 던전 태그
+
 	UPROPERTY(EditAnywhere)
+		FText Dungeon_StartText;						// 던전 시작 Text
+	UPROPERTY(EditAnywhere)
+		FText Dungeon_EndText;							// 던전 종료 Text
+	UPROPERTY(EditAnywhere)						
 		TArray<FStageInfomation> StageArray;			// 던전에 있는 스테이지 정보
 };
 UCLASS()

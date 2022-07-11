@@ -72,9 +72,7 @@ void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* Overlap
 	auto myCharacter = Cast<ABaseCharacter>(GetOwner());
 	if (myCharacter != nullptr)
 	{
-		// 지형지물에 닿았다면 destroy
-		if (OtherComp->GetCollisionObjectType() == ECC_WorldStatic)
-			Destroy();
+		
 		// 캐릭터라면?
 		if(OtherActor->IsA<ABaseCharacter>())
 		{
@@ -88,27 +86,8 @@ void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* Overlap
 				{
 					hitActors.Emplace(target);
 					target->CustomTakeDamage(EAttackType::NORMAL, damage, FDamageEvent(), myCharacter->GetController(), myCharacter, 0);
-					// overlap 효과 재생
-					if (!isExplored)
-					{
-						// 터지는 Particle 재생
-						if (hitParticle != nullptr)
-							UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitParticle, SweepResult.Location, FRotator::ZeroRotator, true);
-						else if (hitParticle_Nia != nullptr)
-							UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), hitParticle_Nia, SweepResult.Location);
-						// 소리 범위 설정
-						USoundAttenuation* soundAtt = NewObject<USoundAttenuation>();
-						FSoundAttenuationSettings setting;
-						setting.FalloffDistance = falloffDistance;
-						soundAtt->Attenuation = setting;
-						// 터지는 사운드 재생
-						UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundToPlay, SweepResult.Location, FRotator::ZeroRotator,
-							1.f, 1.f, 0.f, soundAtt);
 
-						// 카메라 쉐이크
-						Cast<AMyGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->CameraShake(1.f);
-						isExplored = true;
-					}
+					Explored(SweepResult.Location);
 
 					// 멀티공격이 아니라면 콜리전을 꺼서 다중공격 방지
 					if (bHitSingle)
@@ -121,6 +100,35 @@ void AProjectileActor::OnComponentBeginOverlapEvent(UPrimitiveComponent* Overlap
 				}
 			}
 		}
+		else
+		{
+			Explored(SweepResult.Location);
+			Destroy();
+		}
+	}
+}
+void AProjectileActor::Explored(FVector Location)
+{
+	// overlap 효과 재생
+	if (!isExplored)
+	{
+		// 터지는 Particle 재생
+		if (hitParticle != nullptr)
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), hitParticle, Location, FRotator::ZeroRotator, true);
+		else if (hitParticle_Nia != nullptr)
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), hitParticle_Nia, Location);
+		// 소리 범위 설정
+		USoundAttenuation* soundAtt = NewObject<USoundAttenuation>();
+		FSoundAttenuationSettings setting;
+		setting.FalloffDistance = falloffDistance;
+		soundAtt->Attenuation = setting;
+		// 터지는 사운드 재생
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), soundToPlay, Location, FRotator::ZeroRotator,
+			1.f, 1.f, 0.f, soundAtt);
+
+		// 카메라 쉐이크
+		Cast<AMyGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->CameraShake(1.f);
+		isExplored = true;
 	}
 }
 
@@ -131,3 +139,4 @@ void AProjectileActor::TurnOnCollision(bool bTurn)
 	else
 		sphereComponent->SetCollisionProfileName("NoCollision");
 }
+

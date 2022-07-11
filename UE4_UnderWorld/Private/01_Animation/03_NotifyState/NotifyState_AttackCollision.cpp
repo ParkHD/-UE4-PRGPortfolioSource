@@ -68,7 +68,7 @@ void UNotifyState_AttackCollision::NotifyTick(USkeletalMeshComponent* MeshComp, 
 			objects,
 			false,
 			ignoreActor,
-			EDrawDebugTrace::ForDuration,
+			EDrawDebugTrace::None,
 			hits,
 			true))
 		{

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "00_Character/BaseCharacter.h"
+#include "999_ETC/02_Interface/Interface_InterAction.h"
 #include "PlayerCharacter.generated.h"
 
 DECLARE_DELEGATE_OneParam(FShakeDelegate, float);
@@ -48,10 +49,10 @@ public:
 public:
 	const float GetChargingTime() { return chargingTime; }
 protected:
-
 	UPROPERTY(EditAnywhere, Category = Montage)
 		class UAnimMontage* DashMontage;		// 대쉬 몽타주
 
+	IInterface_InterAction* interActionActor;
 private:
 	// 키 조작 함수
 	// 앞뒤 이동
@@ -104,6 +105,8 @@ private:
 	// 스킬 창 열기
 	void PressSkillWindow();
 
+	// 상호작용 키
+	void PressInterActive();
 public:
 	// 플레이어 카메라 쉐이킹
 	void CameraShakeDemo(float Scale);
@@ -119,6 +122,8 @@ public:
 	virtual void TakeStun(float stunTime) override;
 	virtual void TakeAirborne(float airbornePower, float stunTime) override;
 	virtual void StandUp() override;
+
+	void SetInterActionActor(IInterface_InterAction* InterAction) { interActionActor = InterAction; }
 private:
 	// 카메라 쉐이크 BP
 	UPROPERTY(EditAnywhere)

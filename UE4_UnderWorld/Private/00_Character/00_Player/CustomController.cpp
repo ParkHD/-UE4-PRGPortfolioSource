@@ -8,6 +8,7 @@
 #include "02_Widget/00_Player/00_Status/PlayerStatusWidget.h"
 #include "02_Widget/00_Player/01_Skill/SkillWindowWidget.h"
 #include "02_Widget/00_Player/02_QuickSlot/QuickSlotListWidget.h"
+#include "02_Widget/03_Alarm/AlarmWidget.h"
 #include "03_Component/00_Character/QuickSlotComponent.h"
 #include "03_Component/00_Character/SkillComponent.h"
 
@@ -59,5 +60,16 @@ void ACustomController::OpenSkillWindow()
 			mainWidget->GetUMG_SkillWindow()->SetVisibility(ESlateVisibility::Visible);
 		else if (mainWidget->GetUMG_SkillWindow()->GetVisibility() == ESlateVisibility::Visible)
 			mainWidget->GetUMG_SkillWindow()->SetVisibility(ESlateVisibility::Hidden);
+	}
+}
+
+void ACustomController::ActivateAlarmWidget(FText text)
+{
+	// Alarm 셋업 및 활성화
+	if(mainWidget != nullptr)
+	{
+		mainWidget->GetUMG_Alarm()->OnInitialized();
+		mainWidget->GetUMG_Alarm()->SetVisibility(ESlateVisibility::HitTestInvisible);
+		mainWidget->GetUMG_Alarm()->SetText(text);
 	}
 }

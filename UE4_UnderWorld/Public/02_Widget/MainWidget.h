@@ -23,9 +23,12 @@ protected:
 	// ÇÃ·¹ÀÌ¾î Äü ½½·Ô
 	UPROPERTY(Meta = (BindWidget))
 		class UQuickSlotListWidget* UMG_QuickSlotList;
+	// ¾Ë¶÷ À§Á¬
+	UPROPERTY(Meta = (BindWidget))
+		class UAlarmWidget* UMG_Alarm;
 public:
 	class UPlayerStatusWidget* GetUMG_PlayerStatus() { return UMG_PlayerStatus; }
 	class USkillWindowWidget* GetUMG_SkillWindow() { return UMG_SkillWindow; }
 	class UQuickSlotListWidget* GetUMG_QuickSlotList() { return UMG_QuickSlotList; }
-
+	class UAlarmWidget* GetUMG_Alarm() { return UMG_Alarm; }
 };

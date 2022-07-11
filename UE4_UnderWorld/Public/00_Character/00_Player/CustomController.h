@@ -21,6 +21,9 @@ protected:
 public:
 	// 스킬 창 열기
 	void OpenSkillWindow();
+
+	// Alarm 활성화
+	void ActivateAlarmWidget(FText text);
 protected:
 	UPROPERTY()
 		class APlayerCharacter* ownerPlayer;

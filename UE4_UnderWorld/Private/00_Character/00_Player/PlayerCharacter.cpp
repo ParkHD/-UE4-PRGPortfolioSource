@@ -16,6 +16,7 @@
 #include "Camera/CameraShakeBase.h"
 #include "GameFramework/GameModeBase.h"
 #include "03_Component/00_Character/SkillComponent.h"
+#include "03_Component/00_Character/StatusComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
 APlayerCharacter::APlayerCharacter()
@@ -99,6 +100,8 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 	PlayerInputComponent->BindAction("Attack", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressAttack);
 	PlayerInputComponent->BindAction("Dash", EInputEvent::IE_Pressed, this, &APlayerCharacter::Dash);
+	PlayerInputComponent->BindAction("InterAction", EInputEvent::IE_Pressed, this, &APlayerCharacter::PressInterActive);
+
 	//PlayerInputComponent->BindAction<FShakeDelegate>("Attack", EInputEvent::IE_Pressed, this, &APlayerCharacter::CameraShakeDemo, 1.0f);
 	PlayerInputComponent->BindAction<FShakeDelegate>("RightClick", EInputEvent::IE_Pressed, this, &APlayerCharacter::CameraShakeDemo, 0.1f);
 #pragma region QuickSlotKey
@@ -175,8 +178,11 @@ void APlayerCharacter::Turn(float newAxisValue)
 void APlayerCharacter::Dash()
 {
 	// 아무것도 안하고 있는 상태에서만 이동가능
-	if(actionState == EActionState::NORMAL)
+	if(actionState == EActionState::NORMAL
+			&& StatusComponent->CheckStamina(20))
 	{
+		StatusComponent->AddStamina(-25.f);
+
 		SetMoveState(EMoveState::IDLE);
 		SetActionState(EActionState::DASH);
 
@@ -373,6 +379,11 @@ void APlayerCharacter::PressSkillWindow()
 	Cast<ACustomController>(GetController())->OpenSkillWindow();
 }
 
+void APlayerCharacter::PressInterActive()
+{
+	if(interActionActor != nullptr)
+		interActionActor->InterAction(this);
+}
 
 
 void APlayerCharacter::CameraShakeDemo(float scale)

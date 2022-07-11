@@ -121,9 +121,11 @@ public:
 	UPROPERTY(EditAnywhere)
 		FGenericTeamId myTeam;					// TeamID
 
-	FTimerHandle standUpTimer;			
-	FTimerHandle StunTimerHandle;		// 스턴 타이머
+	UPROPERTY(EditAnywhere)
+		bool isBoss = false;			// 보스형 캐릭터 인가
 
+	FTimerHandle standUpTimer;			// StandUp 타이머
+	FTimerHandle StunTimerHandle;		// 스턴 타이머
 protected:
 	EActionState actionState;
 	EMoveState moveState;

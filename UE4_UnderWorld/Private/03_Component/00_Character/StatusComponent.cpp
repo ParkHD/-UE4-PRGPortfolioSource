@@ -3,6 +3,7 @@
 
 #include "03_Component/00_Character/StatusComponent.h"
 #include "00_Character/BaseCharacter.h"
+#include "00_Character/00_Player/PlayerCharacter.h"
 
 // Sets default values for this component's properties
 UStatusComponent::UStatusComponent()
@@ -32,31 +33,16 @@ void UStatusComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	// 캐릭터의 Move상태에 따라서 스태미너 변동
 	if (owner != nullptr)
 	{
-		//switch (player->GetMoveState())
-		//{
-		//case EMoveState::NORMAL:
-		//	// 일반 상태이면 스태미너 회복
-		//	AddStamina(5 * DeltaTime);
-		//	break;
-
-		//case EMoveState::RUN:
-		//	// 뛰고있으면 스태미너 감소
-		//	if (CheckStamina(10.f))
-		//		AddStamina(-10 * DeltaTime);
-		//	// 충분한 스태미너 없으면 일반 상태로 변경 -> 달리기 멈추기
-		//	else
-		//		player->SetMoveState(EMoveState::NORMAL);
-		//	break;
-
-		//case EMoveState::FLY:
-		//	// 날고 있으면 스태미너 감소
-		//	if (CheckStamina(10.f))
-		//		AddStamina(-10 * DeltaTime);
-		//	// 충분한 스태미너 없으면 일반 상태로 변경 -> 날기 멈추기
-		//	else
-		//		player->SetMoveState(EMoveState::NORMAL);
-		//	break;
-		//}
+		if(owner->IsA<APlayerCharacter>())
+		{
+			switch (owner->GetActionState())
+			{
+			case EActionState::NORMAL :
+				// 일반 상태이면 스태미너 회복
+				AddStamina(15 * DeltaTime);
+				break;
+			}
+		}
 	}
 }
 
@@ -102,20 +88,6 @@ void UStatusComponent::AddStamina(float value)
 
 	// Player : Status Widget 업데이트
 	OnChangeSP.Broadcast(this);
-
-	//// AI전용
-	//// AI는 Stamina 변동 될 때마다 블랙보드 업데이트
-	//if (player->IsA<AMonsterBaseCharacter>())
-	//{
-	//	auto aiController = player->GetController<AMonsterAIController>();
-	//	if (aiController != nullptr)
-	//	{
-	//		if (aiController->GetBlackboardComponent() != nullptr)
-	//		{
-	//			aiController->GetBlackboardComponent()->SetValueAsFloat("Stamina", currentSP);
-	//		}
-	//	}
-	//}
 }
 bool UStatusComponent::CheckStamina(float value)
 {

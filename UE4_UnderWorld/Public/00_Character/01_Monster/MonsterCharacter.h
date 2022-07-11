@@ -48,8 +48,7 @@ protected:
 	UPROPERTY(EditAnywhere)
 		float opacityLerpSpeed = 0.1f;	// 시체 사라지는 속도
 
-	UPROPERTY(EditAnywhere)
-		bool isBoss = false;			// 보스몬스터인지 설정
+	
 
 	UPROPERTY(EditAnywhere, Category = "Animation")	
 		TArray<class UAnimMontage*> attackMontageArray;		// 공격 몽타주

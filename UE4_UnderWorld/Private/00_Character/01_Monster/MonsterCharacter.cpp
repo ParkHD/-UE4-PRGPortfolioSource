@@ -3,6 +3,7 @@
 
 #include "00_Character/01_Monster/MonsterCharacter.h"
 
+#include "00_Character/00_Player/PlayerCharacter.h"
 #include "00_Character/01_Monster/MonsterController.h"
 #include "Components/WidgetComponent.h"
 #include "02_Widget/DamageTextWidget.h"
@@ -32,6 +33,7 @@ void AMonsterCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	SetGenericTeamId(20);
+	SetStat();
 
 	OnDeadEvent.AddUniqueDynamic(this, &AMonsterCharacter::OnDead);
 }
@@ -40,7 +42,7 @@ void AMonsterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetStat();
+	
 }
 
 float AMonsterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -54,7 +56,10 @@ float AMonsterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 	// 체력 바 켜기
 	TurnOnHPBarWidget();
 
-	TakeStun(1.f);
+	if(!isBoss)
+		TakeStun(1.f);
+
+
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
 
@@ -263,7 +268,6 @@ void AMonsterCharacter::CreateDamageWidget(float damageAmount)
 		UWidgetComponent* DamageWidgetComp = NewObject<UWidgetComponent>(this, damageTextWidgetComponentClass);
 		DamageWidgetComp->RegisterComponent();
 		DamageWidgetComp->InitWidget();
-
 		auto damageWidget = DamageWidgetComp->GetUserWidgetObject();
 		if (damageWidget != nullptr)
 		{

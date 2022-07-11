@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "00_Character/BaseCharacter.h"
+
+#include "00_Character/00_Player/PlayerCharacter.h"
 #include "Components/ChildActorComponent.h"
 #include "03_Component/00_Character/StatusComponent.h"
 #include "03_Component/00_Character/SkillComponent.h"
@@ -50,6 +52,7 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	StatusComponent->Init();
 }
 
 // Called every frame
@@ -60,9 +63,7 @@ void ABaseCharacter::Tick(float DeltaTime)
 	if(isAirborne)
 	{
 		LaunchMesh(200, 5.f);
-		UE_LOG(LogTemp, Log, TEXT("0"));
 	}
-
 }
 
 // Called to bind functionality to input
@@ -98,20 +99,27 @@ float ABaseCharacter::CustomTakeDamage(EAttackType type, float DamageAmount, FDa
 		{
 		case EAttackType::NORMAL:
 			{
-			
+				// 플레이어에게 대미지를 입었다면 플레이어의 MP 충전
+				if (DamageCauser->IsA<APlayerCharacter>())
+					Cast<APlayerCharacter>(DamageCauser)->GetStatusComponent()->AddMP(5.f);
 			}
 			break;
 		case EAttackType::KNOCKBACK:
 			{
-				FVector knockbackDir = GetActorLocation() - DamageCauser->GetActorLocation();
-				UE_LOG(LogTemp, Log, TEXT("%f"), value);
-				LaunchCharacter(knockbackDir.GetSafeNormal(1.f) * value, true, true);
+				if(!isBoss)
+				{
+					FVector knockbackDir = GetActorLocation() - DamageCauser->GetActorLocation();
+					LaunchCharacter(knockbackDir.GetSafeNormal(1.f) * value, true, true);
+				}
 			}
 			break;
 		case EAttackType::AIRBORNE :
 			{
-				TakeAirborne(200, value);
-				LaunchMesh(200, 5.f);
+				if(!isBoss)
+				{
+					TakeAirborne(200, value);
+					LaunchMesh(200, 5.f);
+				}
 			}
 			break;
 		}

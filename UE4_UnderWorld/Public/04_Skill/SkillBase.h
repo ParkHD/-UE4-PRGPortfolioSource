@@ -42,7 +42,6 @@ public:
 	const FSkillInformation* GetSkillInfo();	// 스킬 정보 가져오기
 
 	virtual void UseSkill(class ABaseCharacter* caller); // 스킬 사용
-
 public:
 	// 스킬 소유자 설정
 	void SetSkillOwner(class ABaseCharacter* SkillOwner) { skillOwner = SkillOwner; }
