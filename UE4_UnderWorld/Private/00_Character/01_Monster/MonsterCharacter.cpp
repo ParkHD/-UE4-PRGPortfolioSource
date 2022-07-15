@@ -19,7 +19,7 @@
 
 AMonsterCharacter::AMonsterCharacter()
 {
-	// ½ºÆù or ¹èÄ¡ µÉ ¶§ ÀÚµ¿À¸·Î controllerºÎÂø
+	// ìŠ¤í° or ë°°ì¹˜ ë  ë•Œ ìë™ìœ¼ë¡œ controllerë¶€ì°©
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	AIPerceptionStimuliSourceComponent = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("AIPerceptionStimuliSourceComponent"));
@@ -31,34 +31,34 @@ AMonsterCharacter::AMonsterCharacter()
 void AMonsterCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
+	
+	// ëª¬ìŠ¤í„° ë° ì êµ°ì€ Team IDë¥¼ 20ìœ¼ë¡œ ì„¤ì •
 	SetGenericTeamId(20);
+	// ëŠ¥ë ¥ì¹˜ ì„¤ì •
 	SetStat();
-
+	
+	// í•¨ìˆ˜ ë°”ì¸ë”©
 	OnDeadEvent.AddUniqueDynamic(this, &AMonsterCharacter::OnDead);
 }
 
 void AMonsterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	
 }
 
 float AMonsterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	// ÇÇ°İ ¾Ö´Ô
+	// í”¼ê²© ì• ë‹˜
 	if (characterState != ECharacterState::AIRBORNE)
 		GetMesh()->GetAnimInstance()->Montage_Play(hitMontage);
 
-	// ´ë¹ÌÁö Text »ı¼º
+	// ëŒ€ë¯¸ì§€ Text ìƒì„±
 	CreateDamageWidget(DamageAmount);
-	// Ã¼·Â ¹Ù ÄÑ±â
+	// ì²´ë ¥ ë°” ì¼œê¸°
 	TurnOnHPBarWidget();
-
+	// ë³´ìŠ¤ ìºë¦­í„°ê°€ ì•„ë‹ˆë¼ë©´ ìŠ¤í„´
 	if(!isBoss)
 		TakeStun(1.f);
-
 
 	return Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 }
@@ -80,7 +80,7 @@ const FMonsterInfo* AMonsterCharacter::GetMonsterInfo()
 void AMonsterCharacter::SetActionState(EActionState state)
 {
 	Super::SetActionState(state);
-
+	// ë¸”ë™ ë³´ë“œ ë³€ìˆ˜ ê°’ ì„¤ì •
 	Cast<AMonsterController>(GetController())->GetBlackboardComponent()->SetValueAsEnum("ActionState", (uint8)state);
 
 	switch (state)
@@ -93,7 +93,7 @@ void AMonsterCharacter::SetActionState(EActionState state)
 void AMonsterCharacter::SetAttackState(EAttackState state)
 {
 	Super::SetAttackState(state);
-
+	// ë¸”ë™ ë³´ë“œ ë³€ìˆ˜ ê°’ 
 	Cast<AMonsterController>(GetController())->GetBlackboardComponent()->SetValueAsEnum("AttackState", (uint8)state);
 
 	switch (state)
@@ -110,7 +110,7 @@ void AMonsterCharacter::SetCharacterState(ECharacterState state)
 	switch (state)
 	{
 	case ECharacterState::NORMAL:
-		// ·ÎÁ÷ °¡µ¿
+		// ë¡œì§ ê°€ë™
 		AMonsterController* controller = GetController<AMonsterController>();
 		if(!isDead && !controller->BrainComponent->IsRunning())
 		{
@@ -124,11 +124,11 @@ void AMonsterCharacter::TakeAirborne(float airbornePower, float stunTime)
 {
 	Super::TakeAirborne(airbornePower, stunTime);
 
-	// ·ÎÁ÷ ¸ØÃß±â
+	// ë¡œì§ ë©ˆì¶”ê¸°
 	AMonsterController* controller = GetController<AMonsterController>();
 	controller->BrainComponent->StopLogic("airborne");
 
-	// ½ºÅÏ ³²Àº ½Ã°£À» ±âÁØ¿¡¼­ ºñ±³ÇØ¼­ ´õ Å«°ÍÀ» Å¸ÀÌ¸Ó ½Ã°£ ¼³Á¤
+	// ìƒˆë¡œ ë“¤ì–´ì˜¨ ìŠ¤í„´ì‹œê°„ê³¼ í˜„ì¬ ëŒì•„ê°€ê³  ìˆëŠ” ìŠ¤í„´ì‹œê°„ì„ ë¹„êµí•˜ì—¬ í° ê°’ìœ¼ë¡œ íƒ€ì´ë¨¸ 
 	float time = stunTime;
 	if (GetWorldTimerManager().TimerExists(StunTimerHandle))
 	{
@@ -138,7 +138,7 @@ void AMonsterCharacter::TakeAirborne(float airbornePower, float stunTime)
 		GetWorldTimerManager().ClearTimer(StunTimerHandle);
 	}
 
-	// Á×Áö ¾Ê¾Ò´Ù¸é ÀÏÁ¤ ½Ã°£ ÈÄ¿¡ ·ÎÁ÷ Àç½ÃÀÛ Å¸ÀÌ¸Ó ¼³Á¤
+	// ì£½ì§€ ì•Šì•˜ë‹¤ë©´ ì¼ì • ì‹œê°„ í›„ì— ë¡œì§ ì¬ì‹œì‘ íƒ€ì´ë¨¸ ì„¤ì •
 	if (!isDead)
 	{
 		FTimerDelegate hitDelegate;
@@ -151,11 +151,11 @@ void AMonsterCharacter::TakeStun(float stunTime)
 {
 	Super::TakeStun(stunTime);
 
-	// ·ÎÁ÷ ¸ØÃß±â
+	// ë¡œì§ ë©ˆì¶”ê¸°
 	AMonsterController* controller = GetController<AMonsterController>();
 	controller->BrainComponent->StopLogic("Hit");
 
-	// ¸¶Áö¸· ½ºÅÏÀ» ±âÁØÀ¸·Î Å¸ÀÌ¸Ó ½Ã°£ ¼³Á¤
+	// ë§ˆì§€ë§‰ ìŠ¤í„´ì„ ê¸°ì¤€ìœ¼ë¡œ íƒ€ì´ë¨¸ ì‹œê°„ ì„¤ì •
 	if (GetWorldTimerManager().TimerExists(StunTimerHandle))
 	{
 		float remainTime = GetWorldTimerManager().GetTimerRemaining(StunTimerHandle);
@@ -163,8 +163,7 @@ void AMonsterCharacter::TakeStun(float stunTime)
 		{
 			GetWorldTimerManager().ClearTimer(StunTimerHandle);
 
-			// Á×Áö ¾Ê¾Ò´Ù¸é ÀÏÁ¤ ½Ã°£ ÈÄ¿¡ ·ÎÁ÷ Àç½ÃÀÛ Å¸ÀÌ¸Ó ¼³Á¤
-			
+			// ì£½ì§€ ì•Šì•˜ë‹¤ë©´ ì¼ì • ì‹œê°„ í›„ì— ë¡œì§ ì¬ì‹œì‘ íƒ€ì´ë¨¸ ì„¤ì •
 			FTimerDelegate hitDelegate;
 			hitDelegate.BindUObject(controller->BrainComponent, &UBrainComponent::StartLogic);
 			hitDelegate.BindUObject(this, &ABaseCharacter::SetCharacterState, ECharacterState::NORMAL);
@@ -191,26 +190,26 @@ void AMonsterCharacter::OnDead()
 	Super::OnDead();
 
 	isDead = true;
-
+	// ëª½íƒ€ì£¼ ì‹¤í–‰
 	GetMesh()->GetAnimInstance()->Montage_Play(DeadMontage);
-	GetWorldTimerManager().ClearAllTimersForObject(this);
 
-	// Behavior Tree ºñÈ°¼ºÈ­
+	// Behavior Tree ë¹„í™œì„±í™”
 	AMonsterController* controller = GetController<AMonsterController>();
 	controller->BrainComponent->StopLogic("Dead");
-
+	// ìºë¦­í„°ì˜ íƒ€ì´ë¨¸ ëª¨ë‘ ì´ˆê¸°í™”
 	GetWorldTimerManager().ClearAllTimersForObject(this);
-
+	// ì½œë¦¬ì „ ì—†ì• ê¸°
 	SetActorEnableCollision(false);
 	GetMesh()->SetCollisionProfileName(FName("Spectator"));
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-
+	// ì£½ì€ ìºë¦­í„° GameState ë°°ì—´ì— ë„£ê¸°
 	Cast<AMyGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->AddDeadEnemyArmy(this);
 }
 
 void AMonsterCharacter::SetStat()
 {
 	auto info = GetMonsterInfo();
+	// í…Œì´ë¸”ì— ìˆëŠ” ëª¬ìŠ¤í„° ì •ë³´ë¡œ ìºë¦­í„° ì„¤ì •
 	if(info != nullptr)
 	{
 		StatusComponent->SetStat(info->monster_Stat);
@@ -221,6 +220,7 @@ void AMonsterCharacter::SetStat()
 
 void AMonsterCharacter::NormalAttack()
 {
+	// ëœë¤í•˜ê²Œ ê³µê²© ëª¨ì…˜ 
 	if(attackMontageArray.Num() > 0)
 	{
 		int randIndex = FMath::RandRange(0, attackMontageArray.Num() - 1);
@@ -241,13 +241,13 @@ void AMonsterCharacter::NormalAttack()
 
 void AMonsterCharacter::TurnOnHPBarWidget()
 {
-	// HPBar Å¸ÀÌ¸Ó°¡ ÀÌ¹Ì µ¹°í ÀÖ´Ù¸é Å¸ÀÌ¸Ó ÃÊ±âÈ­ -> ¸¶Áö¸· Hit ½Ã°£À» ±âÁØÀ¸·Î Å¸ÀÌ¸Ó
+	// HPBar íƒ€ì´ë¨¸ê°€ ì´ë¯¸ ëŒê³  ìˆë‹¤ë©´ íƒ€ì´ë¨¸ ì´ˆê¸°í™” -> ë§ˆì§€ë§‰ Hit ì‹œê°„ì„ ê¸°ì¤€ìœ¼ë¡œ íƒ€ì´ë¨¸
 	if (GetWorld()->GetTimerManager().TimerExists(HPBarTimerHandle))
 		GetWorld()->GetTimerManager().ClearTimer(HPBarTimerHandle);
 	else
 		HPBarWidgetComponent->SetVisibility(true);
 
-	// ÇÇ°İ ½Ã HPBar À§Á¬ È°¼ºÈ­ ÈÄ ÀÏÁ¤ ½Ã°£ ÈÄ¿¡ ºñÈ°¼ºÈ­
+	// í”¼ê²© ì‹œ HPBar ìœ„ì ¯ í™œì„±í™” í›„ ì¼ì • ì‹œê°„ í›„ì— ë¹„í™œì„±í™”
 	if (actionState != EActionState::SKILL)
 	{
 		FTimerDelegate SetVisibilityDelegate = FTimerDelegate::CreateUObject(HPBarWidgetComponent,
@@ -264,21 +264,21 @@ void AMonsterCharacter::CreateDamageWidget(float damageAmount)
 {
 	if (damageTextWidgetComponentClass != nullptr)
 	{
-		// µ¿Àû»ı¼º // NewObject vs CreateDefault
+		// ë™ì ìƒì„± // NewObject vs CreateDefault
 		UWidgetComponent* DamageWidgetComp = NewObject<UWidgetComponent>(this, damageTextWidgetComponentClass);
 		DamageWidgetComp->RegisterComponent();
 		DamageWidgetComp->InitWidget();
 		auto damageWidget = DamageWidgetComp->GetUserWidgetObject();
 		if (damageWidget != nullptr)
 		{
+			// ë°ë¯¸ì§€ Text ì„¤ì • ë° ìœ„ì¹˜ ì„¤ì •
 			Cast<UDamageTextWidget>(damageWidget)->SetUp(damageAmount);
 			DamageWidgetComp->SetWorldLocation(GetActorLocation());
 		}
 
-		// ¿©±â¸¸µçÀÌÀ¯ ÀÏÈ¸¿ëÀÌ¶ó¼­ Çì´õ¿¡´Ù ÇÏ¸é µ¤¾î½áÁ®¼­ ¾È ¾ø¾îÁö´Â ¿À·ù »ı±ä´Ù.
+		// ì—¬ê¸°ë§Œë“ ì´ìœ  ì¼íšŒìš©ì´ë¼ì„œ í—¤ë”ì—ë‹¤ í•˜ë©´ ë®ì–´ì¨ì ¸ì„œ ì•ˆ ì—†ì–´ì§€ëŠ” ì˜¤ë¥˜ ìƒê¸´ë‹¤.
 		FTimerHandle damageTextTimerHandle;
-		// ÆÄ¶ó¹ÌÅÍ¾ø´Â ÇÔ¼ö È£Ãâ
-		// actor¸¦ »ó¼Ó¹Ş¾ÒÀ¸¸é
+		// íŒŒë¼ë¯¸í„°ì—†ëŠ” í•¨ìˆ˜ í˜¸ì¶œ
 		FTimerDelegate DamageTextTimerDel = FTimerDelegate::CreateUObject(
 			DamageWidgetComp, &UWidgetComponent::DestroyComponent, false);
 
