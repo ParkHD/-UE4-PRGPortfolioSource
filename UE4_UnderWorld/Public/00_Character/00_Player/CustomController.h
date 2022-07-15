@@ -15,20 +15,20 @@ class UE4_UNDERWORLD_API ACustomController : public APlayerController
 	GENERATED_BODY()
 
 protected:
-	// ÄÁÆ®·Ñ·¯°¡ ÇÃ·¹ÀÌÇÒ Ä³¸¯ÅÍ Å¬·¡½º¿¡ ºùÀÇµÇ¾úÀ»¶§ È£Ãâ
+	// ì»¨íŠ¸ë¡¤ëŸ¬ê°€ í”Œë ˆì´í•  ìºë¦­í„° í´ë˜ìŠ¤ì— ë¹™ì˜ë˜ì—ˆì„ë•Œ í˜¸ì¶œ
 	virtual void OnPossess(APawn* aPawn) override;
 	virtual void BeginPlay() override;
 public:
-	// ½ºÅ³ Ã¢ ¿­±â
+	// ìŠ¤í‚¬ ì°½ ì—´ê¸°
 	void OpenSkillWindow();
 
-	// Alarm È°¼ºÈ­
+	// Alarm í™œì„±í™”
 	void ActivateAlarmWidget(FText text);
 protected:
 	UPROPERTY()
 		class APlayerCharacter* ownerPlayer;
 
-	// ºí·çÇÁ¸°Æ® Å¬·¡½º¸¦ ¹Ş¾Æ¿Ã º¯¼ö
+	// ë¸”ë£¨í”„ë¦°íŠ¸ í´ë˜ìŠ¤ë¥¼ ë°›ì•„ì˜¬ ë³€ìˆ˜, ë©”ì¸ìœ„ì ¯
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UMainWidget> mainWidgetClass;
 	UPROPERTY(BlueprintReadOnly)
