@@ -22,21 +22,15 @@ void ACustomController::OnPossess(APawn* aPawn)
 		mainWidget = CreateWidget<UMainWidget>(this, mainWidgetClass);
 		if (mainWidget != nullptr)
 		{
-			// ÇÃ·¹ÀÌ¾î ½ºÅ×ÀÌÅÍ½º ¹Ù ¾÷µ¥ÀÌÆ® µ¨¸®°ÔÀÌÆ® ÇÔ¼ö ¹ÙÀÎµù
+			// í”Œë ˆì´ì–´ ìŠ¤í…Œì´í„°ìŠ¤ ë°” ì—…ë°ì´íŠ¸ ë¸ë¦¬ê²Œì´íŠ¸ í•¨ìˆ˜ ë°”ì¸ë”©
 			ownerPlayer->GetStatusComponent()->OnChangeHP.AddUniqueDynamic(mainWidget->GetUMG_PlayerStatus(), &UPlayerStatusWidget::UpdateHPProgressBar);
 			ownerPlayer->GetStatusComponent()->OnChangeSP.AddUniqueDynamic(mainWidget->GetUMG_PlayerStatus(), &UPlayerStatusWidget::UpdateSPProgressBar);
 			ownerPlayer->GetStatusComponent()->OnChangeMP.AddUniqueDynamic(mainWidget->GetUMG_PlayerStatus(), &UPlayerStatusWidget::UpdateMPProgressBar);
 
-			// ÇÃ·¹ÀÌ¾î Äü½½·Ô ¾÷µ¥ÀÌÆ® µ¨¸®°ÔÀÌÆ® ÇÔ¼ö ¹ÙÀÎµù
+			// í”Œë ˆì´ì–´ í€µìŠ¬ë¡¯ ì—…ë°ì´íŠ¸ ë¸ë¦¬ê²Œì´íŠ¸ í•¨ìˆ˜ ë°”ì¸ë”©
 			ownerPlayer->GetQuickSlotComponent()->OnUpdateQuickSlot.AddUniqueDynamic(mainWidget->GetUMG_QuickSlotList(), &UQuickSlotListWidget::UpdateQuickSlotList);
 
-			//ownerPlayer->GetEquipmentComponent()->OnChangeWeapon.AddUniqueDynamic(mainWidget->GetUMG_PlayerSkillInfo(), &UPlayerSkillWidget::SetUp);
-			//ownerPlayer->GetEquipmentComponent()->UpdateWidget();
-
-			//ownerPlayer->GetSkillComponent()->UpdateSkill1Able.AddUniqueDynamic(mainWidget->GetUMG_PlayerSkillInfo(), &UPlayerSkillWidget::UpdateSkill1CoolTime);
-			//ownerPlayer->GetSkillComponent()->UpdateSkill2Able.AddUniqueDynamic(mainWidget->GetUMG_PlayerSkillInfo(), &UPlayerSkillWidget::UpdateSkill2CoolTime);
-
-			// ½ºÅ³ Ã¢ ¾÷µ¥ÀÌÆ®
+			// ìŠ¤í‚¬ ì°½ ì—…ë°ì´íŠ¸
 			mainWidget->GetUMG_SkillWindow()->UpdateSkillList(ownerPlayer->GetSkillComponent()->GetSkillList());
 
 			mainWidget->AddToViewport();
@@ -48,8 +42,6 @@ void ACustomController::OnPossess(APawn* aPawn)
 void ACustomController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//SetShowMouseCursor(true);
 }
 
 void ACustomController::OpenSkillWindow()
@@ -65,7 +57,7 @@ void ACustomController::OpenSkillWindow()
 
 void ACustomController::ActivateAlarmWidget(FText text)
 {
-	// Alarm ¼Â¾÷ ¹× È°¼ºÈ­
+	// Alarm ì…‹ì—… ë° í™œì„±í™”
 	if(mainWidget != nullptr)
 	{
 		mainWidget->GetUMG_Alarm()->OnInitialized();
