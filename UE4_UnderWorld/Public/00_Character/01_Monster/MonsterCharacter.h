@@ -18,7 +18,7 @@ public:
 	AMonsterCharacter();
 
 protected:
-	// Å¸°Ù °¨Áö
+	// íƒ€ê²Ÿ ê°ì§€
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 		class UAIPerceptionStimuliSourceComponent* AIPerceptionStimuliSourceComponent;
 protected:
@@ -29,68 +29,66 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 protected:
-	// ¸ó½ºÅÍ Key
 	UPROPERTY(EditAnywhere)
-		FGameplayTag monsterTag;
+		class UDataTable* monsterDataTable;		// ëª¬ìŠ¤í„° DT
 	UPROPERTY(EditAnywhere)
-		class UDataTable* monsterDataTable;		// ¸ó½ºÅÍ DT
-
+		FGameplayTag monsterTag;			// ëª¬ìŠ¤í„° Tag
+		
 	UPROPERTY(EditAnywhere)
 		class UBehaviorTree* AITree;			// AITree
 
-	UPROPERTY(EditAnywhere) // TSubclassOf ºíÇÁ¿¡¼­ ¼±ÅÃÇÒ‹š <>¾È¿¡ class¸¸ ¼±ÅÃ°¡´É
-		TSubclassOf<class UWidgetComponent> damageTextWidgetComponentClass;
+	UPROPERTY(EditAnywhere) // TSubclassOf ë¸”í”„ì—ì„œ ì„ íƒí• Â‹Âš <>ì•ˆì— classë§Œ ì„ íƒê°€ëŠ¥
+		TSubclassOf<class UWidgetComponent> damageTextWidgetComponentClass;	// ëŒ€ë¯¸ì§€ ìœ„ì ¯
 
-	FTimerHandle HPBarTimerHandle;		// HPBar À§Á¬ Visible Å¸ÀÌ¸Ó
+	FTimerHandle HPBarTimerHandle;				// HPBar ìœ„ì ¯ Visible íƒ€ì´ë¨¸
 
-	bool bodyAppearance = false;		// Á×Àº ÈÄ ½ÃÃ¼ »ç¶óÁö±â
-	float currentOpacity = 1.f;			// ½ÃÃ¼ Åõ¸íµµ
+	bool bodyAppearance = false;				// ì£½ì€ í›„ ì‹œì²´ ì‚¬ë¼ì§€ê¸°
+	float currentOpacity = 1.f;				// ì‹œì²´ íˆ¬ëª…ë„
 	UPROPERTY(EditAnywhere)
-		float opacityLerpSpeed = 0.1f;	// ½ÃÃ¼ »ç¶óÁö´Â ¼Óµµ
-
-	
+		float opacityLerpSpeed = 0.1f;			// ì‹œì²´ ì‚¬ë¼ì§€ëŠ” ì†ë„
 
 	UPROPERTY(EditAnywhere, Category = "Animation")	
-		TArray<class UAnimMontage*> attackMontageArray;		// °ø°İ ¸ùÅ¸ÁÖ
+		TArray<class UAnimMontage*> attackMontageArray;		// ê³µê²© ëª½íƒ€ì£¼ ë°°ì—´
 public:
 	FName GetMonsterTag() { return monsterTag.GetTagName(); }
 	class UBehaviorTree* GetAIBehaviorTree() { return AITree; }
 
+	// ëª¬ìŠ¤í„° ì •ë³´ ê°€ì ¸ì˜¤ê¸°
 	const FMonsterInfo* GetMonsterInfo();
-	// »óÅÂ ¼³Á¤
+	// ìƒíƒœ ì„¤ì •
 	//virtual void SetMoveState(EMoveState state) override;
 	virtual void SetActionState(EActionState state) override;
 	virtual void SetAttackState(EAttackState state) override;
 	virtual void SetCharacterState(ECharacterState state) override;
-
+	
+	// ì—ì–´ë³¸ í•¨ìˆ˜
 	virtual void TakeAirborne(float airbornePower, float stunTime) override;
+	// ìŠ¤í„´ í•¨ìˆ˜
 	virtual void TakeStun(float stunTime) override;
+	// ì—ì–´ë³¸ í›„ ì¼ì–´ë‚˜ëŠ” í•¨ìˆ˜
 	virtual void StandUp() override;
-	// Á×¾úÀ» ¶§ ÀÌº¥Æ®
+	// ì£½ì—ˆì„ ë•Œ ì´ë²¤íŠ¸
 	virtual void OnDead() override;
 
-	// Team¼³Á¤
+	// Teamì„¤ì •
 	//virtual void SetGenericTeamId(const FGenericTeamId& TeamID) override;
 
 	void SetDeadAppearance() { bodyAppearance = true; }
 
-	// ½ºÅÏ
+	// ìŠ¤í„´
 	//virtual void TakeStun(float StunTime) override;
 
-	// ´É·ÂÄ¡ ¼³Á¤
+	// ëŠ¥ë ¥ì¹˜ ì„¤ì •
 	void SetStat();
-	// ¸ó½ºÅÍ Á¤º¸
 	
-	// ÀÏ¹İ °ø°İ
+	// ì¼ë°˜ ê³µê²©
 	virtual void NormalAttack();
-	// ÀÌµ¿ ¹æÇâ ±¸ÇÏ±â
+	// ì´ë™ ë°©í–¥ êµ¬í•˜ê¸°
 	//float GetMoveDirection();
 	
-	// ´ë¹ÌÁö ÀÔÀ» ¶§ µ¨¸®°ÔÀÌÆ® ¹ÙÀÎµù ÇÔ¼ö
-	/*UFUNCTION()
-		void OnTakeDamageEvent(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);*/
-
 protected:
+	// HPBar ìœ„ì ¯ í™œì„±í™”
 	void TurnOnHPBarWidget();
+	// ë°ë¯¸ì§€ Textìœ„ì ¯ ìƒì„±
 	void CreateDamageWidget(float damageAmount);
 };
