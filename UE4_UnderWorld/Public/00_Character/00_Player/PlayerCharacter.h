@@ -31,43 +31,43 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 protected:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Camera)
-		class UCameraComponent* Camera;									// Ä«¸Ş¶ó
+		class UCameraComponent* Camera;								// ì¹´ë©”ë¼
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Camera)
-		class USpringArmComponent* SpringArm;							// ½ºÇÁ¸µ ¾Ï
+		class USpringArmComponent* SpringArm;							// ìŠ¤í”„ë§ ì•”
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Particle)
-		class UParticleSystemComponent* ChargingParticleComponent;		// Â÷Â¡ ÆÄÆ¼Å¬
+		class UParticleSystemComponent* ChargingParticleComponent;		 		// ì°¨ì§• íŒŒí‹°í´
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Component)
-		class UQuickSlotComponent* QuickSlotComponent;					// Äü½½·Ô ÄÄÆ÷³ÍÆ®
+		class UQuickSlotComponent* QuickSlotComponent;						// í€µìŠ¬ë¡¯ ì»´í¬ë„ŒíŠ¸
 public:
 	class UQuickSlotComponent* GetQuickSlotComponent() { return QuickSlotComponent; }
 public:
-	// °ø°İ¹öÆ° ÀÔ·ÂÀÌ µÇ¾ú´Â°¡
+	// ê³µê²©ë²„íŠ¼ ì…ë ¥ì´ ë˜ì—ˆëŠ”ê°€
 	bool bInputComboAttack = false;
-	// ½ºÅ³ Â÷Â¡ Å¸ÀÓ
+	// ìŠ¤í‚¬ ì°¨ì§• í•œ ì‹œê°„
 	float chargingTime = 0.f;
 public:
 	const float GetChargingTime() { return chargingTime; }
 protected:
 	UPROPERTY(EditAnywhere, Category = Montage)
-		class UAnimMontage* DashMontage;		// ´ë½¬ ¸ùÅ¸ÁÖ
+		class UAnimMontage* DashMontage;		// ëŒ€ì‰¬ ëª½íƒ€ì£¼
 
-	IInterface_InterAction* interActionActor;
+	IInterface_InterAction* interActionActor;		// í˜„ì¬ ìºë¦­í„°ì™€ ìƒí˜¸ì‘ìš© ê°€ëŠ¥í•œ Actor
 private:
-	// Å° Á¶ÀÛ ÇÔ¼ö
-	// ¾ÕµÚ ÀÌµ¿
+	// í‚¤ ì¡°ì‘ í•¨ìˆ˜
+	// ì•ë’¤ ì´ë™
 	void MoveForward(float newAxisValue);
-	// ¿ŞÂÊ ¿À¸¥ÂÊ ÀÌµ¿
+	// ì™¼ìª½ ì˜¤ë¥¸ìª½ ì´ë™
 	void MoveRight(float newAxisValue);
-	// Ä«¸Ş¶ó À§¾Æ·¡ ÀÌµ¿
+	// ì¹´ë©”ë¼ ìœ„ì•„ë˜ ì´ë™
 	void LookUp(float newAxisValue);
-	// Ä«¸Ş¶ó ¿ŞÂÊ ¿À¸¥ÂÊ ÀÌµ¿
+	// ì¹´ë©”ë¼ ì™¼ìª½ ì˜¤ë¥¸ìª½ ì´ë™
 	void Turn(float newAxisValue);
-	// ´ë½¬
+	// ëŒ€ì‰¬
 	void Dash();
-	// °ø°İ
+	// ê³µê²©
 	void PressAttack();
-	// Äü½½·Ô »ç¿ë ÇÔ¼ö
+	// í€µìŠ¬ë¡¯ ì‚¬ìš© í•¨ìˆ˜
 #pragma region QuickSlotKey
 	void PressQuickSlot1();
 	void ReleaseQuickSlot1();
@@ -102,16 +102,16 @@ private:
 	void PressQuickSlot16();
 	void ReleaseQuickSlot16();
 #pragma endregion
-	// ½ºÅ³ Ã¢ ¿­±â
+	// ìŠ¤í‚¬ ì°½ ì—´ê¸°
 	void PressSkillWindow();
 
-	// »óÈ£ÀÛ¿ë Å°
+	// ìƒí˜¸ì‘ìš© í‚¤
 	void PressInterActive();
 public:
-	// ÇÃ·¹ÀÌ¾î Ä«¸Ş¶ó ½¦ÀÌÅ·
+	// í”Œë ˆì´ì–´ ì¹´ë©”ë¼ ì‰ì´í‚¹
 	void CameraShakeDemo(float Scale);
 
-	// Character State ¼³Á¤
+	// Character State ì„¤ì •
 	// MoveState SetUp
 	virtual void SetMoveState(EMoveState state) override;
 	// ActionState SetUp
@@ -119,13 +119,17 @@ public:
 	// AttackState SetUp
 	virtual void SetAttackState(EAttackState state) override;
 
+	// ìŠ¤í„´ í•¨ìˆ˜
 	virtual void TakeStun(float stunTime) override;
+	// ìºë¦­í„° ì—ì–´ë³¸ í•¨ìˆ˜
 	virtual void TakeAirborne(float airbornePower, float stunTime) override;
+	// ìºë¦­í„° ì—ì–´ë³¸ í›„ ë‹¤ì‹œ ì¼ì–´ë‚˜ëŠ” í•¨ìˆ˜
 	virtual void StandUp() override;
-
+	
+	// ìƒí˜¸ì‘ìš© ê°€ëŠ¥ í•œ Actor ì„¤ì •
 	void SetInterActionActor(IInterface_InterAction* InterAction) { interActionActor = InterAction; }
 private:
-	// Ä«¸Ş¶ó ½¦ÀÌÅ© BP
+	// ì¹´ë©”ë¼ ì‰ì´í¬ BP
 	UPROPERTY(EditAnywhere)
 		TSubclassOf<class UCameraShakeBase> CamSake;
 };
