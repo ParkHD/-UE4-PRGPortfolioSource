@@ -7,51 +7,52 @@
 #include "GameFramework/Character.h"
 #include "BaseCharacter.generated.h"
 
-// ÀÌµ¿ »óÅÂ
+// ì´ë™ ìƒíƒœ
 UENUM(BlueprintType)
-enum class EMoveState : uint8 // EnumÀÌ¸§ ¾Õ¿¡ E²À ºÙ¿©¾ßÇÔ
+enum class EMoveState : uint8 // Enumì´ë¦„ ì•ì— Eê¼­ ë¶™ì—¬ì•¼í•¨
 {
-	NORMAL,	// ±âº»»óÅÂ
-	IDLE,	// ±âº»»óÅÂ
-	RUN,	// ¶Ù´Â»óÅÂ
-	JUMP,	// Á¡ÇÁ
-	FLY,	// ³¯°íÀÖ´Â »óÅÂ
+	NORMAL,	// ê¸°ë³¸ìƒíƒœ
+	IDLE,	// ê¸°ë³¸ìƒíƒœ
+	RUN,	// ë›°ëŠ”ìƒíƒœ
+	JUMP,	// ì í”„
+	FLY,	// ë‚ ê³ ìˆëŠ” ìƒíƒœ
 };
-// Çàµ¿ »óÅÂ
+// í–‰ë™ ìƒíƒœ
 UENUM(BlueprintType)
-enum class EActionState : uint8 // EnumÀÌ¸§ ¾Õ¿¡ E²À ºÙ¿©¾ßÇÔ
+enum class EActionState : uint8 // Enumì´ë¦„ ì•ì— Eê¼­ ë¶™ì—¬ì•¼í•¨
 {
-	NORMAL,	// ±âº»»óÅÂ
-	DASH,	// È¸ÇÇ Áß
-	ATTACK,	// °ø°İ Áß
-	BLOCK,	// ¹æ¾î Áß
-	SKILL,	// ½ºÅ³ »ç¿ë Áß
+	NORMAL,	// ê¸°ë³¸ìƒíƒœ
+	DASH,	// íšŒí”¼ ì¤‘
+	ATTACK,	// ê³µê²© ì¤‘
+	BLOCK,	// ë°©ì–´ ì¤‘
+	SKILL,	// ìŠ¤í‚¬ ì‚¬ìš© ì¤‘
 	MAX,
 };
-// Çàµ¿ »óÅÂ
+// ê³µê²© ìƒíƒœ
 UENUM(BlueprintType)
-enum class EAttackState : uint8 // EnumÀÌ¸§ ¾Õ¿¡ E²À ºÙ¿©¾ßÇÔ
+enum class EAttackState : uint8 // Enumì´ë¦„ ì•ì— Eê¼­ ë¶™ì—¬ì•¼í•¨
 {
-	NORMAL,	// ±âº»»óÅÂ
+	NORMAL,	// ê¸°ë³¸ìƒíƒœ
 	ATTACK,
 	COOLTIME,
 	CHARGING,
 	MAX,
 };
-// Ä³¸¯ÅÍ »óÅÂ
+// ìºë¦­í„° ìƒíƒœ
 UENUM(BlueprintType)
-enum class ECharacterState : uint8 // EnumÀÌ¸§ ¾Õ¿¡ E²À ºÙ¿©¾ßÇÔ
+enum class ECharacterState : uint8 // Enumì´ë¦„ ì•ì— Eê¼­ ë¶™ì—¬ì•¼í•¨
 {
-	NORMAL,	// ±âº»»óÅÂ
+	NORMAL,	// ê¸°ë³¸ìƒíƒœ
 	STUN,
 	AIRBORNE
 };
+// ê³µê²© 
 UENUM(BlueprintType)
 enum class EAttackType : uint8
 {
-	NORMAL,		// ±âº» °ø°İ
-	KNOCKBACK,	// ³Ë¹é °ø°İ
-	AIRBORNE,	// ¿¡¾îº» °ø°İ
+	NORMAL,		// ê¸°ë³¸ ê³µê²©
+	KNOCKBACK,	// ë„‰ë°± ê³µê²©
+	AIRBORNE,	// ì—ì–´ë³¸ ê³µê²©
 };
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDead);
 
@@ -66,18 +67,18 @@ public:
 
 protected:
 	UPROPERTY(VisibleAnywhere, Category = "Component")
-		class UStatusComponent* StatusComponent;
+		class UStatusComponent* StatusComponent;		// ìƒíƒœ ì•¡í„° ì»´í¬ë„ŒíŠ¸
 	UPROPERTY(VisibleAnywhere, Category = "Component")
-		class USkillComponent* SkillComponent;
+		class USkillComponent* SkillComponent;			// ìŠ¤í‚¬ ì»´í¬ë„ŒíŠ¸
 	UPROPERTY(VisibleAnywhere)
-		class UChildActorComponent* WeaponChildActorComponent;	// ¸ŞÀÎ¹«±â ¾×ÅÍ ÄÄÆ÷³ÍÆ®
+		class UChildActorComponent* WeaponChildActorComponent;	// ë©”ì¸ë¬´ê¸° ì•¡í„° ì»´í¬ë„ŒíŠ¸
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere, Category = Mesh)
-		class USkeletalMeshComponent* WeaponSkeletalMesh;		// ¹«±â ½ºÄÌ·¹Å»
+		class USkeletalMeshComponent* WeaponSkeletalMesh;	// ë¬´ê¸° ìŠ¤ì¼ˆë ˆíƒˆ
 
 	UPROPERTY(VisibleAnywhere, Category = "Component")
-		class UAudioComponent* AudioComponent;
+		class UAudioComponent* AudioComponent;			// ì˜¤ë””ì˜¤
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
-		class UWidgetComponent* HPBarWidgetComponent;			// BPBarWidget
+		class UWidgetComponent* HPBarWidgetComponent;		// HPBarWidget
 public:
 	class UStatusComponent* GetStatusComponent() { return StatusComponent; }
 	class USkillComponent* GetSkillComponent() { return SkillComponent; }
@@ -97,40 +98,42 @@ public:
 		AController* EventInstigator, AActor* DamageCauser, float value);
 
 public:
-	void BeginHitStop();
-	void EndHitStop();
+	void BeginHitStop();					// HitStop 
+	void EndHitStop();					// HitStop ì¢…ë£Œ
 	FTimerHandle hitstopTimerHandle;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "hitstop")
-		float hitstopModifier = 0.08f;			// HitStop ½Ã°£
+		float hitstopModifier = 0.08f;			// HitStop ì‹œê°„
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Audio")
-		float falloffDistance = 2000.f;			// »ç¿îµå À¯È¿ ¹üÀ§
+		float falloffDistance = 2000.f;			// ì‚¬ìš´ë“œ ìœ íš¨ ë²”ìœ„
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-		USoundBase* hitSound;					// ÇÇ°İ »ç¿îµå
+		USoundBase* hitSound;				// í”¼ê²© ì‚¬ìš´ë“œ
+		
+	// ëª½íƒ€ì£¼ ê´€ë ¨
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation")
-		class UAnimMontage* hitMontage;			// ÇÇ°İ ¸ùÅ¸ÁÖ
-	// ¸ùÅ¸ÁÖ °ü·Ã
+		class UAnimMontage* hitMontage;			// í”¼ê²© ëª½íƒ€ì£¼
 	UPROPERTY(EditAnywhere, Category = "Animation")
-		class UAnimMontage* AttackMontage;		// °ø°İ ¸ùÅ¸ÁÖ
+		class UAnimMontage* AttackMontage;		// ê³µê²© ëª½íƒ€ì£¼
 	UPROPERTY(EditAnywhere, Category = "Animation")
-		class UAnimMontage* DeadMontage;		// Dead ¸ùÅ¸ÁÖ
+		class UAnimMontage* DeadMontage;		// Dead ëª½íƒ€ì£¼
 	UPROPERTY(EditAnywhere, Category = "Animation")
-		class UAnimMontage* StandUpMontage;		// StandUp ¸ùÅ¸ÁÖ
+		class UAnimMontage* StandUpMontage;		// StandUp ëª½íƒ€ì£¼
 
-	bool isDead = false;
+	bool isDead = false;					// ìºë¦­í„°ê°€ ì£½ì—ˆëŠ”ê°€?
 
 	UPROPERTY(EditAnywhere)
-		FGenericTeamId myTeam;					// TeamID
+		FGenericTeamId myTeam;				// TeamID
 
 	UPROPERTY(EditAnywhere)
-		bool isBoss = false;			// º¸½ºÇü Ä³¸¯ÅÍ ÀÎ°¡
+		bool isBoss = false;				// ë³´ìŠ¤í˜• ìºë¦­í„° ì¸ê°€?
 
-	FTimerHandle standUpTimer;			// StandUp Å¸ÀÌ¸Ó
-	FTimerHandle StunTimerHandle;		// ½ºÅÏ Å¸ÀÌ¸Ó
+	// íƒ€ì´ë¨¸
+	FTimerHandle standUpTimer;			// StandUp íƒ€ì´ë¨¸
+	FTimerHandle StunTimerHandle;			// ìŠ¤í„´ íƒ€ì´ë¨¸
 protected:
-	EActionState actionState;
-	EMoveState moveState;
-	EAttackState attackState;
-	ECharacterState characterState;
+	EActionState actionState;			// ìºë¦­í„°ê°€ í•˜ê³  ìˆëŠ” í–‰ë™
+	EMoveState moveState;				// ìºë¦­í„°ì˜ ì´ë™ ìƒíƒœ
+	EAttackState attackState;			// ìºë¦­í„°ì˜ ê³µê²© ìƒíƒœ(ì¿¨íƒ€ì„ ë“±)
+	ECharacterState characterState;			// ìºë¦­í„° ìƒíƒœ(ìŠ¤í„´ ë“±)
 public:
 	EActionState GetActionState() { return actionState; }
 	EMoveState GetMoveState() { return moveState; }
@@ -142,23 +145,29 @@ public:
 	virtual void SetAttackState(EAttackState state);
 	virtual void SetCharacterState(ECharacterState state);
 
+	// ìŠ¤í„´ ì‹¤í–‰
 	virtual void TakeStun(float stunTime);
+	// ì—ì–´ë³¸ ì‹¤í–‰
 	virtual void TakeAirborne(float airbornePower, float stunTime);
+	
+	// ì£½ì—ˆì„ ë•Œ í˜¸ì¶œ ë  í•¨ìˆ˜
 	UFUNCTION()
 		virtual void OnDead();
-
+	// ìƒíƒœ ì´ˆê¸°í™”
 	virtual void InitState();
 
-	// ÆÀ ¼³Á¤
+	// íŒ€ ì„¤ì •
 	virtual void SetGenericTeamId(const FGenericTeamId& TeamID);
 	virtual FGenericTeamId GetGenericTeamId() const { return myTeam; }
 protected:
+	// ì—ì–´ë³¸ ê´€ë ¨
+	// ìŠ¤ì¼ˆë ˆíƒˆ ë©”ì‰¬ ì—ì–´ë³¸
 	virtual void LaunchMesh(float zValue, float interpSpeed);
+	// ì—ì–´ë³¸ í›„ ì¼ì–´ë‚˜ëŠ” í•¨ìˆ˜
 	virtual void StandUp();
 public:
 	FOnDead OnDeadEvent;
-
-
-	bool isAirborne = false;
-	bool isLevitate = false;
+	
+	bool isAirborne = false;	// ì—ì–´ë³¸ ìƒíƒœ ì¸ê°€ìš”?
+	bool isLevitate = false;	// ë„ì–´ì§€ê³  ìˆëŠ” ìƒíƒœ ì¸ê°€ìš”?
 };
