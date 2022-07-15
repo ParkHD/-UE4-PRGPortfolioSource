@@ -8,7 +8,7 @@
 #include "MonsterController.generated.h"
 
 /**
- * 
+ * ëª¬ìŠ¤í„° ìºë¦­í„° ì»¨íŠ¸ë¡¤ëŸ¬
  */
 UCLASS()
 class UE4_UNDERWORLD_API AMonsterController : public AAIController
@@ -25,12 +25,12 @@ protected:
 	UPROPERTY()
 		class AMonsterCharacter* ownerCharacter;
 
-	// µ¨¸®°ÔÀÌÆ® ¹ÙÀÎµù ÇÒ ÇÔ¼ö
+	// ë¸ë¦¬ê²Œì´íŠ¸ ë°”ì¸ë”© í•  í•¨ìˆ˜
 public:
 	// AIPerception
 	UFUNCTION()
 		void OnActorPerceptionUpdatedEvent(AActor* Actor, FAIStimulus Stimulus);
-	// ºí·¢º¸µå MP Value ¾÷µ¥ÀÌÆ®
+	// ë¸”ë™ë³´ë“œ MP Value ì—…ë°ì´íŠ¸
 	UFUNCTION()
 		void SetStatusOnBlackBoard(class UStatusComponent* statusComponent);
 };
