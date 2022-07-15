@@ -24,7 +24,7 @@ APlayerCharacter::APlayerCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// ÄÁÆ®·Ñ·¯¶û PawnÀÌ¶û °°ÀÌ ¾È µ¹°Ô ¼³Á¤
+	// ì»¨íŠ¸ë¡¤ëŸ¬ë‘ Pawnì´ë‘ ê°™ì´ ì•ˆ ëŒê²Œ ì„¤ì •
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -38,14 +38,12 @@ APlayerCharacter::APlayerCharacter()
 	SpringArm->SetupAttachment(GetCapsuleComponent());
 	SpringArm->TargetArmLength = 600.0f;
 	SpringArm->SetRelativeRotation(FRotator::ZeroRotator);
-	SpringArm->bUsePawnControlRotation = true;	// Controller¿¡ ¸ÂÃç¼­ SpringArmÀÌ ¿òÁ÷ÀÎ´Ù.
-	//SpringArm->bDoCollisionTest = true;			// ½Ã¾ß¿¡ ¹æÇØ¹°ÀÌ ÀÖÀ¸¸é È®´ë±â´É
+	SpringArm->bUsePawnControlRotation = true;		// Controllerì— ë§ì¶°ì„œ SpringArmì´ ì›€ì§ì¸ë‹¤.
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CAMERA"));
 	Camera->SetupAttachment(SpringArm);
 
 	QuickSlotComponent = CreateDefaultSubobject<UQuickSlotComponent>(TEXT("QuickSlotComponent"));
-
 }
 
 // Called when the game starts or when spawned
@@ -53,20 +51,21 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// í”Œë ˆì´ì–´ ë° ì•„êµ°ì€ 10ìœ¼ë¡œ íŒ€ ì„¤ì •
 	SetGenericTeamId(10);
 }
 
 void APlayerCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-
+	// í”Œë ˆì´ì–´ ë° ì•„êµ°ì€ 10ìœ¼ë¡œ íŒ€ ì„¤ì •
 	SetGenericTeamId(10);
 }
 
 float APlayerCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
 	AActor* DamageCauser)
 {
-	// ÇÇ°İ ¾Ö´Ô
+	// ìºë¦­í„°ê°€ ì—ì–´ë³¸ ìƒíƒœê°€ ì•„ë‹ˆê³  í–‰ë™ì„ ì•ˆì·¨í•˜ê³  ìˆìœ¼ë©° í”¼ê²©ëª½íƒ€ì£¼ê°€ ì‹¤í–‰ ë˜ê³  ìˆì§€ ì•Šì„ ë•Œë§Œ í”¼ê²© ëª½íƒ€ì£¼ ì‹¤í–‰
 	if (characterState != ECharacterState::AIRBORNE
 		&& actionState == EActionState::NORMAL)
 		GetMesh()->GetAnimInstance()->Montage_Play(hitMontage);
@@ -79,7 +78,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Â÷Â¡ ½Ã°£++
+	// ì°¨ì§• ì‹œê°„++
 	if (attackState == EAttackState::CHARGING)
 	{
 		chargingTime += DeltaTime;
@@ -92,7 +91,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	// Å° ÀÔ·Â °ü·Ã ÇÔ¼ö ¹ÙÀÎµå
+	// í‚¤ ì…ë ¥ ê´€ë ¨ í•¨ìˆ˜ ë°”ì¸ë“œ
 	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::Turn);
@@ -146,7 +145,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
 void APlayerCharacter::MoveForward(float newAxisValue)
 {
-	// ¾Æ¹«°Íµµ ¾ÈÇÏ°í ÀÖ´Â »óÅÂ¿¡¼­¸¸ ÀÌµ¿°¡´É
+	// ì•„ë¬´ê²ƒë„ ì•ˆí•˜ê³  ìˆëŠ” ìƒíƒœì—ì„œë§Œ ì´ë™ê°€ëŠ¥
 	if (actionState == EActionState::NORMAL
 		&& characterState == ECharacterState::NORMAL)
 	{
@@ -157,7 +156,7 @@ void APlayerCharacter::MoveForward(float newAxisValue)
 }
 void APlayerCharacter::MoveRight(float newAxisValue)
 {
-	// ¾Æ¹«°Íµµ ¾ÈÇÏ°í ÀÖ´Â »óÅÂ¿¡¼­¸¸ ÀÌµ¿°¡´É
+	// ì•„ë¬´ê²ƒë„ ì•ˆí•˜ê³  ìˆëŠ” ìƒíƒœì—ì„œë§Œ ì´ë™ê°€ëŠ¥
 	if (actionState == EActionState::NORMAL
 			&& characterState == ECharacterState::NORMAL)
 	{
@@ -177,23 +176,28 @@ void APlayerCharacter::Turn(float newAxisValue)
 
 void APlayerCharacter::Dash()
 {
-	// ¾Æ¹«°Íµµ ¾ÈÇÏ°í ÀÖ´Â »óÅÂ¿¡¼­¸¸ ÀÌµ¿°¡´É
+	// ì•„ë¬´ê²ƒë„ ì•ˆí•˜ê³  ìˆëŠ” ìƒíƒœì—ì„œë§Œ ì´ë™ê°€ëŠ¥
 	if(actionState == EActionState::NORMAL
 			&& StatusComponent->CheckStamina(20))
 	{
+		// ìŠ¤í…Œë¯¸ë„ˆ ì†Œëª¨
 		StatusComponent->AddStamina(-25.f);
-
+		// ìƒíƒœ ë³€ê²½
 		SetMoveState(EMoveState::IDLE);
 		SetActionState(EActionState::DASH);
-
+		
+		// í‚¤ ì…ë ¥ ë°©í–¥ìœ¼ë¡œ ìºë¦­í„° íšŒì „í•˜ê¸°
+		// ì™¼ìª½ ì˜¤ë¥¸ìª½ í‚¤ ì…ë ¥
 		float moveRight = InputComponent->GetAxisValue("MoveRight");
+		// ìœ„ ì•„ë˜ í‚¤ ì…ë ¥
 		float moveForward = InputComponent->GetAxisValue("MoveForward");
+		// í‚¤ ì…ë ¥ì„ ë²¡í„°ë¡œ ì¹˜í™˜
 		FVector keyDir = { moveForward, moveRight, 0 };
 		FRotator keyRotator = keyDir.Rotation();
 		keyRotator.Yaw += GetControlRotation().Yaw;
 		SetActorRotation(keyRotator);
 
-		// ´ë½¬ ÈÄ characterState Normal·Î º¯°æ
+		// ëŒ€ì‰¬ í›„ characterState Normalë¡œ ë³€ê²½
 		float animtime = GetMesh()->GetAnimInstance()->Montage_Play(DashMontage, 1.5f, EMontagePlayReturnType::Duration);
 		FTimerHandle dashTimer;
 		FTimerDelegate dashDelegate = FTimerDelegate::CreateUObject(this, &ABaseCharacter::SetActionState, EActionState::NORMAL);
@@ -210,10 +214,10 @@ void APlayerCharacter::PressAttack()
 	if (AttackMontage != nullptr 
 			&& characterState == ECharacterState::NORMAL)
 	{
-		// ÀÌ¹Ì °ø°İ ÁßÀÌ¶ó¸é ÄŞº¸ °ø°İ
+		// ì´ë¯¸ ê³µê²© ì¤‘ì´ë¼ë©´ ì½¤ë³´ ê³µê²©
 		if (GetMesh()->GetAnimInstance()->Montage_IsPlaying(AttackMontage))
 			bInputComboAttack = true;
-		// °ø°İ ÁßÀÌ ¾Æ´Ï¶ó¸é °ø°İ ¸ùÅ¸ÁÖ ½ÇÇà
+		// ê³µê²© ì¤‘ì´ ì•„ë‹ˆë¼ë©´ ê³µê²© ì‹¤í–‰
 		else
 		{
 			if(actionState == EActionState::NORMAL)
@@ -376,11 +380,13 @@ void APlayerCharacter::ReleaseQuickSlot16()
 
 void APlayerCharacter::PressSkillWindow()
 {
+	// ìŠ¤í‚¬ ì°½ ì¼œê¸°
 	Cast<ACustomController>(GetController())->OpenSkillWindow();
 }
 
 void APlayerCharacter::PressInterActive()
 {
+	// ìƒí˜¸ì‘ìš© ê°€ëŠ¥ í•œ Actorê°€ ìˆëŠ”ì§€ í™•ì¸ í›„ ìƒí˜¸ì‘ìš©
 	if(interActionActor != nullptr)
 		interActionActor->InterAction(this);
 }
@@ -410,7 +416,7 @@ void APlayerCharacter::SetActionState(EActionState state)
 	switch (state)
 	{
 	case EActionState::NORMAL:
-		// AttackState ¹× Â÷Â¡ ½Ã°£ ÃÊ±âÈ­
+		// AttackState ë° ì°¨ì§• ì‹œê°„ ì´ˆê¸°í™”
 		SetAttackState(EAttackState::NORMAL);
 		chargingTime = 0.f;
 		break;
@@ -424,11 +430,11 @@ void APlayerCharacter::SetAttackState(EAttackState state)
 	switch(state)
 	{
 	case EAttackState::NORMAL:
-		// Â÷Â¡ Particle ²ô±â
+		// ì°¨ì§• Particle ë„ê¸°
 		ChargingParticleComponent->Deactivate();
 		break;
 	case EAttackState::CHARGING:
-		// Â÷Â¡ Particle ÄÑ±â
+		// ì°¨ì§• Particle ì¼œê¸°
 		ChargingParticleComponent->Activate();
 		break;
 	case EAttackState::ATTACK:
@@ -441,7 +447,7 @@ void APlayerCharacter::TakeStun(float stunTime)
 {
 	Super::TakeStun(stunTime);
 
-	// ¸¶Áö¸· ½ºÅÏÀ» ±âÁØÀ¸·Î Å¸ÀÌ¸Ó ½Ã°£ ¼³Á¤
+	// ë§ˆì§€ë§‰ ìŠ¤í„´ì„ ê¸°ì¤€ìœ¼ë¡œ íƒ€ì´ë¨¸ ì‹œê°„ ì„¤ì •
 	if (GetWorldTimerManager().TimerExists(StunTimerHandle))
 	{
 		float remainTime = GetWorldTimerManager().GetTimerRemaining(StunTimerHandle);
@@ -449,8 +455,7 @@ void APlayerCharacter::TakeStun(float stunTime)
 		{
 			GetWorldTimerManager().ClearTimer(StunTimerHandle);
 
-			// Á×Áö ¾Ê¾Ò´Ù¸é ÀÏÁ¤ ½Ã°£ ÈÄ¿¡ ·ÎÁ÷ Àç½ÃÀÛ Å¸ÀÌ¸Ó ¼³Á¤
-
+			// ì£½ì§€ ì•Šì•˜ë‹¤ë©´ ì¼ì • ì‹œê°„ í›„ì— ë¡œì§ ì¬ì‹œì‘ íƒ€ì´ë¨¸ ì„¤ì •
 			FTimerDelegate hitDelegate;
 			hitDelegate.BindUObject(this, &ABaseCharacter::SetCharacterState, ECharacterState::NORMAL);
 			GetWorldTimerManager().SetTimer(StunTimerHandle, hitDelegate, stunTime, false);
@@ -458,6 +463,7 @@ void APlayerCharacter::TakeStun(float stunTime)
 	}
 	else
 	{
+		// ìŠ¤í„´ íƒ€ì´ë¨¸ ì„¤ì •
 		FTimerDelegate hitDelegate;
 		hitDelegate.BindUObject(this, &ABaseCharacter::SetCharacterState, ECharacterState::NORMAL);
 		GetWorldTimerManager().SetTimer(StunTimerHandle, hitDelegate, stunTime, false);
@@ -468,8 +474,7 @@ void APlayerCharacter::TakeAirborne(float airbornePower, float stunTime)
 {
 	Super::TakeAirborne(airbornePower, stunTime);
 
-
-	// ½ºÅÏ ³²Àº ½Ã°£À» ±âÁØ¿¡¼­ ºñ±³ÇØ¼­ ´õ Å«°ÍÀ» Å¸ÀÌ¸Ó ½Ã°£ ¼³Á¤
+	// ì´ë¯¸ ìŠ¤í„´ì´ ëŒê³  ìˆë‹¤ë©´ í˜„ì¬ ìŠ¤í„´ì˜ ë‚¨ì€ ì‹œê°„ê³¼ ìƒˆë¡œ ë“¤ì–´ì˜¨ ìŠ¤í„´ ì‹œê°„ ì¤‘ ë” í° ê²ƒì„ íƒ€ì´ë¨¸ ì‹œê°„ìœ¼ë¡œ ì„¤ì •
 	float time = stunTime;
 	if (GetWorldTimerManager().TimerExists(StunTimerHandle))
 	{
@@ -479,7 +484,7 @@ void APlayerCharacter::TakeAirborne(float airbornePower, float stunTime)
 		GetWorldTimerManager().ClearTimer(StunTimerHandle);
 	}
 
-	// Á×Áö ¾Ê¾Ò´Ù¸é ÀÏÁ¤ ½Ã°£ ÈÄ¿¡ ·ÎÁ÷ Àç½ÃÀÛ Å¸ÀÌ¸Ó ¼³Á¤
+	// ì£½ì§€ ì•Šì•˜ë‹¤ë©´ ì¼ì • ì‹œê°„ í›„ì— ë¡œì§ ì¬ì‹œì‘ íƒ€ì´ë¨¸ ì„¤ì •
 	if (!isDead)
 	{
 		FTimerDelegate hitDelegate;
@@ -491,7 +496,5 @@ void APlayerCharacter::TakeAirborne(float airbornePower, float stunTime)
 void APlayerCharacter::StandUp()
 {
 	Super::StandUp();
-
-
 }
 
