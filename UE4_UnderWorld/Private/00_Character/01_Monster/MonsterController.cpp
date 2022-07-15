@@ -13,13 +13,14 @@
 
 AMonsterController::AMonsterController()
 {
-	// ÄÁÆ®·Ñ·¯¶û ¼ÒÀ¯ÇÑ PawnÀÌ¶û ¿¬°á
+	// ì»¨íŠ¸ë¡¤ëŸ¬ë‘ ì†Œìœ í•œ Pawnì´ë‘ ì—°ê²°
 	bAttachToPawn = true;
 
-	// ±âº»Á¦°ø AIPerceptionComponent
+	// ê¸°ë³¸ì œê³µ AIPerceptionComponent
 	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
 	
-	// ½Ã¾ß·Î AI°¡ ÀûÀ» ÀÎÁöÇÏµµ·Ï ¼³Á¤
+	// ì‹œì•¼ë¡œ AIê°€ ì ì„ ì¸ì§€í•˜ë„ë¡ ì„¤ì •
+	// ì‹œì•¼ 
 	UAISenseConfig_Sight* sightConfig;
 	sightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("AISenseConfig_Sight"));
 	sightConfig->SightRadius = 3500.f;
@@ -47,20 +48,20 @@ void AMonsterController::OnPossess(APawn* InPawn)
 	ownerCharacter = Cast<AMonsterCharacter>(InPawn);
 	if (ownerCharacter != nullptr)
 	{
-		// ¾È ÇØÁÖ¸é hpBarWidgetÀÌ nullptr¶ä
+		// ì•ˆ í•´ì£¼ë©´ hpBarWidgetì´ nullptrëœ¸
 		ownerCharacter->GetHPBarWidgetComponent()->InitWidget();
 		UHPBarWidget* hpBarWidget = Cast<UHPBarWidget>(ownerCharacter->GetHPBarWidgetComponent()->GetUserWidgetObject());
 		if (hpBarWidget != nullptr)
 		{
 			hpBarWidget->Init();
-			// ¸ó½ºÅÍ HPBar À§Á¬ ¾÷µ¥ÀÌÆ®
+			// ëª¬ìŠ¤í„° HPBar ìœ„ì ¯ ì—…ë°ì´íŠ¸
 			ownerCharacter->GetStatusComponent()->OnChangeHP.AddUniqueDynamic(hpBarWidget,
 				&UHPBarWidget::UpdateProgressBar);
 
-			// ¸ó½ºÅÍ ºí·¢º¸µå MP Value ¾÷µ¥ÀÌÆ®
+			// ëª¬ìŠ¤í„° ë¸”ë™ë³´ë“œ MP Value ì—…ë°ì´íŠ¸
 			//owner->GetStatusComponent()->OnChangeMP.AddUniqueDynamic(this, &AMonsterAIController::SetStatusOnBlackBoard);
 		}
-
+		// íŠ¸ë¦¬ ì‹¤í–‰
 		RunBehaviorTree(ownerCharacter->GetAIBehaviorTree());
 	}
 }
@@ -75,7 +76,7 @@ void AMonsterController::OnActorPerceptionUpdatedEvent(AActor* Actor, FAIStimulu
 		{
 			if (target->GetGenericTeamId() != ownerCharacter->GetGenericTeamId())
 			{
-				// ÇöÀç Target°ú Áö±İ ÀÎÁöµÈ TargetÀÇ °Å¸®¸¦ ºñ±³ÇÏ¿© °¡±î¿î °ÍÀ» TargetÀ¸·Î »ï´Â´Ù.
+				// í˜„ì¬ Targetê³¼ ì§€ê¸ˆ ì¸ì§€ëœ Targetì˜ ê±°ë¦¬ë¥¼ ë¹„êµí•˜ì—¬ ê°€ê¹Œìš´ ê²ƒì„ Targetìœ¼ë¡œ ì‚¼ëŠ”ë‹¤.
 				GetBlackboardComponent()->SetValueAsObject("Target", target);
 			}
 		}
