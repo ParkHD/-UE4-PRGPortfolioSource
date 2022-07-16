@@ -17,5 +17,5 @@ protected:
 	void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
 protected:
 	UPROPERTY(EditAnywhere)
-		float shakeScale = 1.f;
+		float shakeScale = 1.f;		// 카메라 흔드는 강도
 };
