@@ -16,6 +16,7 @@ void UNotify_PlayNiagaraEffect::Notify(USkeletalMeshComponent* MeshComp, UAnimSe
 }
 UFXSystemComponent* UNotify_PlayNiagaraEffect::SpawnEffect(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
+	// 나이아가라 Effect 차징 시간에 따른 스케일 조정
 	if (owner != nullptr)
 		Scale = {1.f * owner->GetChargingTime(),1.f * owner->GetChargingTime(),1.f * owner->GetChargingTime() };
 	return Super::SpawnEffect(MeshComp, Animation);
