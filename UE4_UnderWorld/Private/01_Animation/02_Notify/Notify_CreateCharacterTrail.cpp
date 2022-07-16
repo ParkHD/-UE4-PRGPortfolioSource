@@ -14,6 +14,7 @@ void UNotify_CreateCharacterTrail::Notify(USkeletalMeshComponent* MeshComp, UAni
 		auto owner = MeshComp->GetOwner<ABaseCharacter>();
 		if(owner != nullptr)
 		{
+			// 현재 캐릭터의 위치에 잔상Actor를 스폰한다.
 			FVector newLocation = owner->GetActorLocation();
 			newLocation.Z -= 90;
 			FRotator newRotator = owner->GetActorRotation();
