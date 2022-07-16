@@ -7,7 +7,7 @@
 #include "Notify_PlayNiagaraEffect.generated.h"
 
 /**
- * 
+ * 캐릭터 차징시간에 따른 나이아가라 이펙트 스케일 조정
  */
 UCLASS()
 class UE4_UNDERWORLD_API UNotify_PlayNiagaraEffect : public UAnimNotify_PlayNiagaraEffect
