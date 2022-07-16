@@ -15,6 +15,7 @@ void UNotify_SetAttackCoolTime::Notify(USkeletalMeshComponent* MeshComp, UAnimSe
 		ABaseCharacter* owner = Cast<ABaseCharacter>(MeshComp->GetOwner());
 		if(owner != nullptr)
 		{
+			// 공격 실행 후 캐릭터의 공격 쿨타임 돌리기
 			owner->SetAttackState(EAttackState::COOLTIME);
 			FTimerHandle attackCoolTime;
 			FTimerDelegate attackDelegate = FTimerDelegate::CreateUObject(owner, &ABaseCharacter::SetAttackState, EAttackState::NORMAL);
