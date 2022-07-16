@@ -18,5 +18,5 @@ protected:
 	virtual void Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation) override;
 protected:
 	UPROPERTY(EditAnywhere)
-		TSubclassOf<class AGhostTrailActor> trailActor;
+		TSubclassOf<class AGhostTrailActor> trailActor;		// 캐릭터 잔상Actor
 };
